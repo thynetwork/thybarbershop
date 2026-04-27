@@ -1,0 +1,2008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ThyDriver — Web Mockup v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   THYDRIVER — DESIGN SYSTEM
+   All CSS variables, typography, and utility classes
+   ============================================================ */
+
+:root {
+  --navy:       #0a0a2e;
+  --navy-mid:   #12124a;
+  --navy-light: #1a1a6e;
+  --amber:      #F5A623;
+  --amber-dim:  #D4830A;
+  --amber-pale: rgba(245,166,35,0.10);
+  --amber-border: rgba(245,166,35,0.25);
+  --purple:     #3C3489;
+  --purple-mid: #534AB7;
+  --purple-pale:#EEEDFE;
+  --purple-border:#AFA9EC;
+  --green:      #3B6D11;
+  --green-pale: #EAF3DE;
+  --green-border:#97C459;
+  --red:        #A32D2D;
+  --red-pale:   #FCEBEB;
+  --blue:       #1A6DA8;
+  --blue-pale:  #E8F2FA;
+  --surface:    #F7F7F8;
+  --surface-2:  #EFEFEF;
+  --border:     rgba(0,0,0,0.09);
+  --border-mid: rgba(0,0,0,0.14);
+  --text-1:     #111118;
+  --text-2:     #6B6B7A;
+  --text-3:     #A0A0AE;
+  --white:      #FFFFFF;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg:  0 12px 32px rgba(0,0,0,0.10), 0 4px 8px rgba(0,0,0,0.05);
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #0E0E1A;
+  color: var(--text-1);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.site-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,10,46,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+}
+.nav-logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--white); letter-spacing: -0.02em; }
+.nav-logo span { color: var(--amber); }
+.nav-tabs { display: flex; gap: 4px; }
+.nav-tab {
+  padding: 6px 14px; border-radius: var(--r-full);
+  font-size: 12px; font-weight: 500; cursor: pointer;
+  color: rgba(255,255,255,0.5); border: none; background: none;
+  transition: all 0.15s;
+}
+.nav-tab:hover { color: rgba(255,255,255,0.9); }
+.nav-tab.active { background: rgba(255,255,255,0.10); color: var(--white); }
+.nav-tag { font-size: 10px; background: var(--amber); color: var(--navy); border-radius: var(--r-full); padding: 2px 8px; font-weight: 700; margin-left: 8px; }
+
+/* ============================================================
+   SCREEN SYSTEM
+   ============================================================ */
+.screens-wrap { padding: 32px 40px 60px; }
+.screen { display: none; animation: fadeIn 0.2s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+.screen-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3); margin-bottom: 20px;
+}
+.screen-label span { color: var(--amber); }
+
+/* ============================================================
+   DESKTOP LAYOUT SHELL
+   ============================================================ */
+.app-shell {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.06);
+  min-height: 680px;
+}
+
+/* browser chrome bar */
+.browser-bar {
+  background: #F0F0F0;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.browser-dots { display: flex; gap: 6px; }
+.browser-dot { width: 12px; height: 12px; border-radius: 50%; }
+.bd-r { background: #FF5F57; }
+.bd-y { background: #FFBD2E; }
+.bd-g { background: #28C840; }
+.browser-url {
+  flex: 1; background: #E4E4E4; border-radius: var(--r-full);
+  padding: 5px 14px; font-size: 12px; color: var(--text-2);
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* app top bar */
+.app-topbar {
+  background: var(--navy);
+  padding: 0 32px;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--white); }
+.topbar-logo span { color: var(--amber); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--amber); display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; color: var(--navy);
+}
+.topbar-name { font-size: 13px; color: rgba(255,255,255,0.7); }
+.topbar-code { font-size: 11px; color: var(--amber); font-weight: 600; }
+
+/* ============================================================
+   GRID LAYOUTS
+   ============================================================ */
+.layout-2col { display: grid; grid-template-columns: 340px 1fr; min-height: 624px; }
+.layout-3col { display: grid; grid-template-columns: 260px 1fr 320px; min-height: 624px; }
+.layout-center { display: flex; align-items: center; justify-content: center; min-height: 624px; background: var(--surface); }
+.layout-full { min-height: 624px; }
+
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 24px 20px;
+}
+.main-content { padding: 28px 32px; background: var(--white); }
+.right-panel {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 24px 20px;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.t-display { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; line-height: 1.15; color: var(--text-1); }
+.t-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text-1); }
+.t-subtitle { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-1); }
+.t-body { font-size: 14px; color: var(--text-1); line-height: 1.6; }
+.t-small { font-size: 12px; color: var(--text-2); }
+.t-label { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-2); }
+.t-mono { font-family: 'Syne', sans-serif; font-weight: 700; }
+.t-amber { color: var(--amber-dim); }
+.t-navy { color: var(--navy); }
+.t-muted { color: var(--text-2); }
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  border-radius: var(--r-full); padding: 3px 10px;
+  font-size: 11px; font-weight: 600; line-height: 1;
+}
+.badge-green  { background: var(--green-pale); color: var(--green); }
+.badge-amber  { background: var(--amber-pale); color: var(--amber-dim); border: 1px solid var(--amber-border); }
+.badge-purple { background: var(--purple-pale); color: var(--purple); border: 1px solid var(--purple-border); }
+.badge-blue   { background: var(--blue-pale); color: var(--blue); }
+.badge-red    { background: var(--red-pale); color: var(--red); }
+.badge-navy   { background: var(--navy); color: var(--amber); }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: none; cursor: pointer; border-radius: var(--r-md);
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  transition: all 0.15s; text-decoration: none; white-space: nowrap;
+}
+.btn-primary { background: var(--navy); color: var(--amber); padding: 11px 22px; font-size: 14px; }
+.btn-primary:hover { background: var(--navy-mid); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-amber { background: var(--amber); color: var(--navy); padding: 11px 22px; font-size: 14px; font-family: 'Syne', sans-serif; font-weight: 700; }
+.btn-amber:hover { background: #F0A020; transform: translateY(-1px); }
+.btn-ghost { background: none; border: 1px solid var(--border-mid); color: var(--text-2); padding: 10px 20px; font-size: 13px; }
+.btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
+.btn-danger { background: var(--red-pale); color: var(--red); padding: 10px 18px; font-size: 13px; }
+.btn-sm { padding: 7px 14px; font-size: 12px; border-radius: var(--r-sm); }
+.btn-lg { padding: 14px 28px; font-size: 15px; border-radius: var(--r-lg); }
+.btn-full { width: 100%; }
+.btn-green { background: var(--green-pale); color: var(--green); border: 1px solid var(--green-border); padding: 7px 14px; font-size: 12px; border-radius: var(--r-sm); }
+
+/* ============================================================
+   FORM ELEMENTS
+   ============================================================ */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+.form-input {
+  width: 100%; background: var(--surface); border: 1.5px solid var(--border-mid);
+  border-radius: var(--r-md); padding: 10px 14px;
+  font-size: 14px; color: var(--text-1); font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.15s;
+}
+.form-input:focus { outline: none; border-color: var(--navy); background: var(--white); }
+.form-input::placeholder { color: var(--text-3); }
+.form-input.locked { background: var(--surface-2); color: var(--text-2); cursor: not-allowed; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+.seg-control { display: flex; background: var(--surface); border-radius: var(--r-md); padding: 3px; gap: 2px; }
+.seg-opt {
+  flex: 1; text-align: center; padding: 7px 10px; border-radius: calc(var(--r-md) - 2px);
+  font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text-2);
+  border: none; background: none; transition: all 0.15s;
+}
+.seg-opt.on { background: var(--white); color: var(--text-1); font-weight: 600; box-shadow: var(--shadow-sm); }
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+}
+.card-surface {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 16px 18px;
+}
+.card-navy {
+  background: var(--navy); border-radius: var(--r-lg); padding: 20px 22px;
+  background-image: radial-gradient(ellipse at top right, var(--navy-light) 0%, var(--navy) 70%);
+}
+.card-amber-tint {
+  background: var(--amber-pale); border: 1px solid var(--amber-border);
+  border-radius: var(--r-lg); padding: 14px 16px;
+}
+.card-purple-tint {
+  background: var(--purple-pale); border: 1px solid var(--purple-border);
+  border-radius: var(--r-lg); padding: 14px 16px;
+}
+.card-green-tint {
+  background: var(--green-pale); border: 1px solid var(--green-border);
+  border-radius: var(--r-lg); padding: 14px 16px;
+}
+.card-red-tint {
+  background: var(--red-pale); border: 1px solid rgba(163,45,45,0.2);
+  border-radius: var(--r-lg); padding: 12px 14px;
+}
+
+.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+.row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.row:last-child { border-bottom: none; }
+.row-label { font-size: 13px; color: var(--text-2); }
+.row-value { font-size: 13px; font-weight: 500; color: var(--text-1); }
+
+/* ============================================================
+   AVATAR
+   ============================================================ */
+.avatar {
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 700; flex-shrink: 0;
+}
+.av-amber { background: var(--amber); color: var(--navy); }
+.av-navy  { background: var(--navy); color: var(--amber); }
+.av-green { background: var(--green-pale); color: var(--green); }
+.av-sm  { width: 36px; height: 36px; font-size: 13px; }
+.av-md  { width: 44px; height: 44px; font-size: 15px; }
+.av-lg  { width: 60px; height: 60px; font-size: 20px; }
+.av-xl  { width: 80px; height: 80px; font-size: 26px; }
+.av-check { position: relative; }
+.av-check::after {
+  content: '✓'; position: absolute; bottom: 0; right: 0;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--green); color: white; font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid white; line-height: 18px; text-align: center;
+}
+
+/* ============================================================
+   STAT CARDS
+   ============================================================ */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 16px 18px; }
+.stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-2); margin-bottom: 6px; }
+.stat-value { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text-1); }
+.stat-value.green { color: var(--green); }
+.stat-value.amber { color: var(--amber-dim); }
+
+/* ============================================================
+   INLINE LIST ITEMS
+   ============================================================ */
+.list-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.list-item:last-child { border-bottom: none; }
+.li-info { flex: 1; min-width: 0; }
+.li-name { font-size: 14px; font-weight: 500; color: var(--text-1); }
+.li-sub  { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.li-right { text-align: right; flex-shrink: 0; }
+.li-val  { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text-1); }
+.li-tag  { margin-top: 3px; }
+
+/* ============================================================
+   CALENDAR
+   ============================================================ */
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+.cal-day-label { text-align: center; font-size: 11px; font-weight: 600; color: var(--text-2); padding: 4px 0; }
+.cal-day { text-align: center; font-size: 13px; padding: 8px 4px; border-radius: var(--r-sm); cursor: pointer; transition: all 0.1s; }
+.cal-day.open { background: var(--surface); color: var(--text-1); }
+.cal-day.open:hover { background: var(--navy); color: var(--amber); }
+.cal-day.sel { background: var(--navy); color: var(--amber); font-weight: 700; }
+.cal-day.booked { background: var(--amber-pale); color: var(--amber-dim); font-weight: 600; }
+.cal-day.blocked { background: var(--red-pale); color: var(--red); }
+.cal-day.off { color: var(--text-3); }
+
+/* time slots */
+.time-slots { display: flex; gap: 8px; flex-wrap: wrap; }
+.time-slot { padding: 6px 14px; border-radius: var(--r-full); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.1s; }
+.ts-open  { background: var(--surface); border: 1px solid var(--border-mid); color: var(--text-1); }
+.ts-open:hover { border-color: var(--navy); color: var(--navy); }
+.ts-sel   { background: var(--navy); color: var(--amber); border: 1px solid var(--navy); }
+.ts-taken { background: var(--surface-2); color: var(--text-3); cursor: not-allowed; }
+
+/* ============================================================
+   PAYMENT METHODS
+   ============================================================ */
+.pay-method {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: var(--r-lg); padding: 14px 16px; cursor: pointer;
+  transition: all 0.15s; margin-bottom: 8px;
+}
+.pay-method.sel { border-color: var(--amber); background: var(--amber-pale); }
+.pay-icon { width: 40px; height: 40px; border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; flex-shrink: 0; }
+.pi-z { background: #6E3BE6; color: white; }
+.pi-v { background: #3D95CE; color: white; }
+.pi-c { background: #00D64F; color: black; }
+.pi-s { background: #635BFF; color: white; }
+.pay-info { flex: 1; }
+.pay-name { font-size: 14px; font-weight: 600; color: var(--text-1); }
+.pay-handle { font-size: 12px; color: var(--text-2); }
+.qr-thumb {
+  width: 36px; height: 36px; background: var(--surface);
+  border-radius: var(--r-sm); border: 1px solid var(--border);
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; padding: 5px;
+}
+.qr-c { background: var(--text-1); border-radius: 1px; }
+.qr-e { background: transparent; }
+
+/* ============================================================
+   REASON GRID
+   ============================================================ */
+.reason-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 16px; }
+.reason-btn {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--r-lg); padding: 12px 10px; text-align: center; cursor: pointer;
+  transition: all 0.15s;
+}
+.reason-btn:hover { border-color: var(--navy); }
+.reason-btn.sel { background: var(--purple-pale); border-color: var(--purple-border); }
+.reason-icon { font-size: 20px; margin-bottom: 5px; }
+.reason-label { font-size: 11px; color: var(--text-2); line-height: 1.3; }
+.reason-btn.sel .reason-label { color: var(--purple); font-weight: 500; }
+
+/* ============================================================
+   PHOTO PAIR (BOOKING CONFIRMED)
+   ============================================================ */
+.photo-pair { display: flex; gap: 16px; align-items: stretch; }
+.photo-side { flex: 1; text-align: center; background: var(--surface); border-radius: var(--r-lg); padding: 20px 16px; }
+.photo-divider { width: 1px; background: var(--border); align-self: stretch; }
+.photo-role { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-2); margin-bottom: 4px; margin-top: 10px; }
+.photo-name { font-size: 14px; font-weight: 600; color: var(--text-1); }
+
+/* ============================================================
+   INSURED STRIP
+   ============================================================ */
+.ins-strip {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--green-pale); border-radius: var(--r-md);
+  padding: 8px 12px; margin-bottom: 14px;
+}
+.ins-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.ins-text { font-size: 12px; color: var(--green); font-weight: 500; }
+
+/* ============================================================
+   SIDEBAR NAV (DRIVER DASHBOARD)
+   ============================================================ */
+.side-nav { display: flex; flex-direction: column; gap: 2px; }
+.side-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--r-md);
+  font-size: 13px; font-weight: 500; color: var(--text-2);
+  cursor: pointer; transition: all 0.15s; border: none; background: none; text-align: left;
+}
+.side-link:hover { background: var(--white); color: var(--text-1); }
+.side-link.active { background: var(--navy); color: var(--amber); }
+.side-icon { font-size: 15px; width: 20px; text-align: center; }
+.side-badge {
+  margin-left: auto; background: var(--red); color: white;
+  border-radius: var(--r-full); padding: 1px 7px; font-size: 10px; font-weight: 700;
+}
+
+/* ============================================================
+   POLICY TOGGLES
+   ============================================================ */
+.policy-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.policy-row:last-child { border-bottom: none; }
+.policy-title { font-size: 13px; font-weight: 500; color: var(--text-1); }
+.policy-sub { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+.toggle-group { display: flex; gap: 4px; }
+.tg-opt { padding: 5px 11px; border-radius: var(--r-full); font-size: 11px; font-weight: 500; cursor: pointer; border: 1px solid var(--border-mid); color: var(--text-2); background: none; transition: all 0.1s; }
+.tg-opt.on-g { background: var(--green-pale); color: var(--green); border-color: var(--green-border); }
+.tg-opt.on-r { background: var(--red-pale); color: var(--red); border-color: rgba(163,45,45,0.3); }
+.tg-opt.on   { background: var(--navy); color: var(--amber); border-color: var(--navy); }
+
+/* ============================================================
+   PROGRESS STEPS
+   ============================================================ */
+.progress-bar { display: flex; gap: 6px; margin-bottom: 20px; }
+.progress-step { flex: 1; height: 4px; border-radius: 2px; background: var(--surface-2); }
+.progress-step.done { background: var(--amber); }
+.progress-step.active { background: var(--navy); }
+
+/* ============================================================
+   UPLOAD BOX
+   ============================================================ */
+.upload-circle {
+  width: 88px; height: 88px; border-radius: 50%;
+  background: var(--surface); border: 2px dashed var(--border-mid);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; margin: 0 auto 8px; transition: border-color 0.15s;
+}
+.upload-circle:hover { border-color: var(--navy); }
+.upload-box {
+  border: 1.5px dashed var(--border-mid); border-radius: var(--r-md);
+  padding: 14px; text-align: center; cursor: pointer;
+  font-size: 12px; color: var(--text-2);
+}
+
+/* ============================================================
+   TIMER RING
+   ============================================================ */
+.timer-ring {
+  width: 80px; height: 80px; border-radius: 50%;
+  border: 3px solid var(--surface-2);
+  border-top-color: var(--amber);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  animation: spin 3s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.timer-value { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; color: var(--text-1); animation: none; position: absolute; }
+.timer-wrap { position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+
+/* ============================================================
+   SCRATCHPAD
+   ============================================================ */
+.scratchpad { background: var(--surface); border-radius: var(--r-lg); padding: 18px 20px; margin-bottom: 16px; }
+.sp-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.sp-label { font-size: 13px; color: var(--text-2); flex: 0 0 130px; }
+.sp-input { flex: 1; background: var(--white); border: 1px solid var(--border-mid); border-radius: var(--r-sm); padding: 8px 12px; font-size: 14px; color: var(--text-1); text-align: right; font-family: 'DM Sans', sans-serif; }
+.sp-total { display: flex; justify-content: space-between; align-items: center; background: var(--white); border-radius: var(--r-md); padding: 12px 14px; margin-top: 8px; border: 1px solid var(--border); }
+
+/* ============================================================
+   LOGIN SCREEN
+   ============================================================ */
+.login-wrap {
+  min-height: 624px; display: grid; grid-template-columns: 1fr 1fr;
+}
+.login-left {
+  background: var(--navy);
+  background-image: radial-gradient(ellipse at bottom right, var(--navy-light) 0%, var(--navy) 60%);
+  padding: 52px 48px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.login-right { padding: 52px 48px; background: var(--white); display: flex; flex-direction: column; justify-content: center; }
+.login-logo { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--white); margin-bottom: 8px; }
+.login-logo span { color: var(--amber); }
+.login-tagline { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 40px; }
+.login-feature { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.lf-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+.lf-text { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.4; }
+.login-footer-text { font-size: 11px; color: rgba(255,255,255,0.2); }
+.login-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--text-1); margin-bottom: 4px; }
+.login-sub { font-size: 14px; color: var(--text-2); margin-bottom: 28px; }
+.code-input-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.code-state { flex: 0 0 72px; background: var(--surface); border: 1.5px solid var(--border-mid); border-radius: var(--r-md); padding: 10px 0; text-align: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--navy); }
+.code-digits { flex: 1; background: var(--surface); border: 1.5px solid var(--border-mid); border-radius: var(--r-md); padding: 10px 14px; font-size: 16px; letter-spacing: 0.2em; color: var(--navy); font-family: 'Syne', sans-serif; font-weight: 700; text-align: center; }
+.driver-link { text-align: center; margin-top: 16px; font-size: 13px; color: var(--text-2); }
+.driver-link a { color: var(--navy); font-weight: 600; }
+
+/* code share card */
+.code-share-card {
+  background: var(--navy);
+  background-image: radial-gradient(ellipse at top right, var(--navy-light) 0%, var(--navy) 70%);
+  border-radius: var(--r-xl); padding: 24px;
+  text-align: center; margin-bottom: 16px;
+}
+.csc-label { font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+.csc-code { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--amber); letter-spacing: 0.12em; margin-bottom: 12px; }
+.qr-large {
+  width: 100px; height: 100px; background: rgba(255,255,255,0.08);
+  border-radius: var(--r-md); margin: 0 auto 12px;
+  display: grid; grid-template-columns: repeat(6,1fr); gap: 2px; padding: 8px;
+}
+.share-btn-row { display: flex; gap: 8px; margin-top: 10px; }
+.share-btn { flex: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: var(--r-md); padding: 9px; font-size: 12px; color: rgba(255,255,255,0.8); cursor: pointer; }
+
+/* support button */
+.support-btn {
+  width: 100%; background: var(--navy); color: var(--white); border: none;
+  border-radius: var(--r-lg); padding: 18px; font-size: 17px; font-weight: 800;
+  cursor: pointer; font-family: 'Syne', sans-serif; display: flex; align-items: center;
+  justify-content: center; gap: 10px; margin-bottom: 10px;
+  box-shadow: var(--shadow-md); transition: all 0.15s;
+}
+.support-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.support-sub { font-size: 12px; color: var(--text-2); text-align: center; margin-bottom: 14px; }
+
+/* amount compare */
+.amt-compare { display: flex; gap: 12px; align-items: stretch; margin-bottom: 16px; }
+.amt-box { flex: 1; border-radius: var(--r-lg); padding: 14px; text-align: center; }
+.amt-orig { background: var(--surface); border: 1px solid var(--border); }
+.amt-new  { background: var(--purple-pale); border: 1px solid var(--purple-border); }
+.amt-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-2); margin-bottom: 6px; }
+.amt-label.p { color: var(--purple-mid); }
+.amt-value { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--text-1); }
+.amt-value.p { color: var(--purple); }
+.amt-arrow { display: flex; align-items: center; font-size: 20px; color: var(--text-3); }
+
+/* subscription banner */
+.sub-banner {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--amber-pale); border: 1px solid var(--amber-border);
+  border-radius: var(--r-lg); padding: 12px 16px;
+}
+.sub-text { font-size: 13px; color: var(--amber-dim); font-weight: 500; }
+.sub-pill { background: var(--amber); color: var(--navy); border-radius: var(--r-full); padding: 4px 12px; font-size: 12px; font-weight: 700; font-family: 'Syne', sans-serif; }
+
+/* hold banner */
+.hold-banner {
+  background: #FAEEDA; border: 1px solid #EF9F27;
+  border-radius: var(--r-lg); padding: 14px 16px; margin-bottom: 16px;
+}
+.hold-title { font-size: 14px; font-weight: 600; color: #633806; margin-bottom: 4px; }
+.hold-sub { font-size: 12px; color: #854F0B; line-height: 1.5; }
+.hold-timer { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #854F0B; margin-top: 8px; }
+
+/* greeting card */
+.greeting-card {
+  background: var(--navy);
+  background-image: radial-gradient(ellipse at bottom right, var(--navy-light) 0%, var(--navy) 65%);
+  border-radius: var(--r-xl); padding: 24px 28px; margin-bottom: 20px;
+  color: white;
+}
+.gc-hi { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 3px; }
+.gc-name { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+.gc-route { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.gc-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+.gc-route-text { font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.9); }
+.gc-insured { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.1); border-radius: var(--r-full); padding: 4px 12px; font-size: 12px; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+.gc-ins-dot { width: 7px; height: 7px; border-radius: 50%; background: #5DCAA5; flex-shrink: 0; }
+.sa-row { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.1); border-radius: var(--r-md); padding: 10px 14px; margin-bottom: 14px; }
+.sa-label { font-size: 12px; color: rgba(255,255,255,0.55); }
+.sa-value { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--amber); }
+.dt-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.dt-box { flex: 1; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--r-md); padding: 10px 14px; text-align: center; }
+.dt-label { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+.dt-value { font-size: 15px; font-weight: 600; color: white; }
+.gc-btns { display: flex; gap: 10px; }
+.gc-confirm { flex: 1; background: var(--amber); color: var(--navy); border: none; border-radius: var(--r-md); padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Syne', sans-serif; }
+.gc-new { flex: 0 0 auto; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: var(--r-md); padding: 12px 16px; font-size: 13px; color: rgba(255,255,255,0.8); cursor: pointer; }
+
+/* mini driver card */
+.mini-driver-card { display: flex; align-items: center; gap: 12px; background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 12px 16px; cursor: pointer; transition: border-color 0.15s; }
+.mini-driver-card:hover { border-color: var(--navy); }
+.mdc-info { flex: 1; }
+.mdc-name { font-size: 14px; font-weight: 600; color: var(--text-1); }
+.mdc-sub { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+
+/* route input */
+.route-inputs { position: relative; margin-bottom: 14px; }
+.route-line { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.route-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.rd-pickup  { background: var(--navy); }
+.rd-dropoff { background: var(--amber); }
+.route-connector { width: 2px; height: 20px; background: var(--border-mid); margin-left: 5px; margin-bottom: 6px; }
+
+/* status steps */
+.status-steps { display: flex; flex-direction: column; gap: 8px; }
+.status-step { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.ss-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.ss-done   { background: var(--green); }
+.ss-active { background: var(--amber); }
+.ss-wait   { background: var(--border-mid); }
+.ss-text-done   { color: var(--green); font-weight: 500; }
+.ss-text-active { color: var(--amber-dim); font-weight: 500; }
+.ss-text-wait   { color: var(--text-3); }
+
+/* ============================================================
+   FARE BREAKDOWN
+   ============================================================ */
+.fare-block { background: var(--surface); border-radius: var(--r-lg); padding: 18px 20px; margin-bottom: 14px; }
+.fare-row { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.fare-row:last-child { border-bottom: none; padding-top: 10px; }
+.fare-label { color: var(--text-2); }
+.fare-sub { font-size: 11px; color: var(--text-3); margin-left: 4px; }
+.fare-value { font-weight: 500; color: var(--text-1); }
+.fare-total { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text-1); }
+
+/* ============================================================
+   SAFETY COMPLETE CARD
+   ============================================================ */
+.safety-complete {
+  background: var(--green-pale); border: 1px solid var(--green-border);
+  border-radius: var(--r-xl); padding: 20px 22px; text-align: center; margin-bottom: 18px;
+}
+.sc-icon { font-size: 28px; margin-bottom: 6px; }
+.sc-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; color: #27500A; margin-bottom: 4px; }
+.sc-sub { font-size: 13px; color: var(--green); line-height: 1.5; }
+
+/* footer */
+.site-footer {
+  background: var(--navy); text-align: center; padding: 14px;
+  font-size: 11px; color: rgba(255,255,255,0.25); border-radius: 0 0 var(--r-xl) var(--r-xl);
+}
+.site-footer a { color: rgba(255,255,255,0.35); text-decoration: none; margin: 0 8px; }
+.site-footer a:hover { color: rgba(255,255,255,0.6); }
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+.gap-4  { display: flex; flex-direction: column; gap: 4px; }
+.gap-8  { display: flex; flex-direction: column; gap: 8px; }
+.gap-12 { display: flex; flex-direction: column; gap: 12px; }
+.gap-16 { display: flex; flex-direction: column; gap: 16px; }
+.flex   { display: flex; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-center  { display: flex; align-items: center; }
+.flex-gap-8   { display: flex; align-items: center; gap: 8px; }
+.flex-gap-12  { display: flex; align-items: center; gap: 12px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.mb-4  { margin-bottom: 4px; }
+.mb-8  { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-20 { margin-bottom: 20px; }
+.mb-24 { margin-bottom: 24px; }
+.mt-8  { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.text-center { text-align: center; }
+.w-full { width: 100%; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+<nav class="site-nav">
+  <div class="nav-logo">Thy<span>Driver</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showGroup('rider')">Rider Screens</button>
+    <button class="nav-tab" onclick="showGroup('driver')">Driver Screens</button>
+    <button class="nav-tab" onclick="showGroup('onboard')">Driver Onboarding</button>
+  </div>
+  <div style="font-size:11px;color:rgba(255,255,255,.3);">Web Mockup v1.0 <span class="nav-tag">For Claude Code</span></div>
+</nav>
+
+<!-- ============================================================
+     RIDER SCREENS
+     ============================================================ -->
+<div id="group-rider" class="screens-wrap">
+
+  <!-- R1: LOGIN -->
+  <div class="screen active" id="r1">
+    <div class="screen-label">Rider Screen 1 — <span>Login</span></div>
+    <div class="app-shell">
+      <div class="browser-bar">
+        <div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div>
+        <div class="browser-url">thydriver.com</div>
+      </div>
+      <div class="login-wrap">
+        <div class="login-left">
+          <div>
+            <div class="login-logo">Thy<span>Driver</span></div>
+            <div class="login-tagline">Your Driver. Every Airport.</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:28px;">
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">IAH</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">HOU</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">MCO</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">LAX</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">ATL</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">ORD</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">DFW</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">JFK</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">MIA</div>
+              <div style="font-size:9px;color:rgba(255,255,255,.2);padding:3px 4px;align-self:center;">+ every US airport</div>
+            </div>
+            <div class="login-feature"><div class="lf-dot"></div><div class="lf-text">Your trusted driver at your home airport — and every airport you fly to</div></div>
+            <div class="login-feature"><div class="lf-dot"></div><div class="lf-text">Invite-only. Your driver shared a personal code with you.</div></div>
+            <div class="login-feature"><div class="lf-dot"></div><div class="lf-text">Pay directly via Zelle, Venmo, Cash App — no commission cut</div></div>
+            <div class="login-feature"><div class="lf-dot"></div><div class="lf-text">Insured drivers. Safety Protocol for both parties.</div></div>
+          </div>
+          <div style="margin-top:28px;padding:18px 20px;background:rgba(245,166,35,.10);border:2px solid #F5A623;border-radius:14px;">
+            <div style="font-family:Syne,sans-serif;font-size:15px;font-weight:800;color:#F5A623;margin-bottom:4px;">Need a Regular Driver?</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:12px;line-height:1.5;">Daily · Weekly · Bi-Weekly<br/>Airport runs · Commutes · Appointments<br/><span style="font-size:10px;color:rgba(255,255,255,.3);">One-time matching fee · Free if you have a driver code</span></div>
+            <button style="width:100%;background:#F5A623;border:none;border-radius:9px;padding:11px;font-size:13px;font-weight:700;color:#0a0a2e;cursor:pointer;font-family:Syne,sans-serif;transition:background .15s;">Find Me a Driver →</button>
+          </div>
+          <div class="login-footer-text" style="margin-top:16px;">© 2026 ThyDriver · ThyNetwork Inc.</div>
+        </div>
+        <div class="login-right">
+          <div class="login-title">Welcome back</div>
+          <div class="login-sub">Sign in to book your driver</div>
+          <div class="seg-control mb-20">
+            <button class="seg-opt on">Rider</button>
+            <button class="seg-opt">Driver</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" placeholder="your@email.com" value="sarah.chen@email.com" readonly />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Driver Code</label>
+            <div style="display:flex;gap:0;background:#F7F7F8;border:1.5px solid rgba(0,0,0,.09);border-radius:10px;overflow:hidden;">
+              <input style="flex:0 0 64px;background:#F5A623;border:none;padding:10px 0;text-align:center;font-family:Syne,sans-serif;font-weight:800;font-size:14px;color:#0a0a2e;outline:none;letter-spacing:.04em;" placeholder="IAH" maxlength="3" value="IAH" readonly />
+              <div style="width:1px;background:rgba(0,0,0,.1);flex-shrink:0;"></div>
+              <input style="flex:0 0 60px;background:#0a0a2e;border:none;padding:10px 0;text-align:center;font-family:Syne,sans-serif;font-weight:800;font-size:14px;color:#F5A623;outline:none;letter-spacing:.06em;" placeholder="JDR" maxlength="3" value="JDR" readonly />
+              <div style="width:1px;background:rgba(255,255,255,.1);flex-shrink:0;"></div>
+              <input style="flex:1;background:#12124a;border:none;padding:10px 14px;text-align:center;font-family:Syne,sans-serif;font-weight:700;font-size:14px;color:rgba(255,255,255,.85);outline:none;letter-spacing:.2em;" placeholder="4207" maxlength="4" value="4207" readonly />
+            </div>
+            <div style="display:flex;margin-top:5px;">
+              <div style="flex:0 0 64px;text-align:center;font-size:9px;color:#D4830A;font-weight:600;">Airport</div>
+              <div style="flex:0 0 1px;"></div>
+              <div style="flex:0 0 60px;text-align:center;font-size:9px;color:#6B6B7A;font-weight:600;">Initials</div>
+              <div style="flex:0 0 1px;"></div>
+              <div style="flex:1;text-align:center;font-size:9px;color:#6B6B7A;font-weight:600;">Digits</div>
+            </div>
+            <div style="margin-top:8px;display:flex;align-items:center;gap:8px;">
+              <div style="font-size:10px;color:#6B6B7A;">Example:</div>
+              <div style="display:inline-flex;align-items:center;border-radius:7px;overflow:hidden;">
+                <div style="background:#F5A623;padding:4px 8px;font-family:Syne,sans-serif;font-size:11px;font-weight:800;color:#0a0a2e;">IAH</div>
+                <div style="background:#0a0a2e;padding:4px 7px;font-family:Syne,sans-serif;font-size:11px;font-weight:800;color:#F5A623;">JDR</div>
+                <div style="background:#12124a;padding:4px 8px;font-family:Syne,sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.8);">4207</div>
+              </div>
+              <div style="font-size:10px;color:#6B6B7A;">= Houston driver</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input class="form-input" type="password" placeholder="••••••••" value="password" readonly />
+          </div>
+          <button class="btn btn-primary btn-full btn-lg mb-12" style="margin-top:4px;">Find My Driver</button>
+          <div class="driver-link">Don't have a code? Request one from your driver. &nbsp;|&nbsp; <a href="#">Forgot password?</a></div>
+          <div class="driver-link mt-12"><a href="#">Are you a driver? Create your account →</a></div>
+          <div style="text-align:center;margin-top:24px;font-size:11px;color:var(--text-3);">
+            <a href="#" style="color:var(--text-3);text-decoration:none;margin:0 8px;">Privacy</a>
+            <a href="#" style="color:var(--text-3);text-decoration:none;margin:0 8px;">Terms</a>
+            <a href="#" style="color:var(--text-3);text-decoration:none;margin:0 8px;">Conditions</a>
+            <span style="margin:0 8px;">© 2026 ThyDriver</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R2: RIDER HOME -->
+  <div class="screen" id="r2">
+    <div class="screen-label">Rider Screen 2 — <span>Home (2-tap booking for regulars)</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/home</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="topbar-name">Sarah Chen</div><div class="topbar-avatar">SC</div></div></div>
+      <div class="layout-2col">
+        <div class="main-content" style="grid-column:1/-1;max-width:680px;margin:0 auto;width:100%;">
+          <div class="greeting-card">
+            <div class="gc-hi">Welcome back,</div>
+            <div class="gc-name">Sarah Chen</div>
+            <div class="gc-route"><div class="gc-dot"></div><div class="gc-route-text">Airport to Home</div></div>
+            <div class="gc-insured"><div class="gc-ins-dot"></div>Ride insured by Allstate · James Rivera</div>
+            <div class="sa-row"><div class="sa-label">Your set amount</div><div class="sa-value">$120</div></div>
+            <div class="dt-row">
+              <div class="dt-box"><div class="dt-label">Date</div><div class="dt-value">Jul 17, 2026</div></div>
+              <div class="dt-box"><div class="dt-label">Time</div><div class="dt-value">9:00 am</div></div>
+            </div>
+            <div class="gc-btns">
+              <button class="gc-confirm">Confirm Booking</button>
+              <button class="gc-new">New Destination</button>
+            </div>
+          </div>
+          <div style="text-align:right;margin-bottom:14px;"><a href="#" style="font-size:13px;color:var(--navy);font-weight:500;">View payment history →</a></div>
+          <div class="t-label mb-8">Your driver</div>
+          <div class="mini-driver-card">
+            <div class="avatar av-amber av-md av-check">JR</div>
+            <div class="mdc-info">
+              <div class="mdc-name">James Rivera · <span style="color:var(--amber-dim);">JDR·4207</span></div>
+              <div class="mdc-sub flex-gap-8" style="flex-wrap:wrap;gap:6px;margin-top:4px;">
+                <span class="badge badge-green">★ 4.97</span>
+                <span class="badge badge-blue">✈ Airport</span>
+                <span class="badge badge-green">✓ Insured · Allstate</span>
+                <span style="font-size:12px;color:var(--text-2);">Tap to view rates & vehicle</span>
+              </div>
+            </div>
+            <div style="font-size:18px;color:var(--text-3);">›</div>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer">© 2026 ThyDriver <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Conditions</a></div>
+    </div>
+  </div>
+
+  <!-- R3: DRIVER CARD + DATE/TIME -->
+  <div class="screen" id="r3">
+    <div class="screen-label">Rider Screen 3 — <span>Driver Card + Date & Time (New Destination flow)</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/JDR4207</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="topbar-name">Sarah Chen</div><div class="topbar-avatar">SC</div></div></div>
+      <div class="layout-2col">
+        <div class="sidebar">
+          <div class="progress-bar"><div class="progress-step done"></div><div class="progress-step active"></div><div class="progress-step"></div></div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div class="avatar av-amber av-lg av-check">JR</div>
+            <div>
+              <div class="t-subtitle">James Rivera</div>
+              <div class="t-small" style="margin-top:2px;">JDR·4207 · Houston, TX</div>
+              <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;">
+                <span class="badge badge-blue">✈ Airport</span>
+                <span class="badge badge-green">✓ Safety</span>
+              </div>
+            </div>
+          </div>
+          <div class="ins-strip"><div class="ins-dot"></div><div class="ins-text">Insured by Allstate · Rideshare coverage</div></div>
+          <div class="grid-2 mb-12">
+            <div class="card-surface"><div class="t-label mb-4">Hourly</div><div class="t-subtitle">$35/hr</div></div>
+            <div class="card-surface"><div class="t-label mb-4">Flat local</div><div class="t-subtitle">$25</div><div class="t-small">≤10 miles</div></div>
+          </div>
+          <div class="card-surface mb-12">
+            <div class="flex-between mb-4"><span class="t-label">Vehicle</span><span class="badge badge-green">✓ Seatbelts</span></div>
+            <div class="t-body" style="font-size:13px;font-weight:500;">2022 Toyota Camry XSE</div>
+            <div class="t-small mt-8" style="display:flex;gap:8px;">
+              <span>Silver</span><span>·</span><span>3 passengers max</span>
+            </div>
+          </div>
+          <div class="card-surface">
+            <div class="t-label mb-8">Availability</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;">
+              <span class="badge badge-navy">Mon</span><span class="badge badge-navy">Tue</span><span class="badge badge-navy">Wed</span><span class="badge badge-navy">Thu</span><span class="badge badge-navy">Fri</span><span class="badge badge-navy">Sat</span>
+            </div>
+            <div class="t-small mt-8">7:00 am – 10:00 pm</div>
+          </div>
+        </div>
+        <div class="main-content">
+          <div class="t-title mb-4">Select Date & Time</div>
+          <div class="t-small mb-16">James Rivera · New Destination</div>
+          <div class="seg-control mb-16" style="max-width:280px;">
+            <button class="seg-opt on">Calendar</button>
+            <button class="seg-opt">Enter manually</button>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <div class="t-subtitle">July 2026</div>
+            <div style="display:flex;gap:4px;"><button class="btn btn-ghost btn-sm">‹</button><button class="btn btn-ghost btn-sm">›</button></div>
+          </div>
+          <div class="cal-grid mb-16">
+            <div class="cal-day-label">Su</div><div class="cal-day-label">Mo</div><div class="cal-day-label">Tu</div><div class="cal-day-label">We</div><div class="cal-day-label">Th</div><div class="cal-day-label">Fr</div><div class="cal-day-label">Sa</div>
+            <div class="cal-day off">1</div><div class="cal-day open">2</div><div class="cal-day open">3</div><div class="cal-day open">4</div><div class="cal-day open">5</div><div class="cal-day open">6</div><div class="cal-day blocked">7</div>
+            <div class="cal-day blocked">8</div><div class="cal-day open">9</div><div class="cal-day open">10</div><div class="cal-day open">11</div><div class="cal-day open">12</div><div class="cal-day open">13</div><div class="cal-day blocked">14</div>
+            <div class="cal-day blocked">15</div><div class="cal-day open">16</div><div class="cal-day sel">17</div><div class="cal-day open">18</div><div class="cal-day open">19</div><div class="cal-day open">20</div><div class="cal-day blocked">21</div>
+            <div class="cal-day blocked">22</div><div class="cal-day open">23</div><div class="cal-day open">24</div><div class="cal-day open">25</div><div class="cal-day open">26</div><div class="cal-day open">27</div><div class="cal-day blocked">28</div>
+          </div>
+          <div class="t-label mb-8">Available times — Thu Jul 17</div>
+          <div class="time-slots mb-20">
+            <div class="time-slot ts-taken">7:00 am</div>
+            <div class="time-slot ts-open">8:00 am</div>
+            <div class="time-slot ts-sel">9:00 am</div>
+            <div class="time-slot ts-open">10:00 am</div>
+            <div class="time-slot ts-open">11:00 am</div>
+            <div class="time-slot ts-taken">12:00 pm</div>
+            <div class="time-slot ts-open">1:00 pm</div>
+            <div class="time-slot ts-open">2:00 pm</div>
+          </div>
+          <button class="btn btn-primary btn-lg">Next — Enter Route Details →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R4: ROUTE DETAILS -->
+  <div class="screen" id="r4">
+    <div class="screen-label">Rider Screen 4 — <span>Route Details (pickup, drop-off, miles)</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/book/JDR4207/route</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="topbar-name">Sarah Chen</div><div class="topbar-avatar">SC</div></div></div>
+      <div class="layout-center">
+        <div style="width:100%;max-width:560px;padding:40px;">
+          <div class="progress-bar"><div class="progress-step done"></div><div class="progress-step done"></div><div class="progress-step active"></div></div>
+          <div class="t-title mb-4">Route Details</div>
+          <div class="t-small mb-24">Thu Jul 17 · 9:00 am · James Rivera</div>
+          <div class="route-inputs mb-16">
+            <div class="route-line">
+              <div class="route-dot rd-pickup"></div>
+              <div class="form-group" style="flex:1;margin-bottom:0;">
+                <label class="form-label">Pickup address</label>
+                <input class="form-input" placeholder="123 Main St, Houston TX" value="456 Westheimer Rd, Houston TX" readonly />
+              </div>
+            </div>
+            <div class="route-connector" style="margin-left:5px;"></div>
+            <div class="route-line">
+              <div class="route-dot rd-dropoff"></div>
+              <div class="form-group" style="flex:1;margin-bottom:0;">
+                <label class="form-label">Drop-off address</label>
+                <input class="form-input" placeholder="IAH Terminal C, Houston TX" value="800 Congress Ave, Austin TX" readonly />
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
+            <div class="form-group" style="flex:1;margin-bottom:0;">
+              <label class="form-label">Estimated miles</label>
+              <input class="form-input" value="165 miles" readonly style="text-align:center;font-weight:700;" />
+            </div>
+            <span class="badge badge-amber" style="margin-top:16px;font-size:12px;padding:5px 14px;">⚠ 51+ miles</span>
+          </div>
+          <div class="card-amber-tint mb-20">
+            <div style="font-size:13px;color:var(--amber-dim);font-weight:500;margin-bottom:4px;">This looks like a long haul trip (165 mi)</div>
+            <div style="font-size:12px;color:var(--amber-dim);">Select the long haul option below to apply correct pricing including the empty return charge.</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <button class="btn btn-primary btn-lg">Confirm Booking</button>
+            <button class="btn btn-lg" style="background:var(--amber-pale);border:1.5px solid var(--amber-border);color:var(--amber-dim);font-size:14px;font-weight:600;">This is a 51+ Mile Trip →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R5: PENDING CLOCK -->
+  <div class="screen" id="r5">
+    <div class="screen-label">Rider Screen 5A — <span>Pending / Driver Clock</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/booking/pending</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="topbar-name">Sarah Chen</div><div class="topbar-avatar">SC</div></div></div>
+      <div class="layout-center" style="flex-direction:column;gap:0;padding:40px;">
+        <div style="max-width:500px;width:100%;text-align:center;">
+          <div class="timer-wrap mb-8">
+            <div class="timer-ring"></div>
+            <div class="timer-value">1:47</div>
+          </div>
+          <div class="t-title mb-4">Waiting for James…</div>
+          <div class="t-body t-muted mb-24">Your booking request has been sent. James has 2 hours to confirm.</div>
+          <div class="card mb-20" style="text-align:left;">
+            <div class="row"><span class="row-label">Route</span><span class="row-value">Airport to Home</span></div>
+            <div class="row"><span class="row-label">Date & time</span><span class="row-value">Thu Jul 17 · 9:00 am</span></div>
+            <div class="row"><span class="row-label">Amount</span><span class="row-value t-mono" style="color:var(--purple);">$120 set amount</span></div>
+            <div class="row"><span class="row-label">Driver</span><span class="row-value">JDR·4207</span></div>
+          </div>
+          <div class="status-steps mb-20" style="text-align:left;background:var(--surface);border-radius:var(--r-lg);padding:16px 20px;">
+            <div class="status-step"><div class="ss-dot ss-done"></div><span class="ss-text-done">Booking request sent</span></div>
+            <div class="status-step"><div class="ss-dot ss-active"></div><span class="ss-text-active">Waiting for driver confirmation</span></div>
+            <div class="status-step"><div class="ss-dot ss-wait"></div><span class="ss-text-wait">Booking confirmed</span></div>
+          </div>
+          <button class="btn btn-ghost">Cancel request</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R6: LONG HAUL -->
+  <div class="screen" id="r6">
+    <div class="screen-label">Rider Screen 5B — <span>Long Haul Fare Estimate (51+ miles)</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/booking/longhaul</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="topbar-name">Dana Torres</div><div class="topbar-avatar">DT</div></div></div>
+      <div class="layout-center" style="padding:40px;">
+        <div style="max-width:580px;width:100%;">
+          <div class="t-title mb-4">Long Haul Trip</div>
+          <div class="t-small mb-16">51+ miles · Estimate sent to driver for approval</div>
+          <div class="card-amber-tint mb-14">
+            <div class="t-subtitle" style="color:var(--amber-dim);margin-bottom:4px;">Houston → Austin</div>
+            <div class="t-small">Sat Jul 19 · 6:00 am · 165 miles · Est. 2.5 hrs</div>
+          </div>
+          <div class="fare-block">
+            <div style="font-size:13px;font-weight:600;color:var(--text-1);margin-bottom:10px;">Fare estimate <span style="font-size:11px;color:var(--text-2);font-weight:400;">— driver may adjust</span></div>
+            <div class="fare-row"><span class="fare-label">Hourly rate <span class="fare-sub">(2.5 hrs × $35)</span></span><span class="fare-value">$87.50</span></div>
+            <div class="fare-row"><span class="fare-label">Distance flat fee (51+ mi)</span><span class="fare-value">$50.00</span></div>
+            <div class="fare-row"><span class="fare-label">Empty return charge</span><span class="fare-value">$50.00</span></div>
+            <div class="fare-row"><span class="fare-label" style="font-weight:600;color:var(--text-1);">Estimated total</span><span class="fare-total">$187.50</span></div>
+          </div>
+          <div class="card-amber-tint mb-12">
+            <div style="font-size:12px;color:var(--amber-dim);line-height:1.6;">This is an estimate only. Time of day, traffic, and route conditions may affect the final amount. Driver will confirm or adjust before the booking is locked.</div>
+          </div>
+          <div class="card-surface mb-14" style="font-size:12px;color:var(--text-2);line-height:1.6;">
+            <strong style="color:var(--text-1);">Before confirming:</strong> This is a one-way trip. The empty return charge of <strong>$50</strong> is included. Cancellation within 24 hours forfeits the full amount. By confirming you agree to these terms.
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary btn-lg" style="flex:1;">Send Estimate to Driver →</button>
+            <button class="btn btn-ghost btn-lg">Request different route</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R7: PRICE ADJUSTMENT -->
+  <div class="screen" id="r7">
+    <div class="screen-label">Rider Screen 5C — <span>Driver Price Adjustment (client view)</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/booking/review-price</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="topbar-name">Dana Torres</div><div class="topbar-avatar">DT</div></div></div>
+      <div class="layout-2col">
+        <div class="main-content">
+          <div class="t-title mb-4">James Updated the Fare</div>
+          <div class="t-small mb-16">Review and respond before your booking is confirmed.</div>
+          <div class="card mb-16" style="display:flex;align-items:center;gap:12px;">
+            <div class="avatar av-amber av-md av-check">JR</div>
+            <div><div class="t-body" style="font-weight:500;">James Rivera · JDR·4207</div><div class="t-small">Houston → Austin · Sat Jul 19 · 6:00 am</div></div>
+          </div>
+          <div class="amt-compare mb-16">
+            <div class="amt-box amt-orig"><div class="amt-label">Your estimate</div><div class="amt-value">$187.50</div></div>
+            <div class="amt-arrow">→</div>
+            <div class="amt-box amt-new"><div class="amt-label p">James's price</div><div class="amt-value p">$210.00</div></div>
+          </div>
+          <div class="t-label mb-8">Reason from James</div>
+          <div class="reason-grid mb-12">
+            <div class="reason-btn sel"><div class="reason-icon">🕐</div><div class="reason-label">Early morning / after hours</div></div>
+            <div class="reason-btn"><div class="reason-icon">🚦</div><div class="reason-label">Traffic / road conditions</div></div>
+            <div class="reason-btn"><div class="reason-icon">⛽</div><div class="reason-label">Fuel cost</div></div>
+            <div class="reason-btn"><div class="reason-icon">🌧</div><div class="reason-label">Weather conditions</div></div>
+          </div>
+          <div class="card-surface mb-16" style="font-size:13px;color:var(--text-2);">
+            <strong style="color:var(--text-1);">Note from James:</strong> "Early morning rate applies before 7am."
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button class="btn btn-primary btn-lg">Accept $210.00 →</button>
+            <button class="btn btn-lg" style="background:var(--amber-pale);border:1.5px solid var(--amber-border);color:var(--amber-dim);font-size:14px;font-weight:600;">Hold 20 min — I need to think</button>
+            <button class="btn btn-ghost btn-lg">Decline — Cancel trip</button>
+          </div>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-12">Trip summary</div>
+          <div class="card-surface mb-12">
+            <div class="row"><span class="row-label">Route</span><span class="row-value">Houston → Austin</span></div>
+            <div class="row"><span class="row-label">Date</span><span class="row-value">Sat Jul 19</span></div>
+            <div class="row"><span class="row-label">Time</span><span class="row-value">6:00 am</span></div>
+            <div class="row"><span class="row-label">Distance</span><span class="row-value">165 miles</span></div>
+            <div class="row"><span class="row-label">Est. hours</span><span class="row-value">2.5 hrs</span></div>
+          </div>
+          <div class="t-label mb-8">What changed</div>
+          <div class="fare-block">
+            <div class="fare-row"><span class="fare-label">Hourly (2.5 × $35)</span><span class="fare-value">$87.50</span></div>
+            <div class="fare-row"><span class="fare-label">Distance flat fee</span><span class="fare-value">$50.00</span></div>
+            <div class="fare-row"><span class="fare-label">Empty return</span><span class="fare-value">$50.00</span></div>
+            <div class="fare-row"><span class="fare-label">After-hours adj.</span><span class="fare-value" style="color:var(--amber-dim);">+$22.50</span></div>
+            <div class="fare-row"><span class="fare-label" style="font-weight:600;">James's total</span><span class="fare-total">$210.00</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R8: PAYMENT -->
+  <div class="screen" id="r8">
+    <div class="screen-label">Rider Screen 8 — <span>Payment</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/booking/payment</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="topbar-name">Dana Torres</div><div class="topbar-avatar">DT</div></div></div>
+      <div class="layout-2col">
+        <div class="main-content">
+          <div class="t-title mb-4">How to Pay James</div>
+          <div class="t-small mb-16">Complete your booking</div>
+          <div class="card mb-14">
+            <div class="row"><span class="row-label">Route</span><span class="row-value">Houston → Austin</span></div>
+            <div class="row"><span class="row-label">Date & time</span><span class="row-value">Sat Jul 19 · 6:00 am</span></div>
+            <div class="row"><span class="row-label">Final amount</span><span class="row-value t-mono" style="color:var(--purple);font-size:18px;">$210.00</span></div>
+            <div class="row"><span class="row-label">Pay timing</span><span class="row-value">On pickup</span></div>
+          </div>
+          <div class="card-red-tint mb-14">
+            <div style="font-size:12px;color:var(--red);line-height:1.6;"><strong>Cancellation policy:</strong> Free cancellation up to 24 hrs before pickup. Within 24 hrs — 50% charge applies. No-show — full amount charged.</div>
+          </div>
+          <div class="t-label mb-10">James accepts</div>
+          <div class="pay-method sel">
+            <div class="pay-icon pi-z">Z</div>
+            <div class="pay-info"><div class="pay-name">Zelle</div><div class="pay-handle">jrivera@email.com</div></div>
+            <div class="qr-thumb"><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div></div>
+          </div>
+          <div class="pay-method">
+            <div class="pay-icon pi-v">V</div>
+            <div class="pay-info"><div class="pay-name">Venmo</div><div class="pay-handle">@james-rivera-htx</div></div>
+            <div class="qr-thumb"><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div></div>
+          </div>
+          <div class="pay-method">
+            <div class="pay-icon pi-c">$</div>
+            <div class="pay-info"><div class="pay-name">Cash App</div><div class="pay-handle">$JamesHTX</div></div>
+            <div class="qr-thumb"><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div></div>
+          </div>
+          <div class="card-surface mb-14" style="font-size:13px;color:var(--text-2);">
+            <strong style="color:var(--text-1);">Payment on pickup.</strong> Tap the QR icon next to your preferred app to open and scan.
+          </div>
+          <button class="btn btn-primary btn-lg btn-full">Done — Confirm Booking</button>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-12">Booking summary</div>
+          <div class="card-surface mb-12">
+            <div class="row"><span class="row-label">Driver</span><span class="row-value">James Rivera</span></div>
+            <div class="row"><span class="row-label">Code</span><span class="row-value t-mono" style="color:var(--amber-dim);">JDR·4207</span></div>
+            <div class="row"><span class="row-label">Route</span><span class="row-value">Houston → Austin</span></div>
+            <div class="row"><span class="row-label">Miles</span><span class="row-value">165 mi</span></div>
+            <div class="row"><span class="row-label">Insurance</span><span class="badge badge-green">Allstate</span></div>
+          </div>
+          <div class="t-label mb-8">Rate breakdown</div>
+          <div class="fare-block">
+            <div class="fare-row"><span class="fare-label">Hourly + distance</span><span class="fare-value">$137.50</span></div>
+            <div class="fare-row"><span class="fare-label">Empty return</span><span class="fare-value">$50.00</span></div>
+            <div class="fare-row"><span class="fare-label">After-hours</span><span class="fare-value">+$22.50</span></div>
+            <div class="fare-row"><span class="fare-label" style="font-weight:600;">Total</span><span class="fare-total">$210.00</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R9: BOOKING CONFIRMED -->
+  <div class="screen" id="r9">
+    <div class="screen-label">Rider Screen 9 — <span>Booking Confirmed (app reopened state)</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/booking/confirmed</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="topbar-name">Dana Torres</div><div class="topbar-avatar">DT</div></div></div>
+      <div class="layout-2col">
+        <div class="main-content">
+          <div class="photo-pair mb-20">
+            <div class="photo-side">
+              <div class="avatar av-amber av-xl av-check" style="margin:0 auto;">JR</div>
+              <div class="photo-role">Who is picking you up</div>
+              <div class="photo-name">James Rivera</div>
+              <div style="margin-top:6px;"><span class="badge badge-blue">✈ Airport permitted</span></div>
+            </div>
+            <div class="photo-divider"></div>
+            <div class="photo-side">
+              <div class="avatar av-navy av-xl" style="margin:0 auto;">DT</div>
+              <div class="photo-role">Who you are picking up</div>
+              <div class="photo-name">Dana Torres</div>
+              <div style="margin-top:6px;"><span class="badge badge-green">✓ Safety Protocol</span></div>
+            </div>
+          </div>
+          <div class="card mb-14">
+            <div class="row"><span class="row-label">Route</span><span class="row-value">Houston → Austin</span></div>
+            <div class="row"><span class="row-label">Date & time</span><span class="row-value">Sat Jul 19 · 6:00 am</span></div>
+            <div class="row"><span class="row-label">Amount</span><span class="row-value t-mono">$210 · on pickup</span></div>
+            <div class="row"><span class="row-label">Vehicle</span><span class="row-value">2022 Camry · Silver</span></div>
+            <div class="row"><span class="row-label">Insurance</span><span class="badge badge-green">Allstate · Rideshare</span></div>
+          </div>
+          <div class="card-red-tint mb-14" style="font-size:12px;color:var(--red);">Cancellation within 24 hrs — 50% fee. No-show — full amount charged.</div>
+          <button class="support-btn">⚑ &nbsp; SUPPORT</button>
+          <div class="support-sub">Call driver · Message driver · Contact ThyDriver</div>
+          <button class="btn btn-ghost btn-full">Book another trip →</button>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-12">Driver info</div>
+          <div class="ins-strip"><div class="ins-dot"></div><div class="ins-text">Allstate · Rideshare · Active</div></div>
+          <div class="card-surface mb-12">
+            <div class="row"><span class="row-label">Code</span><span class="row-value t-mono" style="color:var(--amber-dim);">JDR·4207</span></div>
+            <div class="row"><span class="row-label">Phone</span><span class="row-value">(713) 555-0121</span></div>
+            <div class="row"><span class="row-label">Vehicle</span><span class="row-value">2022 Camry XSE</span></div>
+            <div class="row"><span class="row-label">Seats</span><span class="row-value">3 passengers</span></div>
+          </div>
+          <div class="t-label mb-8">Support options</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <button class="btn btn-ghost btn-full" style="justify-content:flex-start;">📞 &nbsp; Call James directly</button>
+            <button class="btn btn-ghost btn-full" style="justify-content:flex-start;">💬 &nbsp; Message James</button>
+            <button class="btn btn-ghost btn-full" style="justify-content:flex-start;">🛡 &nbsp; Contact ThyDriver support</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- R10: SAFETY PROTOCOL -->
+  <div class="screen" id="r10">
+    <div class="screen-label">Rider Screen 10 — <span>Safety Protocol (one-time, end of first booking)</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/safety-protocol</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="topbar-name">New Rider</div><div class="topbar-avatar">NR</div></div></div>
+      <div class="layout-2col">
+        <div class="main-content">
+          <div class="card-navy mb-20" style="padding:24px 28px;">
+            <div style="font-size:22px;margin-bottom:8px;">🛡</div>
+            <div class="t-title" style="color:white;margin-bottom:6px;">Safety Protocol</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6;">One-time setup for your protection and your driver's. Encrypted and only accessed in an emergency or dispute. You will never be asked to complete this again.</div>
+          </div>
+          <div style="text-align:center;margin-bottom:20px;">
+            <div class="upload-circle" style="width:100px;height:100px;">
+              <div style="font-size:28px;margin-bottom:4px;">📷</div>
+              <div style="font-size:11px;color:var(--text-2);">Add your photo</div>
+            </div>
+            <div style="font-size:12px;color:var(--text-2);">Your photo appears on the driver's booking confirmation</div>
+          </div>
+          <div class="form-row mb-0">
+            <div class="form-group"><label class="form-label">Full legal name</label><input class="form-input" placeholder="Sarah A. Chen" readonly /></div>
+            <div class="form-group"><label class="form-label">Date of birth</label><input class="form-input" placeholder="MM / DD / YYYY" readonly /></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Government ID — last 4 digits</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <div class="seg-control" style="flex:0 0 auto;width:280px;">
+                <button class="seg-opt on">Driver's License</button>
+                <button class="seg-opt">State ID</button>
+                <button class="seg-opt">Passport</button>
+              </div>
+              <input class="form-input" placeholder="Last 4" style="text-align:center;font-weight:700;letter-spacing:0.15em;max-width:100px;" readonly />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Emergency contact name</label><input class="form-input" placeholder="Full name" readonly /></div>
+            <div class="form-group"><label class="form-label">Emergency contact phone</label><input class="form-input" placeholder="(713) 555-0000" readonly /></div>
+          </div>
+          <div class="form-group"><label class="form-label">Home address (default pickup)</label><input class="form-input" placeholder="123 Main St, Houston TX" readonly /></div>
+          <div class="form-group"><label class="form-label">Note for driver (optional)</label><input class="form-input" placeholder="Luggage, mobility needs, gate codes, anything your driver should know" readonly /></div>
+          <button class="btn btn-primary btn-lg btn-full">Complete Safety Protocol →</button>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-12">Why we ask</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="card-surface"><div style="font-size:13px;font-weight:500;color:var(--text-1);margin-bottom:4px;">🔒 Encrypted & private</div><div class="t-small">Your information is stored encrypted. Neither your driver nor other riders can see your raw data — only verification checkmarks.</div></div>
+            <div class="card-surface"><div style="font-size:13px;font-weight:500;color:var(--text-1);margin-bottom:4px;">🚨 Emergency use only</div><div class="t-small">Your emergency contact is only accessed if there is an incident during a trip. ThyDriver admin can view credentials in a dispute.</div></div>
+            <div class="card-surface"><div style="font-size:13px;font-weight:500;color:var(--text-1);margin-bottom:4px;">✅ One time only</div><div class="t-small">You complete this once. It applies to all future bookings with all your drivers on ThyDriver.</div></div>
+            <div class="card-surface"><div style="font-size:13px;font-weight:500;color:var(--text-1);margin-bottom:4px;">🤝 Mutual protection</div><div class="t-small">Your driver has completed their own Safety Protocol — DL digits, insurance, and emergency contact on file.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIDER SCREEN NAV -->
+  <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(10,10,46,0.95);backdrop-filter:blur(12px);border-radius:var(--r-full);padding:8px 16px;display:flex;gap:4px;border:1px solid rgba(255,255,255,0.1);z-index:50;" id="rider-nav">
+    <button class="nav-tab active" onclick="showScreen('r','r1',this)">Login</button>
+    <button class="nav-tab" onclick="showScreen('r','r2',this)">Home</button>
+    <button class="nav-tab" onclick="showScreen('r','r3',this)">Driver+Time</button>
+    <button class="nav-tab" onclick="showScreen('r','r4',this)">Route</button>
+    <button class="nav-tab" onclick="showScreen('r','r5',this)">Pending</button>
+    <button class="nav-tab" onclick="showScreen('r','r6',this)">Long Haul</button>
+    <button class="nav-tab" onclick="showScreen('r','r7',this)">Adjust</button>
+    <button class="nav-tab" onclick="showScreen('r','r8',this)">Payment</button>
+    <button class="nav-tab" onclick="showScreen('r','r9',this)">Confirmed</button>
+    <button class="nav-tab" onclick="showScreen('r','r10',this)">Safety</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     DRIVER SCREENS
+     ============================================================ -->
+<div id="group-driver" class="screens-wrap" style="display:none;">
+
+  <!-- D1: DRIVER LOGIN -->
+  <div class="screen active" id="d1">
+    <div class="screen-label">Driver Screen 1 — <span>Driver Login</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com</div></div>
+      <div class="login-wrap">
+        <div class="login-left">
+          <div>
+            <div class="login-logo">Thy<span>Driver</span></div>
+            <div class="login-tagline">Your Driver. Every Airport.</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:28px;">
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">IAH</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">HOU</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">MCO</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">LAX</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">ATL</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">ORD</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">DFW</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 8px;font-family:Syne,sans-serif;font-size:10px;font-weight:800;color:#F5A623;">JFK</div>
+              <div style="font-size:9px;color:rgba(255,255,255,.2);padding:3px 4px;align-self:center;">+ every US airport</div>
+            </div>
+            <div class="login-feature"><div class="lf-dot"></div><div class="lf-text">Keep 100% of every fare — we charge $20/week flat, no commission</div></div>
+            <div class="login-feature"><div class="lf-dot"></div><div class="lf-text">Register at every airport you serve — your code carries your city</div></div>
+            <div class="login-feature"><div class="lf-dot"></div><div class="lf-text">Set your own rates, availability, and cancellation policies</div></div>
+            <div class="login-feature"><div class="lf-dot"></div><div class="lf-text">2-week free trial. No contracts. Cancel anytime.</div></div>
+          </div>
+          <div class="login-footer-text" style="margin-top:auto;padding-top:20px;">© 2026 ThyDriver · ThyNetwork Inc.</div>
+        </div>
+        <div class="login-right">
+          <div class="login-title">Driver login</div>
+          <div class="login-sub">Access your dashboard</div>
+          <div class="seg-control mb-20">
+            <button class="seg-opt">Rider</button>
+            <button class="seg-opt on">Driver</button>
+          </div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" value="jrivera@email.com" readonly /></div>
+          <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" value="password" readonly /></div>
+          <button class="btn btn-primary btn-full btn-lg mb-12">Driver Login</button>
+          <div class="driver-link">Forgot password? &nbsp;|&nbsp; <a href="#">New driver? Create your account →</a></div>
+          <div style="text-align:center;margin-top:24px;font-size:11px;color:var(--text-3);">
+            <a href="#" style="color:var(--text-3);text-decoration:none;margin:0 8px;">Privacy</a>
+            <a href="#" style="color:var(--text-3);text-decoration:none;margin:0 8px;">Terms</a>
+            <a href="#" style="color:var(--text-3);text-decoration:none;margin:0 8px;">Conditions</a>
+            <span style="margin:0 8px;">© 2026 ThyDriver</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D2: DRIVER DASHBOARD -->
+  <div class="screen" id="d2">
+    <div class="screen-label">Driver Screen 2 — <span>Dashboard</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/dashboard</div></div>
+      <div class="app-topbar">
+        <div>
+          <div class="topbar-logo">Thy<span>Driver</span></div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:1px;">Good morning, James Rivera</div>
+        </div>
+        <div class="topbar-right">
+          <div class="hdr-code" style="display:inline-flex;align-items:center;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);border-radius:var(--r-full);padding:4px 12px;font-size:11px;color:var(--amber);font-weight:600;">JDR·4207</div>
+          <div class="topbar-avatar">JR</div>
+        </div>
+      </div>
+      <div class="layout-3col">
+        <div class="sidebar">
+          <div class="side-nav">
+            <button class="side-link active"><span class="side-icon">⊞</span>Dashboard</button>
+            <button class="side-link"><span class="side-icon">📅</span>Calendar</button>
+            <button class="side-link"><span class="side-icon">👥</span>Clients <span class="side-badge">1</span></button>
+            <button class="side-link"><span class="side-icon">💰</span>Payment log</button>
+            <button class="side-link"><span class="side-icon">🔗</span>Share code</button>
+            <button class="side-link"><span class="side-icon">👤</span>Profile</button>
+            <button class="side-link"><span class="side-icon">⚙</span>Settings</button>
+          </div>
+          <div style="margin-top:auto;padding-top:20px;">
+            <div class="sub-banner"><div class="sub-text">$20/week · Active</div><div class="sub-pill">Renews Fri</div></div>
+          </div>
+        </div>
+        <div class="main-content">
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-label">This week</div><div class="stat-value green">$420</div></div>
+            <div class="stat-card"><div class="stat-label">This month</div><div class="stat-value">$1,840</div></div>
+            <div class="stat-card"><div class="stat-label">Pending requests</div><div class="stat-value amber">2</div></div>
+            <div class="stat-card"><div class="stat-label">Active clients</div><div class="stat-value">14</div></div>
+          </div>
+          <div class="ins-strip"><div class="ins-dot"></div><div class="ins-text">Insured by Allstate · Rideshare coverage · Policy active</div></div>
+          <div class="t-label mb-8">New booking requests</div>
+          <div class="card mb-14">
+            <div class="list-item">
+              <div class="avatar av-amber av-sm">SC</div>
+              <div class="li-info"><div class="li-name">Sarah Chen</div><div class="li-sub">Airport to Home · Thu Jul 17 · 9am · $120 set amount</div></div>
+              <div style="display:flex;gap:6px;"><button class="btn btn-primary btn-sm">Review</button><button class="btn btn-ghost btn-sm">Deny</button></div>
+            </div>
+            <div class="list-item">
+              <div class="avatar av-amber av-sm">DT</div>
+              <div class="li-info"><div class="li-name">Dana Torres</div><div class="li-sub">Houston → Austin · Sat Jul 19 · New destination · needs pricing</div></div>
+              <div style="display:flex;gap:6px;"><button class="btn btn-primary btn-sm">Review</button><button class="btn btn-ghost btn-sm">Deny</button></div>
+            </div>
+          </div>
+          <div class="t-label mb-8">New client requests</div>
+          <div class="card mb-14">
+            <div class="list-item">
+              <div class="avatar av-navy av-sm">TW</div>
+              <div class="li-info"><div class="li-name">Tom Williams</div><div class="li-sub">Wants to connect · Referred by Sarah Chen</div></div>
+              <div style="display:flex;gap:6px;"><button class="btn-green btn btn-sm">Approve</button><button class="btn btn-ghost btn-sm">Deny</button></div>
+            </div>
+          </div>
+          <div class="t-label mb-8">Upcoming confirmed</div>
+          <div class="card">
+            <div class="list-item">
+              <div class="avatar av-green av-sm">SC</div>
+              <div class="li-info"><div class="li-name">Sarah Chen</div><div class="li-sub">Thu Jul 17 · 9:00 am · Airport to Home</div></div>
+              <div class="li-right"><div class="li-val">$120</div><div class="li-tag"><span class="badge badge-purple">Set amount</span></div></div>
+            </div>
+            <div class="list-item">
+              <div class="avatar av-green av-sm">LM</div>
+              <div class="li-info"><div class="li-name">Lisa Morales</div><div class="li-sub">Fri Jul 18 · 7:00 am · Home to office</div></div>
+              <div class="li-right"><div class="li-val">$45</div><div class="li-tag"><span class="badge badge-green">Confirmed</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-12">Credentials status</div>
+          <div class="card-surface mb-12">
+            <div class="row"><span class="row-label">Safety Protocol</span><span class="badge badge-green">Complete</span></div>
+            <div class="row"><span class="row-label">TX Driver's License</span><span class="badge badge-green">Verified</span></div>
+            <div class="row"><span class="row-label">Airport permit</span><span class="badge badge-blue">Active</span></div>
+            <div class="row"><span class="row-label">Insurance</span><span class="badge badge-green">Allstate</span></div>
+          </div>
+          <div class="t-label mb-8">Today</div>
+          <div class="card-surface">
+            <div style="font-size:13px;color:var(--text-2);text-align:center;padding:12px 0;">No rides today — you're off</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D3: FARE SCRATCHPAD -->
+  <div class="screen" id="d3">
+    <div class="screen-label">Driver Screen 3 — <span>New Destination: Fare Scratchpad</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/dashboard/booking/new</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="hdr-code" style="display:inline-flex;align-items:center;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);border-radius:var(--r-full);padding:4px 12px;font-size:11px;color:var(--amber);font-weight:600;">JDR·4207</div><div class="topbar-avatar">JR</div></div></div>
+      <div class="layout-2col">
+        <div class="sidebar">
+          <div class="t-label mb-12">Dana Torres</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <div class="avatar av-amber av-md">DT</div>
+            <div><div style="font-size:14px;font-weight:500;">Dana Torres</div><div class="t-small">8 rides · Safety Protocol complete</div></div>
+          </div>
+          <div class="card-surface mb-12">
+            <div class="row"><span class="row-label">Pickup</span><span class="row-value" style="font-size:12px;">456 Westheimer, Houston</span></div>
+            <div class="row"><span class="row-label">Drop-off</span><span class="row-value" style="font-size:12px;">800 Congress, Austin</span></div>
+            <div class="row"><span class="row-label">Miles</span><span class="row-value">165 mi <span class="badge badge-amber" style="margin-left:4px;">51+</span></span></div>
+            <div class="row"><span class="row-label">Date & time</span><span class="row-value">Sat Jul 19 · 6:00 am</span></div>
+          </div>
+          <div class="card-amber-tint">
+            <div style="font-size:12px;color:var(--amber-dim);line-height:1.6;">6:00 am — early morning rate may apply. Use the Adjust button to modify the calculated total.</div>
+          </div>
+        </div>
+        <div class="main-content">
+          <div class="t-title mb-4">Fare scratchpad</div>
+          <div class="t-small mb-16">Calculate and set your price for Dana's trip</div>
+          <div class="scratchpad">
+            <div class="sp-row"><div class="sp-label">Hours estimated</div><input class="sp-input" value="2.5 hrs" readonly /></div>
+            <div class="sp-row"><div class="sp-label">Hourly rate ($35)</div><input class="sp-input" value="$87.50" readonly /></div>
+            <div class="sp-row"><div class="sp-label">Distance fee (51+ mi)</div><input class="sp-input" value="$50.00" readonly /></div>
+            <div class="sp-row"><div class="sp-label">Empty return charge</div><input class="sp-input" value="$50.00" readonly /></div>
+            <div class="sp-total">
+              <div><div class="t-label mb-4">Calculated total</div><div class="t-small">Based on your set rates</div></div>
+              <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--navy);">$187.50</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-bottom:10px;">
+            <button class="btn btn-primary btn-lg" style="flex:1;">Send $187.50 to Dana</button>
+            <button class="btn btn-amber btn-lg" style="flex:0 0 auto;">Adjust →</button>
+          </div>
+          <button class="btn btn-ghost btn-full">Deny request</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D4: ADJUSTMENT SCREEN -->
+  <div class="screen" id="d4">
+    <div class="screen-label">Driver Screen 4 — <span>Fare Adjustment Screen</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/dashboard/booking/adjust</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="hdr-code" style="display:inline-flex;align-items:center;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);border-radius:var(--r-full);padding:4px 12px;font-size:11px;color:var(--amber);font-weight:600;">JDR·4207</div><div class="topbar-avatar">JR</div></div></div>
+      <div class="layout-2col">
+        <div class="main-content">
+          <div class="t-title mb-4">Adjust fare</div>
+          <div class="t-small mb-16">Dana Torres · Houston → Austin · Sat Jul 19 · 6:00 am</div>
+          <div class="amt-compare mb-20">
+            <div class="amt-box amt-orig"><div class="amt-label">Calculated</div><div class="amt-value">$187.50</div></div>
+            <div class="amt-arrow">→</div>
+            <div class="amt-box amt-new"><div class="amt-label p">Your adjusted price</div><div class="amt-value p">$210.00</div></div>
+          </div>
+          <div class="form-group mb-4">
+            <label class="form-label">Enter your price</label>
+            <input class="form-input" value="$210.00" readonly style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;" />
+          </div>
+          <div class="t-label mb-8">Reason (select all that apply)</div>
+          <div class="reason-grid mb-12">
+            <div class="reason-btn sel"><div class="reason-icon">🕐</div><div class="reason-label">Early morning / after hours</div></div>
+            <div class="reason-btn"><div class="reason-icon">🚦</div><div class="reason-label">Traffic / road conditions</div></div>
+            <div class="reason-btn"><div class="reason-icon">⛽</div><div class="reason-label">Fuel cost</div></div>
+            <div class="reason-btn"><div class="reason-icon">🌧</div><div class="reason-label">Weather conditions</div></div>
+            <div class="reason-btn"><div class="reason-icon">✈</div><div class="reason-label">Flight delay / airport wait</div></div>
+            <div class="reason-btn"><div class="reason-icon">⏳</div><div class="reason-label">Extended wait time</div></div>
+            <div class="reason-btn"><div class="reason-icon">📍</div><div class="reason-label">Route complexity</div></div>
+            <div class="reason-btn"><div class="reason-icon">➕</div><div class="reason-label">Additional stop requested</div></div>
+          </div>
+          <div class="form-group"><label class="form-label">Optional note to Dana</label><input class="form-input" placeholder="e.g. Early morning rate applies before 7am" readonly /></div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary btn-lg" style="flex:1;">Send $210.00 to Dana</button>
+            <button class="btn btn-ghost btn-lg" style="flex:0 0 auto;">Back</button>
+          </div>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-8">This price is final</div>
+          <div class="card-surface mb-14" style="font-size:12px;color:var(--text-2);line-height:1.6;">Once you send this price to Dana, it is your final offer. Dana can accept, hold 20 minutes, or decline. You cannot change it after sending.</div>
+          <div class="t-label mb-8">Dana's options</div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+            <div class="card-green-tint"><div style="font-size:12px;color:var(--green);font-weight:500;">Accept</div><div class="t-small" style="color:var(--green);">Booking confirmed immediately</div></div>
+            <div class="card-amber-tint"><div style="font-size:12px;color:var(--amber-dim);font-weight:500;">Hold 20 min</div><div class="t-small" style="color:var(--amber-dim);">You wait — do not start trip until accepted</div></div>
+            <div class="card-red-tint"><div style="font-size:12px;color:var(--red);font-weight:500;">Decline</div><div class="t-small" style="color:var(--red);">Trip cancelled, no charge to Dana</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D5: CLIENT POLICY SETTINGS -->
+  <div class="screen" id="d5">
+    <div class="screen-label">Driver Screen 5 — <span>Client Policy Settings</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/settings/policies</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="hdr-code" style="display:inline-flex;align-items:center;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);border-radius:var(--r-full);padding:4px 12px;font-size:11px;color:var(--amber);font-weight:600;">JDR·4207</div><div class="topbar-avatar">JR</div></div></div>
+      <div class="layout-3col">
+        <div class="sidebar">
+          <div class="side-nav">
+            <button class="side-link"><span class="side-icon">⊞</span>Dashboard</button>
+            <button class="side-link"><span class="side-icon">📅</span>Calendar</button>
+            <button class="side-link"><span class="side-icon">👥</span>Clients</button>
+            <button class="side-link"><span class="side-icon">💰</span>Payment log</button>
+            <button class="side-link"><span class="side-icon">🔗</span>Share code</button>
+            <button class="side-link"><span class="side-icon">👤</span>Profile</button>
+            <button class="side-link active"><span class="side-icon">⚙</span>Settings</button>
+          </div>
+        </div>
+        <div class="main-content">
+          <div class="seg-control mb-20" style="max-width:320px;">
+            <button class="seg-opt on">Per client</button>
+            <button class="seg-opt">My defaults</button>
+          </div>
+          <div class="t-label mb-10">Sarah Chen · Weekly regular</div>
+          <div class="card mb-16">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <div class="avatar av-green av-sm">SC</div>
+              <div><div style="font-size:14px;font-weight:500;">Sarah Chen</div><div class="t-small">47 rides · Weekly client · Airport specialist</div></div>
+              <span class="badge badge-purple" style="margin-left:auto;">Set amt $120</span>
+            </div>
+            <div class="divider"></div>
+            <div class="policy-row"><div><div class="policy-title">Cancellation</div><div class="policy-sub">What to charge if Sarah cancels</div></div><div class="toggle-group"><button class="tg-opt on-g">Flexible</button><button class="tg-opt">Standard</button><button class="tg-opt">No charge</button></div></div>
+            <div class="policy-row"><div><div class="policy-title">Wait time charge</div><div class="policy-sub">Charge if Sarah is late to pickup</div></div><div class="toggle-group"><button class="tg-opt on-g">Off</button><button class="tg-opt">On</button></div></div>
+            <div class="policy-row"><div><div class="policy-title">No-show</div><div class="policy-sub">If Sarah doesn't show up</div></div><div class="toggle-group"><button class="tg-opt on-g">Waive once</button><button class="tg-opt">Charge</button></div></div>
+            <div class="policy-row"><div><div class="policy-title">Plane delay</div><div class="policy-sub">Airport pickups — flight is late</div></div><div class="toggle-group"><button class="tg-opt on-g">No charge</button><button class="tg-opt">Charge</button></div></div>
+          </div>
+          <div class="t-label mb-10">Dana Torres · Long haul client</div>
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <div class="avatar av-amber av-sm">DT</div>
+              <div><div style="font-size:14px;font-weight:500;">Dana Torres</div><div class="t-small">8 rides · Long haul routes · Austin runs</div></div>
+            </div>
+            <div class="divider"></div>
+            <div class="policy-row"><div><div class="policy-title">Cancellation</div></div><div class="toggle-group"><button class="tg-opt">Flexible</button><button class="tg-opt on">Standard</button><button class="tg-opt">No charge</button></div></div>
+            <div class="policy-row"><div><div class="policy-title">Wait time charge</div><div class="policy-sub">After free minutes</div></div><div class="toggle-group"><button class="tg-opt">Off</button><button class="tg-opt on">On</button></div></div>
+            <div class="policy-row"><div><div class="policy-title">Wait type</div></div><div class="toggle-group"><button class="tg-opt on">$/min</button><button class="tg-opt">Flat fee</button></div></div>
+            <div class="policy-row"><div><div class="policy-title">Free minutes</div></div><div style="font-size:13px;font-weight:500;color:var(--text-1);">10 min free</div></div>
+          </div>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-8">Policy guide</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="card-green-tint"><div style="font-size:12px;font-weight:500;color:var(--green);">Flexible</div><div class="t-small" style="color:var(--green);">No charge for cancellation regardless of timing</div></div>
+            <div class="card-surface"><div style="font-size:12px;font-weight:500;">Standard</div><div class="t-small">Free over 24hrs, 50% within 24hrs, full no-show</div></div>
+            <div class="card-amber-tint"><div style="font-size:12px;font-weight:500;color:var(--amber-dim);">No charge</div><div class="t-small" style="color:var(--amber-dim);">Reserved for your best clients — always waive</div></div>
+          </div>
+          <div class="divider"></div>
+          <div class="card-green-tint mt-12">
+            <div style="font-size:12px;color:var(--green);line-height:1.6;">Your defaults apply to all new clients automatically. Use per-client settings to reward your regulars without affecting your default rules.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D6: PAYMENT LOG -->
+  <div class="screen" id="d6">
+    <div class="screen-label">Driver Screen 6 — <span>Payment Log</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/dashboard/payments</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="hdr-code" style="display:inline-flex;align-items:center;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);border-radius:var(--r-full);padding:4px 12px;font-size:11px;color:var(--amber);font-weight:600;">JDR·4207</div><div class="topbar-avatar">JR</div></div></div>
+      <div class="layout-3col">
+        <div class="sidebar">
+          <div class="side-nav">
+            <button class="side-link"><span class="side-icon">⊞</span>Dashboard</button>
+            <button class="side-link"><span class="side-icon">📅</span>Calendar</button>
+            <button class="side-link"><span class="side-icon">👥</span>Clients</button>
+            <button class="side-link active"><span class="side-icon">💰</span>Payment log</button>
+            <button class="side-link"><span class="side-icon">🔗</span>Share code</button>
+            <button class="side-link"><span class="side-icon">👤</span>Profile</button>
+            <button class="side-link"><span class="side-icon">⚙</span>Settings</button>
+          </div>
+        </div>
+        <div class="main-content">
+          <div class="seg-control mb-16" style="max-width:340px;">
+            <button class="seg-opt on">All clients</button>
+            <button class="seg-opt">By client</button>
+            <button class="seg-opt">This month</button>
+          </div>
+          <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px;">
+            <div class="stat-card"><div class="stat-label">July total</div><div class="stat-value green">$1,840</div></div>
+            <div class="stat-card"><div class="stat-label">Rides</div><div class="stat-value">22</div></div>
+            <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value amber">1</div></div>
+          </div>
+          <div class="card">
+            <div class="list-item">
+              <div class="avatar av-green av-sm">SC</div>
+              <div class="li-info"><div class="li-name">Sarah Chen</div><div class="li-sub">Thu Jul 17 · Airport to Home</div></div>
+              <div class="li-right"><div class="li-val">$120</div><div class="li-tag"><span class="badge badge-green">Paid</span></div></div>
+            </div>
+            <div class="list-item">
+              <div class="avatar av-green av-sm">LM</div>
+              <div class="li-info"><div class="li-name">Lisa Morales</div><div class="li-sub">Fri Jul 18 · Home to office</div></div>
+              <div class="li-right"><div class="li-val">$45</div><div class="li-tag"><span class="badge badge-green">Paid</span></div></div>
+            </div>
+            <div class="list-item">
+              <div class="avatar av-amber av-sm">DT</div>
+              <div class="li-info"><div class="li-name">Dana Torres</div><div class="li-sub">Sat Jul 19 · Houston → Austin</div></div>
+              <div class="li-right"><div class="li-val">$210</div><div class="li-tag"><span class="badge badge-amber">Pending</span></div></div>
+            </div>
+            <div class="list-item">
+              <div class="avatar av-green av-sm">MJ</div>
+              <div class="li-info"><div class="li-name">Marcus Johnson</div><div class="li-sub">Mon Jul 14 · Airport pickup</div></div>
+              <div class="li-right"><div class="li-val">$95</div><div class="li-tag"><span class="badge badge-green">Paid</span></div></div>
+            </div>
+            <div class="list-item">
+              <div class="avatar av-green av-sm">SC</div>
+              <div class="li-info"><div class="li-name">Sarah Chen</div><div class="li-sub">Thu Jul 10 · Airport to Home · No-show waived</div></div>
+              <div class="li-right"><div class="li-val">$0</div><div class="li-tag"><span class="badge badge-purple">Waived</span></div></div>
+            </div>
+          </div>
+          <div style="margin-top:12px;"><button class="btn btn-ghost">Export log as CSV</button></div>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-8">Top clients this month</div>
+          <div class="card-surface mb-12">
+            <div class="row"><span class="row-label">Sarah Chen</span><span class="row-value">$720</span></div>
+            <div class="row"><span class="row-label">Marcus Johnson</span><span class="row-value">$380</span></div>
+            <div class="row"><span class="row-label">Dana Torres</span><span class="row-value">$295</span></div>
+            <div class="row"><span class="row-label">Lisa Morales</span><span class="row-value">$270</span></div>
+          </div>
+          <div class="t-label mb-8">Mark as paid</div>
+          <div class="card-amber-tint">
+            <div style="font-size:13px;color:var(--amber-dim);font-weight:500;margin-bottom:6px;">Dana Torres · $210</div>
+            <div class="t-small" style="color:var(--amber-dim);margin-bottom:10px;">Houston → Austin · Sat Jul 19</div>
+            <button class="btn btn-primary btn-sm btn-full">Mark as paid</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D7: SHARE CODE -->
+  <div class="screen" id="d7">
+    <div class="screen-label">Driver Screen 7 — <span>Share Driver Code</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/dashboard/share</div></div>
+      <div class="app-topbar"><div class="topbar-logo">Thy<span>Driver</span></div><div class="topbar-right"><div class="hdr-code" style="display:inline-flex;align-items:center;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);border-radius:var(--r-full);padding:4px 12px;font-size:11px;color:var(--amber);font-weight:600;">JDR·4207</div><div class="topbar-avatar">JR</div></div></div>
+      <div class="layout-2col">
+        <div class="main-content">
+          <div class="t-title mb-4">Share your driver code</div>
+          <div class="t-small mb-20">Give this to clients to connect with you on ThyDriver</div>
+          <div class="code-share-card">
+            <div class="csc-label">Your driver code</div>
+            <div class="csc-code">JDR · 4207</div>
+            <div class="qr-large">
+              <div class="qr-c"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-e"></div>
+              <div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div>
+              <div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div>
+              <div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div>
+              <div class="qr-c"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-c"></div><div class="qr-e"></div>
+              <div class="qr-e"></div><div class="qr-c"></div><div class="qr-e"></div><div class="qr-e"></div><div class="qr-c"></div><div class="qr-c"></div>
+            </div>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:8px;">Client scans QR or enters code manually at thydriver.com</div>
+            <div class="share-btn-row">
+              <button class="share-btn">📋 Copy link</button>
+              <button class="share-btn">📱 Text client</button>
+              <button class="share-btn">↑ Share</button>
+            </div>
+          </div>
+          <div style="background:var(--surface);border-radius:var(--r-lg);padding:16px 18px;font-size:13px;color:var(--text-2);line-height:1.6;">
+            New clients who enter your code or click your link will send you a connection request. You approve or deny each one before they can book a ride with you.
+          </div>
+          <div class="t-label mt-16 mb-8">Your public profile link</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div class="form-input" style="flex:1;display:flex;align-items:center;color:var(--navy);font-weight:500;">thydriver.com/JDR4207</div>
+            <button class="btn btn-ghost">Copy</button>
+            <button class="btn btn-primary">Open →</button>
+          </div>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-12">How it works</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="card-surface"><div style="font-size:13px;font-weight:500;margin-bottom:4px;">1. Share your code</div><div class="t-small">Text JDR·4207 or your profile link to a new client</div></div>
+            <div class="card-surface"><div style="font-size:13px;font-weight:500;margin-bottom:4px;">2. Client creates account</div><div class="t-small">They sign up at thydriver.com and enter your code</div></div>
+            <div class="card-surface"><div style="font-size:13px;font-weight:500;margin-bottom:4px;">3. You approve</div><div class="t-small">You get a notification and approve or deny the connection</div></div>
+            <div class="card-surface"><div style="font-size:13px;font-weight:500;margin-bottom:4px;">4. They book</div><div class="t-small">Once approved, they see your rates and can book rides</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRIVER SCREEN NAV -->
+  <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(10,10,46,0.95);backdrop-filter:blur(12px);border-radius:var(--r-full);padding:8px 16px;display:flex;gap:4px;border:1px solid rgba(255,255,255,0.1);z-index:50;" id="driver-nav">
+    <button class="nav-tab active" onclick="showScreen('d','d1',this)">Login</button>
+    <button class="nav-tab" onclick="showScreen('d','d2',this)">Dashboard</button>
+    <button class="nav-tab" onclick="showScreen('d','d3',this)">Scratchpad</button>
+    <button class="nav-tab" onclick="showScreen('d','d4',this)">Adjust</button>
+    <button class="nav-tab" onclick="showScreen('d','d5',this)">Policies</button>
+    <button class="nav-tab" onclick="showScreen('d','d6',this)">Pay Log</button>
+    <button class="nav-tab" onclick="showScreen('d','d7',this)">Share Code</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     DRIVER ONBOARDING
+     ============================================================ -->
+<div id="group-onboard" class="screens-wrap" style="display:none;">
+
+  <!-- O1: STEP 1 PERSONAL -->
+  <div class="screen active" id="o1">
+    <div class="screen-label">Onboarding Step 1 — <span>Personal info</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/register/driver/step1</div></div>
+      <div class="layout-center" style="background:var(--white);">
+        <div style="width:100%;max-width:560px;padding:40px;">
+          <div class="progress-bar"><div class="progress-step active"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div></div>
+          <div class="t-title mb-4">Create your driver account</div>
+          <div class="t-small mb-24">Step 1 of 4 — Personal information</div>
+          <div style="text-align:center;margin-bottom:20px;">
+            <div class="upload-circle" style="width:100px;height:100px;"><div style="font-size:28px;margin-bottom:4px;">📷</div><div style="font-size:11px;color:var(--text-2);">Profile photo</div></div>
+            <div class="t-small">Shown on rider booking confirmations</div>
+          </div>
+          <div class="form-row"><div class="form-group"><label class="form-label">First name</label><input class="form-input" value="James" readonly /></div><div class="form-group"><label class="form-label">Last name</label><input class="form-input" value="Rivera" readonly /></div></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" value="jrivera@email.com" readonly /></div>
+          <div class="form-group"><label class="form-label">Phone number</label><input class="form-input" value="(713) 555-0121" readonly /></div>
+          <div class="form-group"><label class="form-label">City / metro area</label><input class="form-input" value="Houston, TX" readonly /></div>
+          <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" value="password" readonly /></div>
+          <button class="btn btn-primary btn-lg btn-full">Continue — Credentials →</button>
+          <div style="text-align:center;margin-top:14px;"><a href="#" style="font-size:13px;color:var(--text-2);">Already have an account? Sign in</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- O2: STEP 2A CREDENTIALS -->
+  <div class="screen" id="o2">
+    <div class="screen-label">Onboarding Step 2A — <span>Credentials, Insurance & Safety Protocol</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/register/driver/step2</div></div>
+      <div class="layout-2col">
+        <div class="main-content">
+          <div class="progress-bar"><div class="progress-step done"></div><div class="progress-step active"></div><div class="progress-step"></div><div class="progress-step"></div></div>
+          <div class="t-title mb-4">Credentials & Safety Protocol</div>
+          <div class="t-small mb-16">Step 2 of 4 — Stored encrypted, never shown publicly</div>
+          <div class="card-surface mb-16" style="display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--text-2);line-height:1.5;">
+            <div style="font-size:16px;flex-shrink:0;">🔒</div>
+            Your DL digits, insurance policy, and emergency contact are encrypted and stored securely. Visible to ThyDriver admin only — never to riders.
+          </div>
+          <div class="form-group">
+            <label class="form-label">Texas Driver's License — last 4 digits</label>
+            <div style="display:flex;gap:8px;">
+              <div style="flex:0 0 72px;background:var(--surface);border:1.5px solid var(--border-mid);border-radius:var(--r-md);padding:10px 0;text-align:center;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--navy);">TX</div>
+              <input class="form-input" value="• • • • 7 7 4 2" style="font-family:'Syne',sans-serif;font-weight:700;letter-spacing:0.15em;text-align:center;" readonly />
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Full legal name (must match DL)</label><input class="form-input" value="James Antonio Rivera" readonly /></div>
+          <div class="divider"></div>
+          <div class="t-label mb-12">Insurance</div>
+          <div class="form-row mb-0">
+            <div class="form-group"><label class="form-label">Insurance provider</label><input class="form-input" value="Allstate" readonly /></div>
+            <div class="form-group"><label class="form-label">Policy number</label><input class="form-input" value="AL-TX-4471920" readonly /></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Coverage type</label>
+            <div class="seg-control"><button class="seg-opt on">Rideshare</button><button class="seg-opt">Commercial</button><button class="seg-opt">Personal</button></div>
+          </div>
+          <button class="btn btn-primary btn-lg btn-full">Continue — Emergency Contact →</button>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-8">Why we need this</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="card-surface"><div style="font-size:12px;font-weight:500;margin-bottom:3px;">TX DL last 4</div><div class="t-small">Verifies your identity as a licensed Texas driver. Locked after admin verification — contact support to change.</div></div>
+            <div class="card-surface"><div style="font-size:12px;font-weight:500;margin-bottom:3px;">Insurance</div><div class="t-small">Your coverage type and provider are displayed as a trust badge on your public profile. Riders need to see this before booking.</div></div>
+          </div>
+          <div class="divider"></div>
+          <div class="t-label mb-8">Your profile badges</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="badge badge-green">✓ TX DL verified</span>
+            <span class="badge badge-green">✓ Insured · Allstate</span>
+            <span class="badge badge-green">✓ Safety Protocol</span>
+          </div>
+          <div class="t-small mt-8">These badges appear on your profile once your credentials are verified.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- O3: STEP 2B EMERGENCY + PERMITS -->
+  <div class="screen" id="o3">
+    <div class="screen-label">Onboarding Step 2B — <span>Emergency Contact & Airport Permit</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/register/driver/step2b</div></div>
+      <div class="layout-2col">
+        <div class="main-content">
+          <div class="progress-bar"><div class="progress-step done"></div><div class="progress-step active"></div><div class="progress-step"></div><div class="progress-step"></div></div>
+          <div class="t-title mb-4">Emergency contact & permits</div>
+          <div class="t-small mb-20">Step 2 of 4 — Almost done with credentials</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Emergency contact name</label><input class="form-input" placeholder="Maria Rivera" readonly /></div>
+            <div class="form-group"><label class="form-label">Emergency contact phone</label><input class="form-input" placeholder="(713) 555-0192" readonly /></div>
+          </div>
+          <div class="divider"></div>
+          <div class="t-label mb-12">Airport RideShare Permit</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-radius:var(--r-md);padding:14px 16px;margin-bottom:12px;">
+            <div><div style="font-size:14px;font-weight:500;">I hold a city airport pickup permit</div><div class="t-small mt-8">Houston Hobby (HOU) / Bush Intercontinental (IAH)</div></div>
+            <div style="width:44px;height:24px;background:var(--navy);border-radius:12px;position:relative;cursor:pointer;"><div style="position:absolute;width:18px;height:18px;background:var(--amber);border-radius:50%;top:3px;right:3px;"></div></div>
+          </div>
+          <div class="card-surface mb-16">
+            <div class="form-group mb-12"><label class="form-label">Permit number</label><input class="form-input" value="HOU-RS-00421" readonly /></div>
+            <div class="form-group mb-0"><label class="form-label">Upload permit card photo</label><div class="upload-box">Click to upload photo of your permit card</div></div>
+          </div>
+          <div class="card-amber-tint mb-16" style="font-size:13px;color:var(--amber-dim);line-height:1.5;">
+            Your Safety Protocol is now complete. This information is encrypted and only accessed by ThyDriver in an emergency or dispute.
+          </div>
+          <button class="btn btn-primary btn-lg btn-full">Continue — Set Your Rates →</button>
+        </div>
+        <div class="right-panel">
+          <div class="safety-complete">
+            <div class="sc-icon">🛡</div>
+            <div class="sc-title">Safety Protocol</div>
+            <div class="sc-sub">All required fields complete. Your credentials are encrypted and secure.</div>
+          </div>
+          <div class="card-surface">
+            <div class="row"><span class="row-label">Profile photo</span><span class="badge badge-green">Saved</span></div>
+            <div class="row"><span class="row-label">TX DL last 4</span><span class="badge badge-green">Encrypted</span></div>
+            <div class="row"><span class="row-label">Insurance</span><span class="badge badge-green">Allstate</span></div>
+            <div class="row"><span class="row-label">Emergency contact</span><span class="badge badge-amber">Pending</span></div>
+            <div class="row"><span class="row-label">Airport permit</span><span class="badge badge-blue">Active</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- O4: STEP 3 RATES -->
+  <div class="screen" id="o4">
+    <div class="screen-label">Onboarding Step 3 — <span>Rates & Availability</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/register/driver/step3</div></div>
+      <div class="layout-2col">
+        <div class="main-content">
+          <div class="progress-bar"><div class="progress-step done"></div><div class="progress-step done"></div><div class="progress-step active"></div><div class="progress-step"></div></div>
+          <div class="t-title mb-4">Set your rates</div>
+          <div class="t-small mb-20">Step 3 of 4 — You control your pricing</div>
+          <div class="card-purple-tint mb-16">
+            <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--purple);margin-bottom:4px;">Set Amount</div>
+            <div style="font-size:12px;color:var(--purple-mid);margin-bottom:10px;line-height:1.5;">A custom agreed rate between you and a specific client. Set a default here — you can override per client after they connect.</div>
+            <input class="form-input" value="$120.00" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;border-color:var(--purple-border);" readonly />
+            <div style="font-size:11px;color:var(--purple-mid);margin-top:6px;">Both you and your client must agree before the Set Amount activates.</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Hourly rate ($/hr)</label><input class="form-input" value="$35.00" readonly /></div>
+            <div class="form-group"><label class="form-label">Flat fee — local (≤10 miles)</label><input class="form-input" value="$25.00" readonly /></div>
+          </div>
+          <div class="form-group"><label class="form-label">Flat fee — distance (over 51 miles, single flat)</label><input class="form-input" value="$50.00 flat" readonly /></div>
+          <div class="card-surface mb-16">
+            <div class="t-label mb-10">Empty return charge</div>
+            <div style="font-size:12px;color:var(--text-2);margin-bottom:10px;line-height:1.5;">For one-way long trips where you drive back empty (e.g. Houston → Austin). Client sees this before confirming.</div>
+            <div class="seg-control mb-10"><button class="seg-opt on">Fixed amount</button><button class="seg-opt">% of fare</button></div>
+            <input class="form-input" value="$50.00" readonly />
+          </div>
+          <div class="divider"></div>
+          <div class="t-label mb-12">Availability</div>
+          <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm">Mon</button><button class="btn btn-primary btn-sm">Tue</button><button class="btn btn-primary btn-sm">Wed</button><button class="btn btn-primary btn-sm">Thu</button><button class="btn btn-primary btn-sm">Fri</button><button class="btn btn-primary btn-sm">Sat</button><button class="btn btn-ghost btn-sm">Sun</button>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Start time</label><input class="form-input" value="7:00 am" readonly /></div>
+            <div class="form-group"><label class="form-label">End time</label><input class="form-input" value="10:00 pm" readonly /></div>
+          </div>
+          <button class="btn btn-primary btn-lg btn-full">Continue — Payment Setup →</button>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-8">Rate order on your profile</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="card-purple-tint"><div style="font-size:12px;font-weight:600;color:var(--purple);">1. Set Amount</div><div class="t-small" style="color:var(--purple-mid);">Shown first — most prominent</div></div>
+            <div class="card-surface"><div style="font-size:12px;font-weight:500;">2. Hourly</div><div class="t-small">$35/hr</div></div>
+            <div class="card-surface"><div style="font-size:12px;font-weight:500;">3. Flat local</div><div class="t-small">$25 · 10 miles or less</div></div>
+            <div class="card-surface"><div style="font-size:12px;font-weight:500;">4. Flat distance</div><div class="t-small">$50 flat · over 51 miles</div></div>
+            <div class="card-amber-tint"><div style="font-size:12px;font-weight:500;color:var(--amber-dim);">5. Empty return</div><div class="t-small" style="color:var(--amber-dim);">$50 · long haul one-way trips</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- O5: STEP 4 PAYMENT SETUP -->
+  <div class="screen" id="o5">
+    <div class="screen-label">Onboarding Step 4 — <span>Payment Setup</span></div>
+    <div class="app-shell">
+      <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/register/driver/step4</div></div>
+      <div class="layout-2col">
+        <div class="main-content">
+          <div class="progress-bar"><div class="progress-step done"></div><div class="progress-step done"></div><div class="progress-step done"></div><div class="progress-step active"></div></div>
+          <div class="t-title mb-4">Payment setup</div>
+          <div class="t-small mb-20">Step 4 of 4 — How your clients pay you directly</div>
+          <div class="card-surface mb-16" style="font-size:13px;color:var(--text-2);line-height:1.6;">Clients pay you directly through your own accounts. ThyDriver never holds or transfers money between you and your clients. Enable the methods you accept.</div>
+          <div class="pay-method sel">
+            <div class="pay-icon pi-z">Z</div>
+            <div class="pay-info"><div class="pay-name">Zelle</div><input class="form-input" value="jrivera@email.com" style="margin-top:6px;margin-bottom:0;" readonly /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;align-items:center;">
+              <div class="upload-box" style="padding:6px 10px;font-size:11px;">Upload QR</div>
+            </div>
+          </div>
+          <div class="pay-method sel">
+            <div class="pay-icon pi-v">V</div>
+            <div class="pay-info"><div class="pay-name">Venmo</div><input class="form-input" value="@james-rivera-htx" style="margin-top:6px;margin-bottom:0;" readonly /></div>
+            <div><div class="upload-box" style="padding:6px 10px;font-size:11px;">Upload QR</div></div>
+          </div>
+          <div class="pay-method sel">
+            <div class="pay-icon pi-c">$</div>
+            <div class="pay-info"><div class="pay-name">Cash App</div><input class="form-input" value="$JamesHTX" style="margin-top:6px;margin-bottom:0;" readonly /></div>
+            <div><div class="upload-box" style="padding:6px 10px;font-size:11px;">Upload QR</div></div>
+          </div>
+          <div class="pay-method">
+            <div class="pay-icon pi-s">St</div>
+            <div class="pay-info"><div class="pay-name">Stripe</div><div class="pay-handle">Enter email to generate payment link</div></div>
+          </div>
+          <div class="divider"></div>
+          <div class="form-group">
+            <label class="form-label">Payment timing preference</label>
+            <div class="seg-control"><button class="seg-opt">At booking</button><button class="seg-opt on">On pickup</button><button class="seg-opt">End of ride</button></div>
+          </div>
+          <button class="btn btn-amber btn-lg btn-full" style="font-size:16px;">Launch My ThyDriver Profile →</button>
+        </div>
+        <div class="right-panel">
+          <div class="t-label mb-8">Setup complete</div>
+          <div class="card-surface mb-12">
+            <div class="row"><span class="row-label">Personal info</span><span class="badge badge-green">✓ Done</span></div>
+            <div class="row"><span class="row-label">Credentials</span><span class="badge badge-green">✓ Done</span></div>
+            <div class="row"><span class="row-label">Safety Protocol</span><span class="badge badge-green">✓ Done</span></div>
+            <div class="row"><span class="row-label">Rates</span><span class="badge badge-green">✓ Done</span></div>
+            <div class="row"><span class="row-label">Payment</span><span class="badge badge-amber">In progress</span></div>
+          </div>
+          <div class="t-label mb-8">What happens next</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="card-surface"><div style="font-size:12px;font-weight:500;margin-bottom:3px;">Your profile goes live</div><div class="t-small">thydriver.com/JDR4207 is instantly active</div></div>
+            <div class="card-surface"><div style="font-size:12px;font-weight:500;margin-bottom:3px;">Share your code</div><div class="t-small">Text JDR·4207 to your existing clients tonight</div></div>
+            <div class="card-surface"><div style="font-size:12px;font-weight:500;margin-bottom:3px;">2-week free trial</div><div class="t-small">$20/week billing starts after your trial ends. No contracts.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONBOARDING NAV -->
+  <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(10,10,46,0.95);backdrop-filter:blur(12px);border-radius:var(--r-full);padding:8px 16px;display:flex;gap:4px;border:1px solid rgba(255,255,255,0.1);z-index:50;" id="onboard-nav">
+    <button class="nav-tab active" onclick="showScreen('o','o1',this)">Step 1: Personal</button>
+    <button class="nav-tab" onclick="showScreen('o','o2',this)">Step 2A: Credentials</button>
+    <button class="nav-tab" onclick="showScreen('o','o3',this)">Step 2B: Emergency + Permit</button>
+    <button class="nav-tab" onclick="showScreen('o','o4',this)">Step 3: Rates</button>
+    <button class="nav-tab" onclick="showScreen('o','o5',this)">Step 4: Payment</button>
+  </div>
+</div>
+
+<script>
+// screen prefix map
+const prefixes = { rider: 'r', driver: 'd', onboard: 'o' };
+let currentGroup = 'rider';
+
+function showGroup(group) {
+  document.getElementById('group-rider').style.display = 'none';
+  document.getElementById('group-driver').style.display = 'none';
+  document.getElementById('group-onboard').style.display = 'none';
+  document.getElementById('rider-nav').style.display = 'none';
+  document.getElementById('driver-nav').style.display = 'none';
+  document.getElementById('onboard-nav').style.display = 'none';
+
+  document.getElementById('group-' + group).style.display = 'block';
+  document.getElementById(group === 'rider' ? 'rider-nav' : group === 'driver' ? 'driver-nav' : 'onboard-nav').style.display = 'flex';
+  currentGroup = group;
+
+  document.querySelectorAll('.site-nav .nav-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function showScreen(prefix, id, btn) {
+  document.querySelectorAll('[id^="' + prefix + '"].screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const navId = prefix === 'r' ? 'rider-nav' : prefix === 'd' ? 'driver-nav' : 'onboard-nav';
+  document.querySelectorAll('#' + navId + ' .nav-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// init
+document.getElementById('rider-nav').style.display = 'flex';
+</script>
+</body>
+</html>

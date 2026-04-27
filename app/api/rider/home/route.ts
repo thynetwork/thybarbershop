@@ -1,0 +1,74 @@
+import { NextResponse } from 'next/server';
+import { getSupabaseServer } from '@/lib/supabase';
+
+/**
+ * GET /api/rider/home
+ * Returns rider data, connected driver, and recent booking.
+ * For now returns demo data; will integrate Supabase auth + queries.
+ */
+export async function GET(request: Request) {
+  const supabase = getSupabaseServer();
+
+  // TODO: Extract rider ID from JWT session cookie
+  // const session = await verifySession(cookieToken);
+
+  // Demo response matching the UI requirements
+  const rider = {
+    id: 'r1',
+    name: 'Sarah Chen',
+    initials: 'SC',
+    email: 'sarah@email.com',
+    role: 'rider',
+    safetyProtocolComplete: true,
+  };
+
+  const connectedDriver = {
+    id: 'd1',
+    name: 'James Rivera',
+    initials: 'JR',
+    code: 'JDR\u00B74207',
+    codeInitials: 'JDR',
+    codeDigits: '4207',
+    rating: 4.97,
+    airportPermitted: true,
+    insuranceProvider: 'Allstate',
+    insuranceType: 'Rideshare',
+    rateHourly: 35,
+    flatLocal: 25,
+    vehicleMakeModel: '2022 Toyota Camry XSE',
+    vehicleColor: 'Silver',
+    vehicleSeats: 3,
+    availabilityDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    availabilityHours: '7:00 am \u2013 10:00 pm',
+  };
+
+  const connection = {
+    id: 'c1',
+    driverId: 'd1',
+    riderId: 'r1',
+    status: 'approved',
+    setAmount: 120,
+    savedRoute: 'Airport to Home',
+  };
+
+  const recentBooking = {
+    id: 'b1',
+    driverId: 'd1',
+    riderId: 'r1',
+    date: '2026-07-17',
+    timeSlot: '9:00 am',
+    pickupAddress: '456 Westheimer Rd, Houston TX',
+    dropoffAddress: 'IAH Terminal C, Houston TX',
+    status: 'confirmed',
+    rateType: 'set_amount',
+    rateAmount: 120,
+    routeType: 'standard',
+  };
+
+  return NextResponse.json({
+    rider,
+    connectedDriver,
+    connection,
+    recentBooking,
+  });
+}

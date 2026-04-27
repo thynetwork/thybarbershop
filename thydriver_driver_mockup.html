@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ThyDriver — Driver Side Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#f0f0f0;font-family:'DM Sans',sans-serif;padding:24px 16px;min-height:100vh;}
+h1{text-align:center;font-family:'Syne',sans-serif;font-size:20px;color:#0a0a2e;margin-bottom:6px;}
+.subtitle{text-align:center;font-size:13px;color:#666;margin-bottom:24px;}
+.screen-grid{display:flex;flex-wrap:wrap;gap:24px;justify-content:center;max-width:1400px;margin:0 auto;}
+.screen-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.screen-num{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:#0a0a2e;text-align:center;}
+.screen-label{font-size:11px;color:#888;text-align:center;max-width:200px;}
+.phone{width:240px;background:#fff;border:1px solid #ddd;border-radius:28px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
+.sbar{height:24px;background:#0a0a2e;display:flex;align-items:center;justify-content:space-between;padding:0 12px;}
+.sbar span{color:#fff;font-size:9px;font-weight:500;}
+.body{padding:10px 12px;min-height:480px;}
+
+/* atoms */
+.sec-hd{font-size:9px;font-weight:500;color:#888;letter-spacing:.06em;text-transform:uppercase;margin:9px 0 5px;}
+.badge{display:inline-flex;align-items:center;gap:3px;border-radius:20px;padding:2px 7px;font-size:9px;font-weight:500;}
+.bg-green{background:#EAF3DE;color:#3B6D11;}.bg-blue{background:#E6F1FB;color:#185FA5;}
+.bg-amber{background:rgba(245,166,35,0.15);color:#D4830A;border:0.5px solid rgba(245,166,35,0.3);}
+.bg-purple{background:#EEEDFE;color:#534AB7;border:0.5px solid #AFA9EC;}
+.bg-red{background:#FCEBEB;color:#A32D2D;}
+.navy-btn{width:100%;background:#0a0a2e;color:#F5A623;border:none;border-radius:9px;padding:9px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;margin-bottom:6px;}
+.amber-btn{width:100%;background:#F5A623;color:#0a0a2e;border:none;border-radius:9px;padding:9px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;margin-bottom:6px;}
+.ghost-btn{width:100%;background:none;border:0.5px solid #ccc;border-radius:9px;padding:8px;font-size:11px;cursor:pointer;color:#666;margin-bottom:6px;}
+.red-btn{width:100%;background:#FCEBEB;border:0.5px solid #F09595;border-radius:9px;padding:8px;font-size:11px;cursor:pointer;color:#A32D2D;font-weight:500;}
+.divider{border:none;border-top:0.5px solid #eee;margin:6px 0;}
+.card{background:#fff;border:0.5px solid #eee;border-radius:10px;padding:8px 10px;margin-bottom:7px;}
+.surface{background:#f7f7f5;border-radius:10px;padding:8px 10px;margin-bottom:7px;}
+.dr{display:flex;justify-content:space-between;font-size:10px;padding:2px 0;}
+.dl{color:#888;}.dv{color:#1a1a1a;font-weight:500;}
+
+/* S1 Dashboard */
+.drv-hdr{background:#0a0a2e;padding:10px 12px 9px;}
+.dh-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.dh-av{width:32px;height:32px;border-radius:50%;background:#F5A623;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:#0a0a2e;}
+.dh-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;}
+.dh-code{display:inline-flex;background:rgba(245,166,35,0.15);border:0.5px solid rgba(245,166,35,0.3);border-radius:20px;padding:2px 8px;font-size:9px;color:#F5A623;font-weight:500;margin-top:2px;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px;}
+.sc{background:#f7f7f5;border-radius:8px;padding:7px 8px;}
+.sc-l{font-size:9px;color:#888;margin-bottom:2px;}
+.sc-v{font-family:'Syne',sans-serif;font-size:17px;font-weight:500;color:#1a1a1a;}
+.sc-v.amber{color:#D4830A;}.sc-v.green{color:#3B6D11;}
+.req-card{display:flex;align-items:center;gap:7px;background:#fff;border:0.5px solid #eee;border-radius:8px;padding:7px 9px;margin-bottom:5px;}
+.rc-av{width:26px;height:26px;border-radius:50%;background:#E6F1FB;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:#185FA5;flex-shrink:0;}
+.rc-name{font-size:11px;font-weight:500;color:#1a1a1a;}
+.rc-det{font-size:9px;color:#888;margin-top:1px;}
+.btn-app{background:#0a0a2e;color:#F5A623;border:none;border-radius:5px;padding:3px 7px;font-size:9px;cursor:pointer;font-weight:500;}
+.btn-den{background:none;border:0.5px solid #ddd;border-radius:5px;padding:3px 7px;font-size:9px;cursor:pointer;color:#888;}
+.uc-card{background:#fff;border:0.5px solid #eee;border-radius:8px;padding:7px 9px;display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.sub-ban{background:rgba(245,166,35,0.08);border:0.5px solid rgba(245,166,35,0.2);border-radius:8px;padding:6px 9px;display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.bnav{display:flex;background:#fff;border-top:0.5px solid #eee;padding:5px 0 3px;}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;}
+.bn-icon{font-size:13px;}.bn-lbl{font-size:8px;color:#888;}
+.bn.active .bn-lbl{color:#0a0a2e;font-weight:500;}
+
+/* S2 Incoming */
+.ba-card{background:linear-gradient(135deg,#0a0a2e,#1a1a6e);border-radius:10px;padding:10px 12px;margin-bottom:9px;}
+.ba-tag{display:inline-flex;background:rgba(245,166,35,0.2);border-radius:20px;padding:2px 7px;font-size:9px;color:#F5A623;margin-bottom:5px;}
+.ba-client{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;}
+.ba-route{font-size:10px;color:rgba(255,255,255,0.65);margin-bottom:6px;}
+.ba-timer{display:flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,0.5);}
+.ba-tval{font-family:'Syne',sans-serif;font-size:12px;color:#F5A623;font-weight:700;margin:0 3px;}
+.safety-strip{background:#EAF3DE;border-radius:8px;padding:6px 9px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.ss-av{width:26px;height:26px;border-radius:50%;background:#3B6D11;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;}
+
+/* S3 Scratchpad */
+.calc-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.cr-lbl{flex:0 0 80px;font-size:10px;color:#888;}
+.cr-inp{flex:1;background:#f7f7f5;border:0.5px solid #ddd;border-radius:6px;padding:5px 8px;font-size:11px;color:#1a1a1a;text-align:right;font-family:'DM Sans',sans-serif;max-width:56px;}
+.cr-eq{font-size:10px;color:#888;width:12px;text-align:center;}
+.cr-res{font-size:11px;font-weight:500;color:#1a1a1a;width:44px;text-align:right;font-family:'Syne',sans-serif;}
+.total-bar{display:flex;justify-content:space-between;align-items:center;background:#0a0a2e;border-radius:8px;padding:8px 10px;margin-bottom:8px;}
+.tb-lbl{font-size:10px;color:rgba(255,255,255,0.55);}
+.tb-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:#F5A623;}
+.reason-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px;}
+.rb{background:#f7f7f5;border:0.5px solid #ddd;border-radius:8px;padding:6px 7px;text-align:center;}
+.rb.sel{background:#EEEDFE;border-color:#AFA9EC;}
+.r-icon{font-size:13px;margin-bottom:2px;}
+.r-lbl{font-size:9px;color:#888;}
+.rb.sel .r-lbl{color:#534AB7;}
+.inp-d{width:100%;background:#f7f7f5;border:0.5px solid #ddd;border-radius:7px;padding:7px 9px;color:#1a1a1a;font-size:11px;margin-bottom:8px;font-family:'DM Sans',sans-serif;}
+
+/* S4 Hold */
+.hold-card{background:rgba(245,166,35,0.08);border:0.5px solid rgba(245,166,35,0.3);border-radius:10px;padding:12px;margin-bottom:10px;text-align:center;}
+.hold-timer{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;color:#D4830A;}
+.hold-note{background:#f7f7f5;border-radius:8px;padding:7px 9px;margin-bottom:9px;font-size:10px;color:#888;line-height:1.6;}
+
+/* S5 Calendar */
+.cal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.cal-month{font-size:11px;font-weight:500;color:#1a1a1a;}
+.cal-nav{background:none;border:0.5px solid #ddd;border-radius:4px;padding:2px 6px;font-size:10px;color:#888;cursor:pointer;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:8px;}
+.cdl{text-align:center;font-size:8px;color:#888;padding:2px 0;}
+.cd{text-align:center;font-size:9px;padding:4px 0;border-radius:4px;color:#1a1a1a;cursor:pointer;}
+.cd.open{background:rgba(10,10,46,0.06);}.cd.booked{background:#0a0a2e;color:#F5A623;font-weight:700;}
+.cd.blocked{opacity:.35;}.cd.today{outline:1.5px solid #F5A623;outline-offset:-1px;}
+.legend{display:flex;gap:7px;margin-bottom:8px;flex-wrap:wrap;}
+.leg-item{display:flex;align-items:center;gap:3px;font-size:9px;color:#888;}
+.leg-dot{width:7px;height:7px;border-radius:2px;}
+.slot-box{background:#f7f7f5;border-radius:10px;padding:8px 10px;}
+.slot-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;padding:4px 0;border-bottom:0.5px solid #eee;}
+.slot-row:last-of-type{border-bottom:none;}
+.paid-btn{background:#EAF3DE;border:none;border-radius:5px;padding:3px 7px;font-size:9px;color:#3B6D11;cursor:pointer;font-weight:500;}
+
+/* S6 Client Manager */
+.share-box{background:#0a0a2e;border-radius:10px;padding:10px 12px;margin-bottom:10px;text-align:center;}
+.sc-lbl{font-size:9px;color:rgba(255,255,255,0.45);margin-bottom:4px;letter-spacing:.06em;text-transform:uppercase;}
+.sc-code{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#F5A623;letter-spacing:.1em;margin-bottom:6px;}
+.sc-qr{width:48px;height:48px;background:rgba(255,255,255,0.08);border-radius:7px;margin:0 auto 6px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:5px;}
+.qc{background:#F5A623;border-radius:1px;}.qe{background:transparent;}
+.sc-sub{font-size:9px;color:rgba(255,255,255,0.4);}
+.client-card{background:#fff;border:0.5px solid #eee;border-radius:10px;padding:8px 10px;margin-bottom:7px;}
+.cc-top{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.cc-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;flex-shrink:0;}
+.cc-name{font-size:11px;font-weight:500;color:#1a1a1a;}
+.cc-det{font-size:9px;color:#888;margin-top:1px;}
+.cc-stats{display:flex;gap:5px;}
+.cc-stat{flex:1;background:#f7f7f5;border-radius:5px;padding:4px 6px;text-align:center;}
+.cc-stat-l{font-size:8px;color:#888;margin-bottom:1px;}
+.cc-stat-v{font-size:11px;font-weight:500;color:#1a1a1a;font-family:'Syne',sans-serif;}
+
+/* S7 Payment Log */
+.cf-row{display:flex;gap:5px;margin-bottom:10px;overflow-x:auto;}
+.cf-btn{flex-shrink:0;padding:4px 9px;border-radius:20px;font-size:10px;cursor:pointer;border:0.5px solid #ddd;background:#f7f7f5;color:#888;white-space:nowrap;}
+.cf-btn.on{background:#0a0a2e;color:#F5A623;border-color:#0a0a2e;}
+.log-sum{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:10px;}
+.ls-c{background:#f7f7f5;border-radius:7px;padding:6px 7px;text-align:center;}
+.ls-l{font-size:8px;color:#888;margin-bottom:2px;}
+.ls-v{font-family:'Syne',sans-serif;font-size:13px;font-weight:500;color:#1a1a1a;}
+.ls-v.green{color:#3B6D11;}
+.log-entry{background:#fff;border:0.5px solid #eee;border-radius:8px;padding:7px 9px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center;}
+.le-date{font-size:10px;font-weight:500;color:#1a1a1a;}
+.le-route{font-size:9px;color:#888;margin-top:1px;}
+.le-amt{font-family:'Syne',sans-serif;font-size:12px;font-weight:500;color:#1a1a1a;text-align:right;}
+
+/* S8 Profile */
+.pb-banner{height:56px;background:linear-gradient(135deg,#0a0a2e,#1a1a6e);border-radius:10px;margin-bottom:8px;display:flex;align-items:flex-end;padding:6px 10px;}
+.pb-edit{font-size:9px;color:rgba(255,255,255,0.5);}
+.edit-section{background:#f7f7f5;border-radius:10px;padding:8px 10px;margin-bottom:7px;}
+.es-title{font-size:9px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.edit-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;padding:4px 0;border-bottom:0.5px solid #eee;}
+.edit-row:last-child{border-bottom:none;}
+.er-lbl{color:#888;}.er-val{color:#1a1a1a;font-weight:500;}.er-edit{font-size:9px;color:#185FA5;cursor:pointer;}
+
+/* S9 Settings */
+.settings-section{background:#f7f7f5;border-radius:10px;padding:8px 10px;margin-bottom:7px;}
+.ss-title{font-size:9px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.set-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid #eee;}
+.set-row:last-child{border-bottom:none;}
+.sr-lbl{font-size:11px;color:#1a1a1a;}.sr-sub{font-size:9px;color:#888;margin-top:1px;}
+.tog-sw{width:28px;height:16px;background:#0a0a2e;border-radius:8px;position:relative;flex-shrink:0;}
+.tog-sw::after{content:'';position:absolute;width:10px;height:10px;background:#F5A623;border-radius:50%;top:3px;right:3px;}
+.tog-off{background:#ddd;}.tog-off::after{right:auto;left:3px;background:#fff;}
+.footer{text-align:center;font-size:9px;color:#aaa;margin-top:10px;}
+</style>
+</head>
+<body>
+<h1>ThyDriver — Driver Side</h1>
+<p class="subtitle">All 9 driver screens · Open in browser · Pinch to zoom on mobile</p>
+
+<div class="screen-grid">
+
+  <!-- S1 Dashboard -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 1</div>
+    <div class="screen-label">Driver Dashboard</div>
+    <div class="phone">
+      <div class="drv-hdr">
+        <div class="dh-row">
+          <div><div class="dh-name">James Rivera</div><div class="dh-code">JDR · 4207</div></div>
+          <div class="dh-av">JR</div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="stat-grid">
+          <div class="sc"><div class="sc-l">This week</div><div class="sc-v green">$420</div></div>
+          <div class="sc"><div class="sc-l">This month</div><div class="sc-v">$1,840</div></div>
+          <div class="sc"><div class="sc-l">Pending</div><div class="sc-v amber">2</div></div>
+          <div class="sc"><div class="sc-l">Upcoming</div><div class="sc-v">4</div></div>
+        </div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;">
+          <span class="badge bg-green">✓ TX DL</span>
+          <span class="badge bg-blue">✓ Airport</span>
+          <span class="badge bg-amber">Sub · renews Fri</span>
+        </div>
+        <div class="sec-hd">New requests</div>
+        <div class="req-card">
+          <div class="rc-av">SC</div>
+          <div style="flex:1;"><div class="rc-name">Sarah Chen</div><div class="rc-det">Airport→Home · Jul 17 · $120</div></div>
+          <button class="btn-app">View</button>
+        </div>
+        <div class="req-card">
+          <div class="rc-av">MJ</div>
+          <div style="flex:1;"><div class="rc-name">Marcus Johnson</div><div class="rc-det">New client request</div></div>
+          <div style="display:flex;gap:3px;"><button class="btn-app">OK</button><button class="btn-den">No</button></div>
+        </div>
+        <div class="sec-hd">Upcoming confirmed</div>
+        <div class="uc-card">
+          <div><div style="font-size:11px;font-weight:500;">Dana Torres</div><div style="font-size:9px;color:#888;margin-top:1px;">Sat Jul 19 · Houston→Austin</div></div>
+          <div style="text-align:right;"><div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:500;">$210</div><span class="badge bg-amber" style="font-size:8px;margin-top:2px;">Long haul</span></div>
+        </div>
+        <div class="uc-card">
+          <div><div style="font-size:11px;font-weight:500;">Sarah Chen</div><div style="font-size:9px;color:#888;margin-top:1px;">Mon Jul 21 · Airport→Home</div></div>
+          <div style="text-align:right;"><div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:500;">$120</div><span class="badge bg-purple" style="font-size:8px;margin-top:2px;">Set amt</span></div>
+        </div>
+        <div class="sub-ban"><div style="font-size:10px;color:#D4830A;">Subscription · Active</div><div style="font-size:9px;font-weight:700;color:#0a0a2e;background:#F5A623;border-radius:20px;padding:2px 8px;">$10/wk</div></div>
+      </div>
+      <div class="bnav">
+        <div class="bn active"><div class="bn-icon">⊞</div><div class="bn-lbl">Home</div></div>
+        <div class="bn"><div class="bn-icon">📅</div><div class="bn-lbl">Calendar</div></div>
+        <div class="bn"><div class="bn-icon">👥</div><div class="bn-lbl">Clients</div></div>
+        <div class="bn"><div class="bn-icon">💳</div><div class="bn-lbl">Log</div></div>
+        <div class="bn"><div class="bn-icon">⚙</div><div class="bn-lbl">Settings</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 Incoming Booking -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 2</div>
+    <div class="screen-label">Incoming Booking Detail</div>
+    <div class="phone">
+      <div class="sbar"><span>9:41</span><span>ThyDriver</span><span>100%</span></div>
+      <div class="body">
+        <div class="ba-card">
+          <div class="ba-tag">⚡ New booking request</div>
+          <div class="ba-client">Sarah Chen</div>
+          <div class="ba-route">Airport to Home · Thu Jul 17 · 9:00 am</div>
+          <div class="ba-timer">Confirm within<div class="ba-tval">1:47</div>or expires</div>
+        </div>
+        <div class="surface">
+          <div class="dr"><span class="dl">Pickup</span><span class="dv">123 Main St, Houston</span></div>
+          <div class="dr"><span class="dl">Drop-off</span><span class="dv">IAH Terminal C</span></div>
+          <div class="dr"><span class="dl">Miles</span><span class="dv">18 miles</span></div>
+          <div class="dr"><span class="dl">Rate</span><span class="dv" style="color:#3C3489;">Set amount · $120</span></div>
+          <div class="dr"><span class="dl">Pay timing</span><span class="dv">On pickup</span></div>
+          <div class="dr"><span class="dl">Passengers</span><span class="dv">1 · 1 large bag</span></div>
+        </div>
+        <div class="safety-strip">
+          <div class="ss-av">SC</div>
+          <div><div style="font-size:10px;font-weight:500;color:#3B6D11;">Sarah Chen · Safety Protocol ✓</div><div style="font-size:9px;color:#3B6D11;opacity:.8;margin-top:1px;">Emergency: Mike Chen · (713) 555-0198</div></div>
+        </div>
+        <button class="amber-btn">Confirm Booking</button>
+        <button style="width:100%;background:none;border:0.5px solid rgba(245,166,35,0.35);border-radius:9px;padding:8px;font-size:11px;cursor:pointer;color:#D4830A;font-weight:500;margin-bottom:6px;">New destination — calculate fare</button>
+        <button class="red-btn">Decline Request</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 Fare Scratchpad -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 3</div>
+    <div class="screen-label">Fare Scratchpad</div>
+    <div class="phone">
+      <div class="sbar"><span>9:41</span><span>ThyDriver</span><span>100%</span></div>
+      <div class="body">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:1px;">Calculate Fare</div>
+        <div style="font-size:10px;color:#888;margin-bottom:8px;">Dana Torres · Houston→Austin · 165 mi · ~2.5 hrs</div>
+        <div class="surface">
+          <div class="dr"><span class="dl">Pickup</span><span class="dv">2847 Westheimer Rd</span></div>
+          <div class="dr"><span class="dl">Drop-off</span><span class="dv">701 Congress Ave, Austin</span></div>
+          <div class="dr"><span class="dl">Miles</span><span class="dv">165 miles</span></div>
+          <div class="dr"><span class="dl">Est. time</span><span class="dv">~2.5 hours</span></div>
+        </div>
+        <div class="sec-hd">Build the fare</div>
+        <div class="calc-row"><div class="cr-lbl">Hourly (2.5 hrs)</div><input class="cr-inp" value="$35" readonly /><div class="cr-eq">=</div><div class="cr-res">$87.50</div></div>
+        <div class="calc-row"><div class="cr-lbl">Distance flat 51+</div><input class="cr-inp" value="$50" readonly /><div class="cr-eq"></div><div class="cr-res">$50.00</div></div>
+        <div class="calc-row"><div class="cr-lbl">Empty return</div><input class="cr-inp" value="$50" readonly /><div class="cr-eq"></div><div class="cr-res">$50.00</div></div>
+        <div class="divider"></div>
+        <div class="total-bar"><div class="tb-lbl">Your price to Dana</div><div class="tb-val">$210.00</div></div>
+        <div class="sec-hd">Reason (icon-based)</div>
+        <div class="reason-grid">
+          <div class="rb sel"><div class="r-icon">🕐</div><div class="r-lbl">Early morning</div></div>
+          <div class="rb"><div class="r-icon">🚦</div><div class="r-lbl">Traffic</div></div>
+          <div class="rb"><div class="r-icon">⛽</div><div class="r-lbl">Fuel cost</div></div>
+          <div class="rb"><div class="r-icon">🌧</div><div class="r-lbl">Weather</div></div>
+          <div class="rb"><div class="r-icon">📍</div><div class="r-lbl">Route complexity</div></div>
+          <div class="rb"><div class="r-icon">➕</div><div class="r-lbl">Extra stop</div></div>
+        </div>
+        <div style="font-size:9px;color:#888;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em;">Optional note</div>
+        <input class="inp-d" placeholder='e.g. "Early morning rate before 7am"' readonly />
+        <button class="navy-btn">Send $210.00 to Dana →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 Client Holding -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 4</div>
+    <div class="screen-label">Client Holding — 20 Min Wait</div>
+    <div class="phone">
+      <div class="sbar"><span>9:41</span><span>ThyDriver</span><span>100%</span></div>
+      <div class="body">
+        <div class="hold-card">
+          <div style="font-size:24px;margin-bottom:6px;">⏸</div>
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#D4830A;margin-bottom:3px;">Client is deciding</div>
+          <div style="font-size:10px;color:#888;line-height:1.5;margin-bottom:9px;">Dana Torres selected Hold 20 minutes. Do not start the trip until she accepts.</div>
+          <div class="hold-timer">18:32</div>
+        </div>
+        <div class="surface">
+          <div class="dr"><span class="dl">Client</span><span class="dv">Dana Torres</span></div>
+          <div class="dr"><span class="dl">Route</span><span class="dv">Houston → Austin</span></div>
+          <div class="dr"><span class="dl">Your price</span><span class="dv">$210.00</span></div>
+          <div class="dr"><span class="dl">Hold expires</span><span class="dv" style="color:#D4830A;">18:32 remaining</span></div>
+        </div>
+        <div class="hold-note"><strong style="color:#1a1a1a;">What happens next:</strong> If Dana accepts within the window you'll be confirmed. If the timer expires the booking auto-cancels — no charge to Dana.</div>
+        <button class="red-btn">Cancel this trip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 Calendar -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 5</div>
+    <div class="screen-label">Calendar + Mark as Paid</div>
+    <div class="phone">
+      <div class="sbar"><span>9:41</span><span>ThyDriver</span><span>100%</span></div>
+      <div class="body">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#1a1a1a;">Calendar</div>
+          <button style="background:#f7f7f5;border:0.5px solid #ddd;border-radius:6px;padding:3px 8px;font-size:10px;cursor:pointer;">Block days</button>
+        </div>
+        <div class="cal-hdr">
+          <span class="cal-month">July 2025</span>
+          <div style="display:flex;gap:3px;"><button class="cal-nav">‹</button><button class="cal-nav">›</button></div>
+        </div>
+        <div class="cal-grid">
+          <div class="cdl">Su</div><div class="cdl">Mo</div><div class="cdl">Tu</div><div class="cdl">We</div><div class="cdl">Th</div><div class="cdl">Fr</div><div class="cdl">Sa</div>
+          <div class="cd blocked">1</div><div class="cd open">2</div><div class="cd open">3</div><div class="cd open">4</div><div class="cd open">5</div><div class="cd open">6</div><div class="cd blocked">7</div>
+          <div class="cd blocked">8</div><div class="cd open">9</div><div class="cd booked">10</div><div class="cd open">11</div><div class="cd open">12</div><div class="cd booked">13</div><div class="cd blocked">14</div>
+          <div class="cd blocked">15</div><div class="cd open">16</div><div class="cd booked today">17</div><div class="cd open">18</div><div class="cd booked">19</div><div class="cd open">20</div><div class="cd blocked">21</div>
+        </div>
+        <div class="legend">
+          <div class="leg-item"><div class="leg-dot" style="background:#0a0a2e;"></div>Booked</div>
+          <div class="leg-item"><div class="leg-dot" style="background:rgba(10,10,46,0.07);border:0.5px solid #ddd;"></div>Open</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#f0f0f0;"></div>Blocked</div>
+          <div class="leg-item"><div class="leg-dot" style="outline:1.5px solid #F5A623;background:transparent;"></div>Today</div>
+        </div>
+        <div class="slot-box">
+          <div style="font-size:10px;font-weight:500;color:#1a1a1a;margin-bottom:6px;">Thu Jul 17 — 2 bookings</div>
+          <div class="slot-row"><span style="font-size:9px;color:#888;">9:00 am</span><span style="font-size:10px;">Sarah · Airport</span><span style="font-size:10px;color:#3B6D11;font-weight:500;">$120</span></div>
+          <div class="slot-row"><span style="font-size:9px;color:#888;">2:00 pm</span><span style="font-size:10px;">Ray · Med Ctr</span><span style="font-size:10px;color:#3B6D11;font-weight:500;">$45</span></div>
+          <div style="display:flex;gap:5px;margin-top:7px;">
+            <button class="paid-btn">Mark Sarah paid</button>
+            <button class="paid-btn">Mark Ray paid</button>
+          </div>
+        </div>
+      </div>
+      <div class="bnav">
+        <div class="bn"><div class="bn-icon">⊞</div><div class="bn-lbl">Home</div></div>
+        <div class="bn active"><div class="bn-icon">📅</div><div class="bn-lbl">Calendar</div></div>
+        <div class="bn"><div class="bn-icon">👥</div><div class="bn-lbl">Clients</div></div>
+        <div class="bn"><div class="bn-icon">💳</div><div class="bn-lbl">Log</div></div>
+        <div class="bn"><div class="bn-icon">⚙</div><div class="bn-lbl">Settings</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 Client Manager -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 6</div>
+    <div class="screen-label">Client Manager + Share Code</div>
+    <div class="phone">
+      <div class="sbar"><span>9:41</span><span>ThyDriver</span><span>100%</span></div>
+      <div class="body">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:1px;">Clients</div>
+        <div style="font-size:10px;color:#888;margin-bottom:9px;">4 active · 1 pending</div>
+        <div class="share-box">
+          <div class="sc-lbl">Your driver code</div>
+          <div class="sc-code">JDR · 4207</div>
+          <div class="sc-qr"><div class="qc"></div><div class="qe"></div><div class="qc"></div><div class="qe"></div><div class="qc"></div><div class="qe"></div><div class="qc"></div><div class="qe"></div><div class="qc"></div><div class="qe"></div><div class="qc"></div><div class="qe"></div><div class="qc"></div><div class="qe"></div><div class="qc"></div><div class="qe"></div><div class="qc"></div><div class="qe"></div><div class="qc"></div><div class="qe"></div><div class="qc"></div><div class="qe"></div><div class="qc"></div><div class="qe"></div><div class="qc"></div></div>
+          <div class="sc-sub">Client scans QR or enters code to connect</div>
+        </div>
+        <div class="sec-hd">Pending approval</div>
+        <div class="req-card">
+          <div class="rc-av">MJ</div>
+          <div style="flex:1;"><div class="rc-name">Marcus Johnson</div><div class="rc-det">Requested · 2 hrs ago</div></div>
+          <div style="display:flex;gap:3px;"><button class="btn-app">Approve</button><button class="btn-den">Deny</button></div>
+        </div>
+        <div class="sec-hd">Active clients</div>
+        <div class="client-card">
+          <div class="cc-top">
+            <div class="cc-av" style="background:#EAF3DE;color:#3B6D11;">SC</div>
+            <div style="flex:1;"><div class="cc-name">Sarah Chen</div><div class="cc-det">Set amount $120 · Airport→Home</div></div>
+            <span class="badge bg-purple" style="font-size:8px;">Set amt</span>
+          </div>
+          <div class="cc-stats">
+            <div class="cc-stat"><div class="cc-stat-l">Rides</div><div class="cc-stat-v">47</div></div>
+            <div class="cc-stat"><div class="cc-stat-l">Total paid</div><div class="cc-stat-v" style="font-size:10px;">$5,640</div></div>
+            <div class="cc-stat"><div class="cc-stat-l">Last ride</div><div class="cc-stat-v" style="font-size:9px;">Jul 10</div></div>
+          </div>
+        </div>
+        <div class="client-card">
+          <div class="cc-top">
+            <div class="cc-av" style="background:#E6F1FB;color:#185FA5;">DT</div>
+            <div style="flex:1;"><div class="cc-name">Dana Torres</div><div class="cc-det">Long haul · Houston→Austin</div></div>
+            <span class="badge bg-amber" style="font-size:8px;">Long haul</span>
+          </div>
+          <div class="cc-stats">
+            <div class="cc-stat"><div class="cc-stat-l">Rides</div><div class="cc-stat-v">12</div></div>
+            <div class="cc-stat"><div class="cc-stat-l">Total paid</div><div class="cc-stat-v" style="font-size:10px;">$2,520</div></div>
+            <div class="cc-stat"><div class="cc-stat-l">Last ride</div><div class="cc-stat-v" style="font-size:9px;">Jun 28</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="bnav">
+        <div class="bn"><div class="bn-icon">⊞</div><div class="bn-lbl">Home</div></div>
+        <div class="bn"><div class="bn-icon">📅</div><div class="bn-lbl">Calendar</div></div>
+        <div class="bn active"><div class="bn-icon">👥</div><div class="bn-lbl">Clients</div></div>
+        <div class="bn"><div class="bn-icon">💳</div><div class="bn-lbl">Log</div></div>
+        <div class="bn"><div class="bn-icon">⚙</div><div class="bn-lbl">Settings</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 Payment Log -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 7</div>
+    <div class="screen-label">Payment Log — Per-Client Ledger</div>
+    <div class="phone">
+      <div class="sbar"><span>9:41</span><span>ThyDriver</span><span>100%</span></div>
+      <div class="body">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:1px;">Payment Log</div>
+        <div style="font-size:10px;color:#888;margin-bottom:9px;">Your earnings history by client</div>
+        <div class="cf-row">
+          <div class="cf-btn on">All</div>
+          <div class="cf-btn">Sarah Chen</div>
+          <div class="cf-btn">Dana Torres</div>
+          <div class="cf-btn">Ray Okafor</div>
+        </div>
+        <div class="log-sum">
+          <div class="ls-c"><div class="ls-l">This week</div><div class="ls-v green">$420</div></div>
+          <div class="ls-c"><div class="ls-l">This month</div><div class="ls-v">$1,840</div></div>
+          <div class="ls-c"><div class="ls-l">All time</div><div class="ls-v">$18.2k</div></div>
+        </div>
+        <div class="sec-hd">Recent entries</div>
+        <div class="log-entry">
+          <div><div class="le-date">Sarah Chen · Jul 17</div><div class="le-route">Airport→Home · Set amount</div></div>
+          <div><div class="le-amt">$120</div><span class="badge bg-green" style="font-size:8px;margin-top:2px;">Paid</span></div>
+        </div>
+        <div class="log-entry">
+          <div><div class="le-date">Dana Torres · Jul 19</div><div class="le-route">Houston→Austin · Long haul</div></div>
+          <div><div class="le-amt">$210</div><span class="badge bg-amber" style="font-size:8px;margin-top:2px;">Pending</span></div>
+        </div>
+        <div class="log-entry">
+          <div><div class="le-date">Ray Okafor · Jul 15</div><div class="le-route">Medical Center · Hourly</div></div>
+          <div><div class="le-amt">$70</div><span class="badge bg-green" style="font-size:8px;margin-top:2px;">Paid</span></div>
+        </div>
+        <div class="log-entry">
+          <div><div class="le-date">Sarah Chen · Jul 10</div><div class="le-route">Airport→Home · Set amount</div></div>
+          <div><div class="le-amt">$120</div><span class="badge bg-green" style="font-size:8px;margin-top:2px;">Paid</span></div>
+        </div>
+        <button class="ghost-btn" style="margin-top:7px;">Export log as PDF</button>
+      </div>
+      <div class="bnav">
+        <div class="bn"><div class="bn-icon">⊞</div><div class="bn-lbl">Home</div></div>
+        <div class="bn"><div class="bn-icon">📅</div><div class="bn-lbl">Calendar</div></div>
+        <div class="bn"><div class="bn-icon">👥</div><div class="bn-lbl">Clients</div></div>
+        <div class="bn active"><div class="bn-icon">💳</div><div class="bn-lbl">Log</div></div>
+        <div class="bn"><div class="bn-icon">⚙</div><div class="bn-lbl">Settings</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 Profile Editor -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 8</div>
+    <div class="screen-label">Profile Editor</div>
+    <div class="phone">
+      <div class="sbar"><span>9:41</span><span>ThyDriver</span><span>100%</span></div>
+      <div class="body">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:1px;">Your Profile</div>
+        <div style="font-size:10px;color:#888;margin-bottom:8px;">Visible to approved clients</div>
+        <div class="pb-banner"><div class="pb-edit">Tap to change banner</div></div>
+        <div style="text-align:center;margin-bottom:12px;">
+          <div style="width:44px;height:44px;border-radius:50%;background:#F5A623;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#0a0a2e;margin:0 auto 4px;margin-top:-22px;">JR</div>
+          <div style="font-size:9px;color:#888;">Tap to change photo</div>
+        </div>
+        <div class="edit-section">
+          <div class="es-title">Personal info</div>
+          <div class="edit-row"><span class="er-lbl">Name</span><span class="er-val">James Rivera</span><span class="er-edit">Edit</span></div>
+          <div class="edit-row"><span class="er-lbl">City</span><span class="er-val">Houston, TX</span><span class="er-edit">Edit</span></div>
+          <div class="edit-row"><span class="er-lbl">Phone</span><span class="er-val">(713) 555-0142</span><span class="er-edit">Edit</span></div>
+        </div>
+        <div class="edit-section">
+          <div class="es-title">Rates</div>
+          <div class="edit-row"><span class="er-lbl">Hourly</span><span class="er-val">$35/hr</span><span class="er-edit">Edit</span></div>
+          <div class="edit-row"><span class="er-lbl">Flat local</span><span class="er-val">$25 (≤10mi)</span><span class="er-edit">Edit</span></div>
+          <div class="edit-row"><span class="er-lbl">Flat distance</span><span class="er-val">$50 (51+mi)</span><span class="er-edit">Edit</span></div>
+          <div class="edit-row"><span class="er-lbl">Empty return</span><span class="er-val">$50 flat</span><span class="er-edit">Edit</span></div>
+        </div>
+        <div class="edit-section">
+          <div class="es-title">Insurance & permits</div>
+          <div class="edit-row"><span class="er-lbl">Insurance</span><span class="er-val">Allstate · Rideshare</span><span class="er-edit">Edit</span></div>
+          <div class="edit-row"><span class="er-lbl">Airport permit</span><span class="er-val" style="color:#3B6D11;">✓ HOU-RS-00421</span><span class="er-edit">Edit</span></div>
+        </div>
+        <div class="edit-section">
+          <div class="es-title">Vehicle</div>
+          <div class="edit-row"><span class="er-lbl">Make/model</span><span class="er-val">2022 Camry XSE</span><span class="er-edit">Edit</span></div>
+          <div class="edit-row"><span class="er-lbl">Seats</span><span class="er-val">3 passengers</span><span class="er-edit">Edit</span></div>
+          <div class="edit-row"><span class="er-lbl">Seatbelts</span><span class="er-val" style="color:#3B6D11;">✓ Confirmed</span><span class="er-edit">Edit</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S9 Settings -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 9</div>
+    <div class="screen-label">Settings</div>
+    <div class="phone">
+      <div class="sbar"><span>9:41</span><span>ThyDriver</span><span>100%</span></div>
+      <div class="body">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:1px;">Settings</div>
+        <div style="font-size:10px;color:#888;margin-bottom:9px;">James Rivera · JDR·4207</div>
+        <div class="settings-section">
+          <div class="ss-title">Availability</div>
+          <div class="set-row"><div><div class="sr-lbl">Available days</div><div class="sr-sub">Mon–Sat</div></div><span class="er-edit" style="font-size:10px;color:#185FA5;">Edit</span></div>
+          <div class="set-row"><div><div class="sr-lbl">Available hours</div><div class="sr-sub">7am – 10pm</div></div><span class="er-edit" style="font-size:10px;color:#185FA5;">Edit</span></div>
+          <div class="set-row"><div><div class="sr-lbl">Confirmation window</div><div class="sr-sub">2 hours</div></div><span class="er-edit" style="font-size:10px;color:#185FA5;">Edit</span></div>
+        </div>
+        <div class="settings-section">
+          <div class="ss-title">Payment</div>
+          <div class="set-row"><div><div class="sr-lbl">Payment timing</div><div class="sr-sub">On pickup</div></div><span class="er-edit" style="font-size:10px;color:#185FA5;">Edit</span></div>
+          <div class="set-row"><div><div class="sr-lbl">Cancellation policy</div><div class="sr-sub">50% within 24hrs · full no-show</div></div><span class="er-edit" style="font-size:10px;color:#185FA5;">Edit</span></div>
+          <div class="set-row"><div><div class="sr-lbl">Payment methods</div><div class="sr-sub">Zelle · Venmo · Cash App</div></div><span class="er-edit" style="font-size:10px;color:#185FA5;">Edit</span></div>
+        </div>
+        <div class="settings-section">
+          <div class="ss-title">Notifications</div>
+          <div class="set-row"><div><div class="sr-lbl">New booking requests</div></div><div class="tog-sw"></div></div>
+          <div class="set-row"><div><div class="sr-lbl">Client messages</div></div><div class="tog-sw"></div></div>
+          <div class="set-row"><div><div class="sr-lbl">Sub reminders</div></div><div class="tog-sw tog-off"></div></div>
+        </div>
+        <div class="settings-section">
+          <div class="ss-title">Subscription</div>
+          <div class="set-row"><div><div class="sr-lbl">ThyDriver · $10/week</div><div class="sr-sub">Renews Friday</div></div><span class="badge bg-green" style="font-size:9px;">Active</span></div>
+        </div>
+        <div class="settings-section">
+          <div class="ss-title">Account</div>
+          <div class="set-row"><div><div class="sr-lbl">Change password</div></div><div style="color:#888;font-size:12px;">›</div></div>
+          <div class="set-row"><div><div class="sr-lbl">Privacy & data</div></div><div style="color:#888;font-size:12px;">›</div></div>
+          <div class="set-row"><div><div class="sr-lbl" style="color:#A32D2D;">Sign out</div></div><div style="color:#A32D2D;font-size:12px;">›</div></div>
+        </div>
+        <div class="footer">© 2026 ThyDriver | Privacy | Terms | Conditions</div>
+      </div>
+      <div class="bnav">
+        <div class="bn"><div class="bn-icon">⊞</div><div class="bn-lbl">Home</div></div>
+        <div class="bn"><div class="bn-icon">📅</div><div class="bn-lbl">Calendar</div></div>
+        <div class="bn"><div class="bn-icon">👥</div><div class="bn-lbl">Clients</div></div>
+        <div class="bn"><div class="bn-icon">💳</div><div class="bn-lbl">Log</div></div>
+        <div class="bn active"><div class="bn-icon">⚙</div><div class="bn-lbl">Settings</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

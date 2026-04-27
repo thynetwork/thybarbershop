@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ThyDriver — New Screens & Changes v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+/*
+  ============================================================
+  THYDRIVER — NEW SCREENS & CHANGES ONLY
+  For Claude Code: Add these to the existing thydriver_mockup.html
+  Do NOT modify existing screens R1-R10, D1-D7, O1-O5
+  ============================================================
+
+  CHANGES TO EXISTING SCREENS:
+  ─────────────────────────────
+  1. LOGIN SCREEN (R1 and D1):
+     - Tagline: Change "Private. Direct. Yours." to "Your Driver. Every Airport."
+     - Add airport codes strip below tagline:
+       IAH · HOU · MCO · LAX · ATL · ORD · DFW · JFK · MIA · + every US airport
+     - Replace feature bullet 1 with:
+       "Your trusted driver at your home airport — and every airport you fly to"
+     - Add "Find a Driver" amber card at bottom left panel (above copyright):
+       Title: "Need a Regular Driver?"
+       Sub: "Daily · Weekly · Bi-Weekly · Airport runs · Commutes · Appointments"
+       Small text: "One-time matching fee · Free if you have a driver code"
+       Button: "Find a Driver →" (amber fill, navy text)
+     - Replace driver code field (2-part) with 3-part connected field:
+       Box 1: Amber background · Airport code · placeholder "IAH" · maxlength 3
+       Box 2: Navy background · Initials · placeholder "JDR" · maxlength 3
+       Box 3: Dark navy (#12124a) · Digits · placeholder "4207" · maxlength 4
+       Helper labels below: Airport · Initials · Digits
+       Example shown: IAH·JDR·4207 = Houston driver
+     - Change "Find My Driver" button from amber to navy with amber text
+     - Driver login button: change from amber to navy with amber text
+
+  2. ALL DRIVER CODE DISPLAYS throughout existing screens:
+     - Replace JDR·4207 format with IAH·JDR·4207 format
+     - Use the three-part visual: amber(airport) + navy(initials) + dark navy(digits)
+
+  NEW SCREENS TO ADD:
+  ───────────────────
+  FA1 — Find a Driver: Airport Entry
+  FA2 — Find a Driver: Class Filter + Driver Pool
+  FA3 — Find a Driver: Full Driver Profile
+  FA4 — Find a Driver: Request + Pay $9.99
+
+  Add these as a new screen group "find" alongside
+  the existing rider/driver/onboarding groups.
+  ============================================================
+*/
+
+:root {
+  --navy:       #0a0a2e;
+  --navy-mid:   #12124a;
+  --navy-light: #1a1a6e;
+  --amber:      #F5A623;
+  --amber-dim:  #D4830A;
+  --amber-pale: rgba(245,166,35,0.10);
+  --amber-border: rgba(245,166,35,0.25);
+  --purple:     #3C3489;
+  --purple-pale:#EEEDFE;
+  --purple-border:#AFA9EC;
+  --green:      #3B6D11;
+  --green-pale: #EAF3DE;
+  --green-border:#97C459;
+  --red:        #A32D2D;
+  --red-pale:   #FCEBEB;
+  --blue:       #1A6DA8;
+  --blue-pale:  #E8F2FA;
+  --surface:    #F7F7F8;
+  --surface-2:  #EFEFEF;
+  --border:     rgba(0,0,0,0.09);
+  --border-mid: rgba(0,0,0,0.14);
+  --text-1:     #111118;
+  --text-2:     #6B6B7A;
+  --text-3:     #A0A0AE;
+  --white:      #FFFFFF;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.07);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg:  0 12px 32px rgba(0,0,0,0.10);
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body { font-family: 'DM Sans', sans-serif; background: #0E0E1A; color: var(--text-1); padding: 20px; }
+
+/* NAV */
+.site-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,10,46,0.96); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0 40px; display: flex; align-items: center; justify-content: space-between;
+  height: 60px; border-radius: 14px; margin-bottom: 24px;
+}
+.nav-logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--white); }
+.nav-logo span { color: var(--amber); }
+.nav-tabs { display: flex; gap: 4px; }
+.nav-tab { padding: 6px 14px; border-radius: var(--r-full); font-size: 12px; font-weight: 500; cursor: pointer; color: rgba(255,255,255,0.5); border: none; background: none; transition: all 0.15s; }
+.nav-tab:hover { color: rgba(255,255,255,0.9); }
+.nav-tab.active { background: rgba(255,255,255,0.10); color: var(--white); }
+.nav-tag { font-size: 10px; background: var(--amber); color: var(--navy); border-radius: var(--r-full); padding: 2px 8px; font-weight: 700; margin-left: 8px; }
+
+/* SCREENS */
+.screens-wrap { padding: 0 0 80px; }
+.screen { display: none; animation: fadeIn 0.2s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.screen-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 20px; }
+.screen-label span { color: var(--amber); }
+
+/* BROWSER CHROME */
+.browser-bar { background: #F0F0F0; border-radius: 14px 14px 0 0; padding: 10px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #ddd; }
+.browser-dots { display: flex; gap: 6px; }
+.browser-dot { width: 12px; height: 12px; border-radius: 50%; }
+.bd-r { background: #FF5F57; } .bd-y { background: #FFBD2E; } .bd-g { background: #28C840; }
+.browser-url { flex: 1; background: #E4E4E4; border-radius: var(--r-full); padding: 5px 14px; font-size: 12px; color: #666; }
+
+/* APP SHELL */
+.app-shell { background: var(--white); border-radius: 0 0 var(--r-xl) var(--r-xl); overflow: hidden; box-shadow: var(--shadow-lg); }
+
+/* TOP BAR */
+.app-topbar { background: var(--navy); padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+.topbar-logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--white); }
+.topbar-logo span { color: var(--amber); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-airport { display: flex; align-items: center; gap: 6px; background: rgba(245,166,35,0.15); border: 1px solid rgba(245,166,35,0.3); border-radius: var(--r-full); padding: 4px 12px; }
+.ta-iata { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 800; color: var(--amber); }
+.ta-name { font-size: 10px; color: rgba(255,255,255,0.5); }
+.topbar-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--amber); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; color: var(--navy); }
+
+/* LAYOUTS */
+.layout-center { display: flex; align-items: flex-start; justify-content: center; min-height: 620px; background: var(--surface); padding: 40px; }
+.layout-2col { display: grid; grid-template-columns: 1fr 360px; min-height: 620px; }
+.layout-full { min-height: 620px; }
+.main-content { padding: 28px 32px; background: var(--white); }
+.right-panel { background: var(--surface); border-left: 1px solid var(--border); padding: 24px 22px; }
+
+/* TYPE */
+.t-display { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--text-1); }
+.t-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-1); }
+.t-label { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-2); }
+.t-small { font-size: 12px; color: var(--text-2); }
+.t-body { font-size: 14px; color: var(--text-1); line-height: 1.6; }
+.mb-4{margin-bottom:4px;}.mb-8{margin-bottom:8px;}.mb-12{margin-bottom:12px;}.mb-16{margin-bottom:16px;}.mb-20{margin-bottom:20px;}.mb-24{margin-bottom:24px;}
+.mt-8{margin-top:8px;}.mt-12{margin-top:12px;}.mt-16{margin-top:16px;}
+.flex-between{display:flex;justify-content:space-between;align-items:center;}
+.flex-center{display:flex;align-items:center;}
+.gap-6{gap:6px;}.gap-8{gap:8px;}.gap-10{gap:10px;}.gap-12{gap:12px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.w-full{width:100%;}
+.text-center{text-align:center;}
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; gap: 4px; border-radius: var(--r-full); padding: 3px 10px; font-size: 10px; font-weight: 600; }
+.badge-green  { background: var(--green-pale); color: var(--green); }
+.badge-amber  { background: var(--amber-pale); color: var(--amber-dim); border: 1px solid var(--amber-border); }
+.badge-blue   { background: var(--blue-pale); color: var(--blue); }
+.badge-navy   { background: var(--navy); color: var(--amber); }
+.badge-black  { background: #1a1a1a; color: var(--amber); }
+
+/* VEHICLE CLASS BADGES */
+.vc { display: inline-flex; align-items: center; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 800; letter-spacing: 0.04em; font-family: 'Syne', sans-serif; }
+.vc-comfort { background: var(--blue-pale); color: var(--blue); border: 1px solid #9DC8E8; }
+.vc-xl      { background: var(--green-pale); color: var(--green); border: 1px solid var(--green-border); }
+.vc-black   { background: #1a1a1a; color: var(--amber); border: 1px solid rgba(245,166,35,0.3); }
+.vc-xll     { background: var(--navy); color: var(--amber); border: 1px solid rgba(245,166,35,0.4); }
+
+/* AIRPORT BADGE */
+.airport-badge { display: inline-flex; align-items: center; gap: 5px; background: var(--navy); border-radius: 8px; padding: 4px 10px; }
+.ab-iata { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; color: var(--amber); }
+.ab-name { font-size: 10px; color: rgba(255,255,255,0.5); }
+.airport-badge-sm { display: inline-flex; align-items: center; gap: 3px; background: var(--navy); border-radius: 6px; padding: 3px 8px; }
+.abs-iata { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 800; color: var(--amber); }
+
+/* MASKED DRIVER CODE */
+.masked-code { display: inline-flex; align-items: center; gap: 0; border-radius: 7px; overflow: hidden; }
+.mc-airport  { background: var(--amber); padding: 4px 8px; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 800; color: var(--navy); }
+.mc-initials { background: var(--navy); padding: 4px 7px; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 800; color: rgba(245,166,35,0.4); }
+.mc-digits   { background: var(--navy-mid); padding: 4px 8px; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.25); }
+
+/* FULL DRIVER CODE */
+.full-code { display: inline-flex; align-items: center; gap: 0; border-radius: 8px; overflow: hidden; }
+.fc-airport  { background: var(--amber); padding: 5px 10px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; color: var(--navy); }
+.fc-initials { background: var(--navy); padding: 5px 8px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 800; color: var(--amber); }
+.fc-digits   { background: var(--navy-mid); padding: 5px 10px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8); }
+
+/* 3-PART LOGIN CODE INPUT */
+.code-input-3 { display: flex; gap: 0; border-radius: 10px; overflow: hidden; border: 1.5px solid var(--border-mid); }
+.ci-airport  { flex: 0 0 68px; background: var(--amber); border: none; padding: 11px 0; text-align: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; color: var(--navy); outline: none; letter-spacing: 0.04em; }
+.ci-airport::placeholder { color: rgba(10,10,46,0.35); font-size: 11px; }
+.ci-sep { width: 1px; background: rgba(0,0,0,0.12); flex-shrink: 0; }
+.ci-initials { flex: 0 0 62px; background: var(--navy); border: none; padding: 11px 0; text-align: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; color: var(--amber); outline: none; letter-spacing: 0.06em; }
+.ci-initials::placeholder { color: rgba(245,166,35,0.3); font-size: 11px; }
+.ci-sep2 { width: 1px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+.ci-digits { flex: 1; background: var(--navy-mid); border: none; padding: 11px 14px; text-align: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: rgba(255,255,255,0.85); outline: none; letter-spacing: 0.2em; }
+.ci-digits::placeholder { color: rgba(255,255,255,0.2); font-size: 11px; letter-spacing: 0.06em; }
+.code-helper { display: flex; margin-top: 5px; }
+.ch-airport  { flex: 0 0 68px; text-align: center; font-size: 9px; color: var(--amber-dim); font-weight: 600; }
+.ch-sep      { flex: 0 0 1px; }
+.ch-initials { flex: 0 0 62px; text-align: center; font-size: 9px; color: var(--text-2); font-weight: 600; }
+.ch-sep2     { flex: 0 0 1px; }
+.ch-digits   { flex: 1; text-align: center; font-size: 9px; color: var(--text-2); font-weight: 600; }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; cursor: pointer; border-radius: var(--r-md); font-family: 'DM Sans', sans-serif; font-weight: 600; transition: all 0.15s; }
+.btn-primary { background: var(--navy); color: var(--amber); padding: 12px 22px; font-size: 14px; }
+.btn-primary:hover { background: var(--navy-mid); transform: translateY(-1px); }
+.btn-amber { background: var(--amber); color: var(--navy); padding: 12px 22px; font-size: 14px; font-family: 'Syne', sans-serif; font-weight: 700; }
+.btn-amber:hover { background: #E8960F; transform: translateY(-1px); }
+.btn-ghost { background: none; border: 1px solid var(--border-mid); color: var(--text-2); padding: 11px 20px; font-size: 13px; }
+.btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
+.btn-sm { padding: 7px 14px; font-size: 12px; border-radius: var(--r-sm); }
+.btn-lg { padding: 14px 28px; font-size: 15px; border-radius: var(--r-lg); }
+.btn-full { width: 100%; }
+
+/* FORMS */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 11px; font-weight: 600; color: var(--text-2); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+.form-input { width: 100%; background: var(--surface); border: 1.5px solid var(--border-mid); border-radius: var(--r-md); padding: 11px 14px; font-size: 14px; color: var(--text-1); font-family: 'DM Sans', sans-serif; transition: border-color 0.15s; }
+.form-input:focus { outline: none; border-color: var(--navy); }
+.form-input::placeholder { color: var(--text-3); }
+
+/* CARDS */
+.card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px 20px; box-shadow: var(--shadow-sm); }
+.card-surface { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 14px 16px; }
+.card-amber { background: var(--amber-pale); border: 1.5px solid var(--amber-border); border-radius: var(--r-lg); padding: 14px 16px; }
+.card-green { background: var(--green-pale); border: 1px solid var(--green-border); border-radius: var(--r-lg); padding: 14px 16px; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+.row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.row:last-child { border-bottom: none; }
+.row-label { font-size: 13px; color: var(--text-2); }
+.row-value { font-size: 13px; font-weight: 500; color: var(--text-1); }
+
+/* AVATAR */
+.avatar { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; flex-shrink: 0; }
+.av-amber { background: var(--amber); color: var(--navy); }
+.av-navy  { background: var(--navy); color: var(--amber); }
+.av-black { background: #1a1a1a; color: var(--amber); }
+.av-sm  { width: 36px; height: 36px; font-size: 13px; }
+.av-md  { width: 48px; height: 48px; font-size: 16px; }
+.av-lg  { width: 64px; height: 64px; font-size: 22px; }
+.av-xl  { width: 80px; height: 80px; font-size: 26px; }
+
+/* POOL CARD */
+.pool-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-sm); transition: all 0.2s; cursor: pointer; }
+.pool-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: rgba(10,10,46,0.2); }
+.pc-photo { height: 100px; display: flex; align-items: center; justify-content: center; position: relative; }
+.pc-photo-comfort { background: linear-gradient(135deg, var(--navy), var(--navy-light)); }
+.pc-photo-xl      { background: linear-gradient(135deg, #1a3a1a, #2a5a2a); }
+.pc-photo-black   { background: linear-gradient(135deg, #0a0a0a, #1a1a1a); }
+.pc-photo-xll     { background: linear-gradient(135deg, #1a0a2e, #2a1a4e); }
+.pc-class-tag { position: absolute; top: 10px; left: 10px; }
+.pc-verified  { position: absolute; top: 10px; right: 10px; background: rgba(59,109,17,0.9); border-radius: var(--r-full); padding: 3px 8px; font-size: 9px; font-weight: 600; color: var(--white); }
+.pc-body { padding: 14px; }
+.pc-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: var(--text-1); margin-bottom: 4px; }
+.pc-rating { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 11px; color: var(--text-2); }
+.pc-stars { color: var(--amber); font-size: 12px; }
+.pc-airports { display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap; }
+.pc-vehicle { background: var(--surface); border-radius: var(--r-sm); padding: 8px 10px; margin-bottom: 10px; }
+.pcv-make   { font-size: 12px; font-weight: 500; color: var(--text-1); }
+.pcv-detail { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+.pc-rates { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+.pc-rate-box { background: var(--surface); border-radius: 8px; padding: 7px 9px; text-align: center; }
+.prb-label { font-size: 9px; color: var(--text-2); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+.prb-value { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-1); }
+.pc-days { display: flex; gap: 4px; margin-bottom: 6px; }
+.pd-day { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
+.pd-on  { background: var(--navy); color: var(--amber); }
+.pd-off { background: var(--surface); color: var(--text-3); }
+.pc-buttons { display: flex; gap: 6px; margin-top: 10px; }
+.pcb-view    { flex: 1; background: var(--surface); border: 1px solid var(--border-mid); border-radius: var(--r-sm); padding: 8px; font-size: 11px; font-weight: 600; color: var(--text-1); cursor: pointer; text-align: center; }
+.pcb-request { flex: 1; background: var(--navy); border: none; border-radius: var(--r-sm); padding: 8px; font-size: 11px; font-weight: 700; color: var(--amber); cursor: pointer; text-align: center; font-family: 'Syne', sans-serif; }
+
+/* PRIVACY NOTICE */
+.privacy-notice { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 12px 14px; display: flex; align-items: flex-start; gap: 10px; }
+.pn-icon { font-size: 16px; flex-shrink: 0; }
+.pn-text { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+.pn-text strong { color: var(--text-1); }
+
+/* VEHICLE PHOTOS */
+.vphoto-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 6px; }
+.vphoto { height: 72px; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-size: 22px; border: 1px solid var(--border); }
+.vp-front { background: linear-gradient(135deg, #e8e8e8, #c8c8c8); }
+.vp-rear  { background: linear-gradient(135deg, #d8e8d8, #c0d0c0); }
+.vp-int-f { background: linear-gradient(135deg, #e8e8d8, #d0d0b8); }
+.vp-int-r { background: linear-gradient(135deg, #d8d8e8, #c0c0d0); }
+.vphoto-label { font-size: 10px; color: var(--text-2); text-align: center; margin-top: 3px; }
+
+/* WHAT HAPPENS STEPS */
+.what-happens { background: var(--green-pale); border: 1px solid var(--green-border); border-radius: var(--r-lg); padding: 14px 16px; }
+.wh-title { font-size: 13px; font-weight: 600; color: var(--green); margin-bottom: 10px; }
+.wh-step  { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--green); margin-bottom: 7px; line-height: 1.4; }
+.wh-step:last-child { margin-bottom: 0; }
+.wh-num   { width: 20px; height: 20px; border-radius: 50%; background: var(--green); color: var(--white); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* FEE CARD */
+.fee-card { background: var(--white); border: 1.5px solid var(--border-mid); border-radius: var(--r-lg); padding: 18px 20px; }
+.fee-amount { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border-radius: var(--r-md); padding: 12px 16px; margin-bottom: 10px; }
+.fee-label  { font-size: 13px; color: var(--text-2); }
+.fee-value  { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--navy); }
+
+/* INS STRIP */
+.ins-strip { display: flex; align-items: center; gap: 7px; background: var(--green-pale); border-radius: var(--r-md); padding: 8px 12px; }
+.ins-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.ins-text { font-size: 12px; color: var(--green); font-weight: 500; }
+
+/* FILTER BAR */
+.filter-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 32px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.filter-label { font-size: 11px; font-weight: 600; color: var(--text-2); letter-spacing: 0.05em; text-transform: uppercase; flex-shrink: 0; }
+.filter-opt { padding: 7px 16px; border-radius: var(--r-full); font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; font-family: 'Syne', sans-serif; }
+.fo-all     { background: var(--navy); color: var(--amber); border-color: var(--navy); }
+.fo-comfort { background: var(--white); color: var(--blue); border-color: #9DC8E8; }
+.fo-xl      { background: var(--white); color: var(--green); border-color: var(--green-border); }
+.fo-black   { background: var(--white); color: #1a1a1a; border-color: #ccc; }
+.fo-xll     { background: var(--white); color: var(--navy); border-color: var(--navy); }
+.filter-sort { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-2); }
+.filter-sort select { background: var(--white); border: 1px solid var(--border-mid); border-radius: var(--r-sm); padding: 5px 10px; font-size: 12px; color: var(--text-1); cursor: pointer; }
+
+/* POOL GRID */
+.pool-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 20px 32px 28px; }
+.pool-header { padding: 16px 32px 0; display: flex; align-items: center; justify-content: space-between; }
+
+/* PROFILE BANNER */
+.profile-banner { height: 110px; background: linear-gradient(135deg, var(--navy), var(--navy-light)); position: relative; }
+.pb-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--amber); border: 3px solid var(--white); position: absolute; bottom: -36px; left: 28px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; color: var(--navy); }
+.pb-class  { position: absolute; bottom: 14px; right: 28px; }
+.profile-body { padding: 48px 28px 24px; }
+.profile-name { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--text-1); margin-bottom: 6px; }
+.profile-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+
+/* SITE FOOTER */
+.site-footer { background: var(--navy); text-align: center; padding: 12px; font-size: 11px; color: rgba(255,255,255,0.2); border-radius: 0 0 var(--r-xl) var(--r-xl); }
+.site-footer a { color: rgba(255,255,255,0.3); text-decoration: none; margin: 0 8px; }
+
+/* BOTTOM NAV */
+.bottom-nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: rgba(10,10,46,0.96); backdrop-filter: blur(12px); border-radius: var(--r-full); padding: 8px 16px; display: flex; gap: 4px; border: 1px solid rgba(255,255,255,0.1); z-index: 50; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <div class="nav-logo">Thy<span>Driver</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showScreen('fa1',this)">FA1 · Airport Entry</button>
+    <button class="nav-tab" onclick="showScreen('fa2',this)">FA2 · Class Filter + Pool</button>
+    <button class="nav-tab" onclick="showScreen('fa3',this)">FA3 · Full Profile</button>
+    <button class="nav-tab" onclick="showScreen('fa4',this)">FA4 · Request + Pay</button>
+    <button class="nav-tab" onclick="showScreen('lc',this)">Login Changes</button>
+  </div>
+  <div style="font-size:11px;color:rgba(255,255,255,.3);">New Screens Only <span class="nav-tag">Add to main mockup</span></div>
+</nav>
+
+<div class="screens-wrap">
+
+<!-- ============================================================
+     FA1: FIND A DRIVER — AIRPORT ENTRY
+     ============================================================ -->
+<div class="screen active" id="fa1">
+  <div class="screen-label">New Screen FA1 — <span>Find a Driver · Airport Entry</span></div>
+  <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/find-a-driver</div></div>
+  <div class="app-shell">
+    <div class="app-topbar">
+      <div class="topbar-logo">Thy<span>Driver</span></div>
+      <div class="topbar-right"><div class="topbar-avatar">SC</div></div>
+    </div>
+    <div class="layout-center" style="background:var(--white);align-items:center;">
+      <div style="max-width:540px;width:100%;">
+        <div class="text-center mb-24">
+          <div style="font-size:36px;margin-bottom:12px;">✈</div>
+          <div class="t-display mb-8">Find a Driver</div>
+          <div class="t-body" style="color:var(--text-2);">Enter the airport code where you need a trusted driver. Browse verified drivers, check their vehicles, and choose who you want.</div>
+        </div>
+
+        <div class="form-group mb-16">
+          <label class="form-label">Airport code</label>
+          <div style="display:flex;gap:10px;">
+            <input class="form-input" placeholder="e.g. MCO, LAX, ATL" value="MCO" readonly style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:0.15em;text-align:center;color:var(--navy);" />
+            <button class="btn btn-primary btn-lg" style="white-space:nowrap;">Search →</button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+          <div class="t-small">Popular airports</div>
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+        </div>
+
+        <div class="grid-4 mb-24" style="grid-template-columns:repeat(4,1fr);">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;text-align:center;cursor:pointer;">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--navy);margin-bottom:3px;">IAH</div>
+            <div class="t-small" style="font-size:10px;">Houston</div>
+            <div style="font-size:10px;color:var(--green);margin-top:4px;">● 17 drivers</div>
+          </div>
+          <div style="background:var(--amber);border:1px solid var(--amber);border-radius:var(--r-md);padding:12px;text-align:center;cursor:pointer;">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--navy);margin-bottom:3px;">MCO</div>
+            <div style="font-size:10px;color:rgba(10,10,46,.6);">Orlando</div>
+            <div style="font-size:10px;color:var(--navy);margin-top:4px;">● 9 drivers</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;text-align:center;cursor:pointer;">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--navy);margin-bottom:3px;">ATL</div>
+            <div class="t-small" style="font-size:10px;">Atlanta</div>
+            <div style="font-size:10px;color:var(--green);margin-top:4px;">● 24 drivers</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;text-align:center;cursor:pointer;">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--navy);margin-bottom:3px;">LAX</div>
+            <div class="t-small" style="font-size:10px;">Los Angeles</div>
+            <div style="font-size:10px;color:var(--green);margin-top:4px;">● 31 drivers</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;text-align:center;cursor:pointer;">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--navy);margin-bottom:3px;">DFW</div>
+            <div class="t-small" style="font-size:10px;">Dallas</div>
+            <div style="font-size:10px;color:var(--green);margin-top:4px;">● 22 drivers</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;text-align:center;cursor:pointer;">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--navy);margin-bottom:3px;">ORD</div>
+            <div class="t-small" style="font-size:10px;">Chicago</div>
+            <div style="font-size:10px;color:var(--green);margin-top:4px;">● 18 drivers</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;text-align:center;cursor:pointer;">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--navy);margin-bottom:3px;">JFK</div>
+            <div class="t-small" style="font-size:10px;">New York</div>
+            <div style="font-size:10px;color:var(--green);margin-top:4px;">● 28 drivers</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;text-align:center;cursor:pointer;">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--navy);margin-bottom:3px;">MIA</div>
+            <div class="t-small" style="font-size:10px;">Miami</div>
+            <div style="font-size:10px;color:var(--green);margin-top:4px;">● 15 drivers</div>
+          </div>
+        </div>
+
+        <div class="privacy-notice">
+          <div class="pn-icon">🔒</div>
+          <div class="pn-text"><strong>Privacy protected.</strong> Driver contact info and full codes are hidden until you request a connection and pay the one-time $9.99 matching fee. You browse completely anonymously.</div>
+        </div>
+      </div>
+    </div>
+    <div class="site-footer">© 2026 ThyDriver <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Conditions</a></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FA2: FIND A DRIVER — CLASS FILTER + POOL
+     ============================================================ -->
+<div class="screen" id="fa2">
+  <div class="screen-label">New Screen FA2 — <span>Vehicle Class Filter + Driver Pool · MCO Orlando</span></div>
+  <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/find-a-driver/MCO</div></div>
+  <div class="app-shell">
+    <div class="app-topbar">
+      <div class="topbar-logo">Thy<span>Driver</span></div>
+      <div class="topbar-right">
+        <div class="topbar-airport"><span style="font-size:12px;">✈</span><div class="ta-iata">MCO</div><div class="ta-name">Orlando</div></div>
+        <div class="topbar-avatar">SC</div>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-label">Vehicle class</div>
+      <button class="filter-opt fo-all">All Classes</button>
+      <button class="filter-opt fo-comfort">Comfort</button>
+      <button class="filter-opt fo-xl">XL</button>
+      <button class="filter-opt fo-black">Black</button>
+      <button class="filter-opt fo-xll">XLL</button>
+      <div class="filter-sort">
+        <span>Sort by</span>
+        <select><option>★ Rating</option><option>Availability</option><option>Rate: Low to High</option><option>Rate: High to Low</option></select>
+      </div>
+    </div>
+
+    <!-- POOL HEADER -->
+    <div class="pool-header mb-8">
+      <div style="font-size:13px;color:var(--text-2);"><strong style="color:var(--text-1);">9 drivers</strong> accepting new clients at MCO · Orlando International</div>
+      <div class="t-small">Contact info hidden until connected · $9.99 one-time fee to request</div>
+    </div>
+
+    <!-- POOL GRID -->
+    <div class="pool-grid">
+
+      <!-- COMFORT CARD -->
+      <div class="pool-card">
+        <div class="pc-photo pc-photo-comfort">
+          <div class="avatar av-amber av-lg">RR</div>
+          <div class="pc-class-tag"><div class="vc vc-comfort">COMFORT</div></div>
+          <div class="pc-verified">✓ Verified</div>
+        </div>
+        <div class="pc-body">
+          <div class="pc-name">Ray R.</div>
+          <div style="margin-bottom:8px;">
+            <div class="masked-code"><div class="mc-airport">MCO</div><div class="mc-initials">R**</div><div class="mc-digits">****</div></div>
+          </div>
+          <div class="pc-rating"><span class="pc-stars">★★★★★</span><span>4.94 · 187 rides</span></div>
+          <div class="pc-airports mb-8"><div class="airport-badge-sm"><div class="abs-iata">MCO</div></div></div>
+          <div class="pc-vehicle">
+            <div class="pcv-make">2021 Toyota Camry SE</div>
+            <div class="pcv-detail">Silver · 3 passengers · ✓ Seatbelts</div>
+            <div style="display:flex;gap:5px;margin-top:6px;">
+              <span class="badge badge-green" style="font-size:9px;">✓ Approved</span>
+              <span class="badge badge-blue" style="font-size:9px;">Rideshare insured</span>
+            </div>
+          </div>
+          <div class="pc-rates">
+            <div class="pc-rate-box"><div class="prb-label">Hourly</div><div class="prb-value">$32/hr</div></div>
+            <div class="pc-rate-box"><div class="prb-label">Flat local</div><div class="prb-value">$22</div></div>
+          </div>
+          <div class="t-label mb-4">Availability</div>
+          <div class="pc-days">
+            <div class="pd-day pd-on">M</div><div class="pd-day pd-on">T</div><div class="pd-day pd-on">W</div><div class="pd-day pd-on">T</div><div class="pd-day pd-on">F</div><div class="pd-day pd-on">S</div><div class="pd-day pd-off">S</div>
+          </div>
+          <div class="t-small mb-8">6:00 am – 11:00 pm</div>
+          <div class="pc-buttons">
+            <button class="pcb-view" onclick="showScreen('fa3',document.querySelectorAll('.nav-tab')[2])">View Profile</button>
+            <button class="pcb-request" onclick="showScreen('fa4',document.querySelectorAll('.nav-tab')[3])">Request · $9.99</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- XL CARD -->
+      <div class="pool-card">
+        <div class="pc-photo pc-photo-xl">
+          <div class="avatar av-navy av-lg">DM</div>
+          <div class="pc-class-tag"><div class="vc vc-xl">XL</div></div>
+          <div class="pc-verified">✓ Verified</div>
+        </div>
+        <div class="pc-body">
+          <div class="pc-name">David M.</div>
+          <div style="margin-bottom:8px;">
+            <div class="masked-code"><div class="mc-airport">MCO</div><div class="mc-initials">D**</div><div class="mc-digits">****</div></div>
+          </div>
+          <div class="pc-rating"><span class="pc-stars">★★★★★</span><span>4.98 · 243 rides</span></div>
+          <div class="pc-airports mb-8"><div class="airport-badge-sm"><div class="abs-iata">MCO</div></div><div class="airport-badge-sm"><div class="abs-iata">SFB</div></div></div>
+          <div class="pc-vehicle">
+            <div class="pcv-make">2022 Toyota Highlander XLE</div>
+            <div class="pcv-detail">Black · 6 passengers · ✓ Seatbelts</div>
+            <div style="display:flex;gap:5px;margin-top:6px;">
+              <span class="badge badge-green" style="font-size:9px;">✓ Approved</span>
+              <span class="badge badge-blue" style="font-size:9px;">Rideshare insured</span>
+            </div>
+          </div>
+          <div class="pc-rates">
+            <div class="pc-rate-box"><div class="prb-label">Hourly</div><div class="prb-value">$45/hr</div></div>
+            <div class="pc-rate-box"><div class="prb-label">Flat local</div><div class="prb-value">$35</div></div>
+          </div>
+          <div class="t-label mb-4">Availability</div>
+          <div class="pc-days">
+            <div class="pd-day pd-on">M</div><div class="pd-day pd-on">T</div><div class="pd-day pd-on">W</div><div class="pd-day pd-on">T</div><div class="pd-day pd-on">F</div><div class="pd-day pd-off">S</div><div class="pd-day pd-off">S</div>
+          </div>
+          <div class="t-small mb-8">5:00 am – 10:00 pm</div>
+          <div class="pc-buttons">
+            <button class="pcb-view" onclick="showScreen('fa3',document.querySelectorAll('.nav-tab')[2])">View Profile</button>
+            <button class="pcb-request" onclick="showScreen('fa4',document.querySelectorAll('.nav-tab')[3])">Request · $9.99</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLACK CARD -->
+      <div class="pool-card">
+        <div class="pc-photo pc-photo-black">
+          <div class="avatar av-black av-lg">MS</div>
+          <div class="pc-class-tag"><div class="vc vc-black">BLACK</div></div>
+          <div class="pc-verified">✓ Verified</div>
+        </div>
+        <div class="pc-body">
+          <div class="pc-name">Marcus S.</div>
+          <div style="margin-bottom:8px;">
+            <div class="masked-code"><div class="mc-airport">MCO</div><div class="mc-initials">M**</div><div class="mc-digits">****</div></div>
+          </div>
+          <div class="pc-rating"><span class="pc-stars">★★★★★</span><span>5.00 · 89 rides</span></div>
+          <div class="pc-airports mb-8"><div class="airport-badge-sm"><div class="abs-iata">MCO</div></div></div>
+          <div class="pc-vehicle">
+            <div class="pcv-make">2023 Cadillac CT5 Premium</div>
+            <div class="pcv-detail">Black · 4 passengers · ✓ Seatbelts</div>
+            <div style="display:flex;gap:5px;margin-top:6px;">
+              <span class="badge badge-green" style="font-size:9px;">✓ Approved</span>
+              <span class="badge badge-black" style="font-size:9px;background:#1a1a1a;color:var(--amber);">Commercial livery</span>
+            </div>
+          </div>
+          <div class="pc-rates">
+            <div class="pc-rate-box"><div class="prb-label">Hourly</div><div class="prb-value">$75/hr</div></div>
+            <div class="pc-rate-box"><div class="prb-label">Flat local</div><div class="prb-value">$65</div></div>
+          </div>
+          <div class="t-label mb-4">Availability</div>
+          <div class="pc-days">
+            <div class="pd-day pd-on">M</div><div class="pd-day pd-on">T</div><div class="pd-day pd-on">W</div><div class="pd-day pd-on">T</div><div class="pd-day pd-on">F</div><div class="pd-day pd-on">S</div><div class="pd-day pd-on">S</div>
+          </div>
+          <div class="t-small mb-8">24 hours · 7 days</div>
+          <div class="pc-buttons">
+            <button class="pcb-view" onclick="showScreen('fa3',document.querySelectorAll('.nav-tab')[2])">View Profile</button>
+            <button class="pcb-request" onclick="showScreen('fa4',document.querySelectorAll('.nav-tab')[3])">Request · $9.99</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="site-footer">© 2026 ThyDriver <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Conditions</a></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FA3: FIND A DRIVER — FULL PROFILE
+     ============================================================ -->
+<div class="screen" id="fa3">
+  <div class="screen-label">New Screen FA3 — <span>Full Driver Profile · Contact info hidden until connected</span></div>
+  <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/find-a-driver/MCO/profile</div></div>
+  <div class="app-shell">
+    <div class="app-topbar">
+      <div class="topbar-logo">Thy<span>Driver</span></div>
+      <div class="topbar-right"><div class="topbar-airport"><span style="font-size:12px;">✈</span><div class="ta-iata">MCO</div><div class="ta-name">Orlando</div></div><div class="topbar-avatar">SC</div></div>
+    </div>
+    <div class="layout-2col">
+      <div class="main-content">
+        <!-- BANNER -->
+        <div class="profile-banner" style="margin:-28px -32px 0;border-radius:0;">
+          <div class="pb-avatar">RR</div>
+          <div class="pb-class"><div class="vc vc-comfort" style="font-size:12px;padding:5px 14px;">COMFORT</div></div>
+        </div>
+        <div class="profile-body">
+          <div class="profile-name">Ray R.</div>
+          <div class="profile-meta">
+            <div class="masked-code"><div class="mc-airport">MCO</div><div class="mc-initials">R**</div><div class="mc-digits">****</div></div>
+            <span class="badge badge-green">★ 4.94 · 187 rides</span>
+            <span class="badge badge-blue">✈ MCO</span>
+            <span class="badge badge-green">✓ Safety Protocol</span>
+          </div>
+          <div class="ins-strip mb-16"><div class="ins-dot"></div><div class="ins-text">Rideshare insured · ThyDriver verified · Vehicle approved</div></div>
+
+          <div class="privacy-notice mb-16">
+            <div class="pn-icon">🔒</div>
+            <div class="pn-text"><strong>Contact info is hidden.</strong> Ray's phone, email, and full driver code unlock only after you send a connection request and your $9.99 matching fee is processed.</div>
+          </div>
+
+          <div class="t-label mb-8">Vehicle photos</div>
+          <div class="vphoto-grid mb-4">
+            <div><div class="vphoto vp-front">🚗</div><div class="vphoto-label">Front</div></div>
+            <div><div class="vphoto vp-rear">🚗</div><div class="vphoto-label">Rear</div></div>
+            <div><div class="vphoto vp-int-f">🪑</div><div class="vphoto-label">Interior front</div></div>
+            <div><div class="vphoto vp-int-r">🪑</div><div class="vphoto-label">Interior rear</div></div>
+          </div>
+          <div class="mb-16"><span class="badge badge-green">✓ Vehicle approved by ThyDriver admin</span></div>
+
+          <div class="t-label mb-8">Vehicle details</div>
+          <div class="card-surface mb-16">
+            <div class="row"><span class="row-label">Make & model</span><span class="row-value">2021 Toyota Camry SE</span></div>
+            <div class="row"><span class="row-label">Color</span><span class="row-value">Silver</span></div>
+            <div class="row"><span class="row-label">Year</span><span class="row-value">2021</span></div>
+            <div class="row"><span class="row-label">Max passengers</span><span class="row-value">3</span></div>
+            <div class="row"><span class="row-label">Seatbelts</span><span class="badge badge-green">✓ All confirmed</span></div>
+            <div class="row"><span class="row-label">Condition</span><span class="row-value">Clean · Minor wear acceptable</span></div>
+          </div>
+
+          <div class="t-label mb-8">Rates</div>
+          <div class="card-surface mb-16">
+            <div class="row"><span class="row-label">Hourly</span><span class="row-value">$32/hr</span></div>
+            <div class="row"><span class="row-label">Flat local (≤10 mi)</span><span class="row-value">$22 flat</span></div>
+            <div class="row"><span class="row-label">Distance (51+ mi)</span><span class="row-value">$48 flat</span></div>
+            <div class="row"><span class="row-label">Empty return</span><span class="row-value">$40 fixed</span></div>
+            <div class="row"><span class="row-label">Pay timing</span><span class="row-value">On pickup</span></div>
+          </div>
+
+          <div class="t-label mb-8">Availability</div>
+          <div class="card-surface mb-20">
+            <div class="row"><span class="row-label">Days</span><span class="row-value">Monday – Saturday</span></div>
+            <div class="row"><span class="row-label">Hours</span><span class="row-value">6:00 am – 11:00 pm</span></div>
+            <div class="row"><span class="row-label">Accepting clients</span><span class="badge badge-green">● Open</span></div>
+          </div>
+
+          <button class="btn btn-primary btn-full btn-lg" onclick="showScreen('fa4',document.querySelectorAll('.nav-tab')[3])">Request Connection · $9.99 →</button>
+          <button class="btn btn-ghost btn-full mt-8" onclick="showScreen('fa2',document.querySelectorAll('.nav-tab')[1])">← Back to pool</button>
+        </div>
+      </div>
+      <div class="right-panel">
+        <div class="t-label mb-8">Ratings</div>
+        <div class="card-surface mb-12 text-center" style="padding:16px;">
+          <div style="font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:var(--text-1);">4.94</div>
+          <div style="color:var(--amber);font-size:20px;margin-bottom:6px;">★★★★★</div>
+          <div class="t-small">Based on 187 rides</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
+          <div class="card-surface" style="font-size:12px;color:var(--text-2);line-height:1.5;font-style:italic;">"Always on time at MCO. Never missed a pickup even when my flight changed."</div>
+          <div class="card-surface" style="font-size:12px;color:var(--text-2);line-height:1.5;font-style:italic;">"Clean car, professional, knows all the terminals. My go-to every trip."</div>
+          <div class="card-surface" style="font-size:12px;color:var(--text-2);line-height:1.5;font-style:italic;">"Been using Ray for 8 months. Consistent every single time."</div>
+        </div>
+        <div class="t-label mb-8">Airports served</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:18px;">
+          <div class="airport-badge" style="border-radius:10px;">
+            <div style="font-size:16px;">✈</div>
+            <div><div class="ab-iata">MCO</div><div class="ab-name">Orlando International</div></div>
+          </div>
+        </div>
+        <div class="t-label mb-8">After connecting</div>
+        <div class="card-surface" style="font-size:12px;color:var(--text-2);line-height:1.6;">Once Ray approves your request, his full driver code and contact information unlock. You can book rides directly through ThyDriver from that point forward.</div>
+      </div>
+    </div>
+    <div class="site-footer">© 2026 ThyDriver <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Conditions</a></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FA4: FIND A DRIVER — REQUEST + PAY
+     ============================================================ -->
+<div class="screen" id="fa4">
+  <div class="screen-label">New Screen FA4 — <span>Request Connection + Pay $9.99</span></div>
+  <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com/find-a-driver/MCO/request</div></div>
+  <div class="app-shell">
+    <div class="app-topbar">
+      <div class="topbar-logo">Thy<span>Driver</span></div>
+      <div class="topbar-right"><div class="topbar-airport"><span style="font-size:12px;">✈</span><div class="ta-iata">MCO</div><div class="ta-name">Orlando</div></div><div class="topbar-avatar">SC</div></div>
+    </div>
+    <div style="display:flex;justify-content:center;min-height:620px;background:var(--surface);padding:32px;">
+      <div style="max-width:580px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+
+        <!-- LEFT COLUMN -->
+        <div>
+          <!-- DRIVER SUMMARY -->
+          <div style="background:var(--navy);background-image:radial-gradient(ellipse at top right,var(--navy-light) 0%,var(--navy) 70%);border-radius:var(--r-xl);padding:20px 22px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+              <div class="avatar av-amber av-md">RR</div>
+              <div>
+                <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--white);margin-bottom:3px;">Ray R.</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.5);">COMFORT · 2021 Toyota Camry SE · ★ 4.94</div>
+              </div>
+              <div class="masked-code" style="margin-left:auto;">
+                <div class="mc-airport">MCO</div><div class="mc-initials">R**</div><div class="mc-digits">****</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="airport-badge-sm"><div class="abs-iata">MCO</div></div>
+              <span style="font-size:11px;color:rgba(255,255,255,.5);">Orlando International Airport</span>
+            </div>
+          </div>
+
+          <!-- MATCHING FEE -->
+          <div class="fee-card mb-16">
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--text-1);margin-bottom:4px;">One-time matching fee</div>
+            <div style="font-size:12px;color:var(--text-2);margin-bottom:14px;line-height:1.5;">Charged once to connect with Ray. All future bookings are free to make through ThyDriver.</div>
+            <div class="fee-amount mb-10">
+              <div class="fee-label">Connection fee</div>
+              <div class="fee-value">$9.99</div>
+            </div>
+            <div style="font-size:11px;color:var(--text-2);line-height:1.6;"><strong style="color:var(--text-1);">Non-refundable</strong> if Ray declines. <strong style="color:var(--text-1);">Ray may credit this fee</strong> as a discount on your first ride — at his discretion.</div>
+          </div>
+
+          <!-- WHAT HAPPENS -->
+          <div class="what-happens">
+            <div class="wh-title">What happens next</div>
+            <div class="wh-step"><div class="wh-num">1</div>Your $9.99 is processed and request sent to Ray</div>
+            <div class="wh-step"><div class="wh-num">2</div>Ray reviews your request — 24 hours to respond</div>
+            <div class="wh-step"><div class="wh-num">3</div>Approved — full code and contact info unlock instantly</div>
+            <div class="wh-step"><div class="wh-num">4</div>Book rides with Ray directly through ThyDriver</div>
+            <div class="wh-step"><div class="wh-num">5</div>Ray may credit your $9.99 on your first ride</div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div>
+          <!-- PAYMENT -->
+          <div class="card mb-16">
+            <div class="t-label mb-12">Pay with</div>
+            <div style="display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--amber);border-radius:var(--r-md);padding:12px 14px;margin-bottom:14px;cursor:pointer;">
+              <div style="width:34px;height:34px;border-radius:8px;background:#635BFF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--white);font-family:'Syne',sans-serif;flex-shrink:0;">St</div>
+              <div style="flex:1;"><div style="font-size:13px;font-weight:500;color:var(--text-1);">Credit / Debit card</div><div class="t-small">Via Stripe · Secure payment</div></div>
+              <span class="badge badge-green">Selected</span>
+            </div>
+            <div class="form-group mb-8">
+              <label class="form-label">Card number</label>
+              <input class="form-input" placeholder="•••• •••• •••• ••••" readonly />
+            </div>
+            <div class="grid-2">
+              <div class="form-group mb-0"><label class="form-label">Expiry</label><input class="form-input" placeholder="MM / YY" readonly /></div>
+              <div class="form-group mb-0"><label class="form-label">CVV</label><input class="form-input" placeholder="•••" readonly /></div>
+            </div>
+          </div>
+
+          <button class="btn btn-amber btn-full btn-lg mb-8" style="font-size:15px;font-family:'Syne',sans-serif;font-weight:800;">Pay $9.99 · Request Ray →</button>
+          <button class="btn btn-ghost btn-full mb-16" onclick="showScreen('fa3',document.querySelectorAll('.nav-tab')[2])">← Back to profile</button>
+
+          <div class="text-center" style="font-size:11px;color:var(--text-3);">Secure payment via Stripe<br/>© 2026 ThyDriver · ThyNetwork Inc.</div>
+        </div>
+
+      </div>
+    </div>
+    <div class="site-footer">© 2026 ThyDriver <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Conditions</a></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     LOGIN CHANGES REFERENCE SCREEN
+     ============================================================ -->
+<div class="screen" id="lc">
+  <div class="screen-label">Login Changes — <span>What to update in existing R1 and D1 screens</span></div>
+  <div class="browser-bar"><div class="browser-dots"><div class="browser-dot bd-r"></div><div class="browser-dot bd-y"></div><div class="browser-dot bd-g"></div></div><div class="browser-url">thydriver.com — Login screen reference</div></div>
+  <div class="app-shell">
+    <div style="padding:32px;min-height:620px;background:var(--white);">
+      <div style="max-width:800px;margin:0 auto;">
+
+        <div class="t-title mb-4">Changes to make in existing login screens (R1 and D1)</div>
+        <div class="t-small mb-24">Do not rebuild the screens — apply these targeted changes only</div>
+
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <!-- CHANGE 1 -->
+          <div class="card">
+            <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;">Change 1 — Tagline (both R1 and D1)</div>
+            <div class="grid-2">
+              <div class="card-surface"><div class="t-label mb-4">Before</div><div style="font-size:13px;color:var(--text-2);">"Private. Direct. Yours."</div></div>
+              <div class="card-surface" style="border-color:var(--green);background:var(--green-pale);"><div class="t-label mb-4" style="color:var(--green);">After</div><div style="font-size:13px;font-weight:500;color:var(--green);">"Your Driver. Every Airport."</div></div>
+            </div>
+          </div>
+
+          <!-- CHANGE 2 -->
+          <div class="card">
+            <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;">Change 2 — Airport codes strip (both R1 and D1, below tagline)</div>
+            <div class="t-small mb-12">Add this strip of airport code badges below the tagline:</div>
+            <div style="background:var(--navy);padding:14px 16px;border-radius:var(--r-md);display:flex;gap:6px;flex-wrap:wrap;">
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 9px;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--amber);">IAH</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 9px;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--amber);">HOU</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 9px;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--amber);">MCO</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 9px;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--amber);">LAX</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 9px;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--amber);">ATL</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 9px;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--amber);">ORD</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 9px;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--amber);">DFW</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 9px;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--amber);">JFK</div>
+              <div style="background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:6px;padding:3px 9px;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--amber);">MIA</div>
+              <div style="font-size:9px;color:rgba(255,255,255,.2);padding:3px 4px;align-self:center;">+ every US airport</div>
+            </div>
+          </div>
+
+          <!-- CHANGE 3 -->
+          <div class="card">
+            <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;">Change 3 — Driver Code field (R1 only · rider login)</div>
+            <div class="t-small mb-12">Replace the existing 2-part code field with this 3-part connected input:</div>
+            <div class="mb-8">
+              <div class="code-input-3">
+                <input class="ci-airport" placeholder="IAH" maxlength="3" value="IAH" readonly />
+                <div class="ci-sep"></div>
+                <input class="ci-initials" placeholder="JDR" maxlength="3" value="JDR" readonly />
+                <div class="ci-sep2"></div>
+                <input class="ci-digits" placeholder="4 2 0 7" maxlength="4" value="4207" readonly />
+              </div>
+              <div class="code-helper">
+                <div class="ch-airport">Airport</div>
+                <div class="ch-sep"></div>
+                <div class="ch-initials">Initials</div>
+                <div class="ch-sep2"></div>
+                <div class="ch-digits">Digits</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+              <div class="t-small">Example:</div>
+              <div class="full-code"><div class="fc-airport">IAH</div><div class="fc-initials">JDR</div><div class="fc-digits">4207</div></div>
+              <div class="t-small">= Houston driver</div>
+            </div>
+          </div>
+
+          <!-- CHANGE 4 -->
+          <div class="card">
+            <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;">Change 4 — Find a Driver card (R1 and D1, bottom of left panel above copyright)</div>
+            <div class="t-small mb-12">Add this amber card at the bottom of the left panel:</div>
+            <div style="background:var(--navy);padding:20px;border-radius:var(--r-md);">
+              <div style="padding:18px 20px;background:rgba(245,166,35,.10);border:2px solid var(--amber);border-radius:14px;">
+                <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--amber);margin-bottom:4px;">Need a Regular Driver?</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.5);margin-bottom:12px;line-height:1.5;">Daily · Weekly · Bi-Weekly<br/>Airport runs · Commutes · Appointments<br/><span style="font-size:10px;color:rgba(255,255,255,.3);">One-time $9.99 matching fee · Free if you have a driver code</span></div>
+                <button style="width:100%;background:var(--amber);border:none;border-radius:9px;padding:11px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;font-family:'Syne',sans-serif;">Find a Driver →</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- CHANGE 5 -->
+          <div class="card">
+            <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;">Change 5 — Main CTA button color swap (both R1 and D1)</div>
+            <div class="grid-2">
+              <div class="card-surface">
+                <div class="t-label mb-8">Before (amber button)</div>
+                <button style="width:100%;background:var(--amber);border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:var(--navy);cursor:pointer;font-family:'Syne',sans-serif;">Find My Driver</button>
+              </div>
+              <div class="card-surface" style="border-color:var(--green);background:var(--green-pale);">
+                <div class="t-label mb-8" style="color:var(--green);">After (navy button with amber text)</div>
+                <button style="width:100%;background:var(--navy);border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:var(--amber);cursor:pointer;font-family:'Syne',sans-serif;">Find My Driver</button>
+              </div>
+            </div>
+            <div class="t-small mt-8">Reason: Amber is now reserved for "Find a Driver" (new action). Navy with amber text = returning user signing in. Visual language stays consistent.</div>
+          </div>
+
+          <!-- CHANGE 6 -->
+          <div class="card">
+            <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:8px;">Change 6 — Driver code display throughout all existing screens</div>
+            <div class="t-small mb-12">Replace all instances of JDR·4207 with the three-part visual format:</div>
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+              <div>
+                <div class="t-label mb-4">Before</div>
+                <div style="background:rgba(245,166,35,.15);border:0.5px solid rgba(245,166,35,.3);border-radius:20px;padding:3px 10px;font-size:10px;color:var(--amber);font-weight:500;display:inline-block;">JDR·4207</div>
+              </div>
+              <div style="font-size:18px;color:var(--text-3);">→</div>
+              <div>
+                <div class="t-label mb-4">After</div>
+                <div class="full-code"><div class="fc-airport">IAH</div><div class="fc-initials">JDR</div><div class="fc-digits">4207</div></div>
+              </div>
+            </div>
+            <div class="t-small mt-8">Apply this change in: topbar, dashboard header, driver cards, booking requests, client manager, share code screen, settings screen, and anywhere else the driver code appears.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="site-footer">© 2026 ThyDriver <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Conditions</a></div>
+  </div>
+</div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-tab active" onclick="showScreen('fa1',this)">FA1 · Airport Entry</button>
+  <button class="nav-tab" onclick="showScreen('fa2',this)">FA2 · Class Filter + Pool</button>
+  <button class="nav-tab" onclick="showScreen('fa3',this)">FA3 · Full Profile</button>
+  <button class="nav-tab" onclick="showScreen('fa4',this)">FA4 · Request + Pay</button>
+  <button class="nav-tab" onclick="showScreen('lc',this)">Login Changes</button>
+</div>
+
+<script>
+function showScreen(id, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+</script>
+</body>
+</html>
