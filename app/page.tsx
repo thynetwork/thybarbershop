@@ -10,10 +10,10 @@ export default function LoginPage() {
   const { prefix, highlight } = splitServiceName();
   const features = getLoginFeatures();
 
-  const [role, setRole] = useState<'rider' | 'driver'>('rider');
+  const [role, setRole] = useState<'client' | 'barber'>('client');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [codeAirport, setCodeAirport] = useState('');
+  const [codeCity, setCodeCity] = useState('');
   const [codeInitials, setCodeInitials] = useState('');
   const [codeDigits, setCodeDigits] = useState('');
   const [error, setError] = useState('');
@@ -25,17 +25,21 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const body: Record<string, string> = { email, password, role };
-      if (role === 'rider') {
-        if (!codeAirport || !codeInitials || !codeDigits) {
+      const body: Record<string, string> = {
+        email,
+        password,
+        role: role === 'client' ? 'rider' : 'driver',
+      };
+      if (role === 'client') {
+        if (!codeCity || !codeInitials || !codeDigits) {
           setError(`Enter your ${config.providerLabel} Code to continue.`);
           setLoading(false);
           return;
         }
-        body.codeAirport = codeAirport.toUpperCase();
+        body.codeAirport = codeCity.toUpperCase();
         body.codeInitials = codeInitials.toUpperCase();
         body.codeDigits = codeDigits;
-        body.driverCode = `${codeAirport.toUpperCase()}${codeInitials.toUpperCase()}${codeDigits}`;
+        body.driverCode = `${codeCity.toUpperCase()}${codeInitials.toUpperCase()}${codeDigits}`;
       }
 
       const res = await fetch('/api/auth/login', {
@@ -55,7 +59,7 @@ export default function LoginPage() {
       if (data.redirect) {
         router.push(data.redirect);
       } else {
-        router.push(role === 'driver' ? '/dashboard' : '/home');
+        router.push(role === 'barber' ? '/dashboard' : '/home');
       }
     } catch {
       setError('Something went wrong. Please try again.');
@@ -64,339 +68,275 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="login-wrap">
-      {/* ── Left panel: branding ─────────────────────────── */}
-      <div className="login-left">
-        <div>
-          <div className="login-logo">
-            {prefix}<span>{highlight}</span>
-          </div>
-          <div className="login-tagline">{config.tagline}</div>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '100vh', minHeight: 600 }}>
 
-          {/* Airport codes strip */}
-          <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '28px' }}>
-            {config.airportCodes.map((code) => (
-              <div
-                key={code}
-                style={{
-                  background: 'rgba(245,166,35,.12)',
-                  border: '1px solid rgba(245,166,35,.25)',
-                  borderRadius: '6px',
-                  padding: '3px 8px',
-                  fontFamily: 'Syne, sans-serif',
-                  fontSize: '10px',
-                  fontWeight: 800,
-                  color: '#F5A623',
-                }}
-              >
-                {code}
+      {/* ── LEFT PANEL — BRAND ──────────────────────────────── */}
+      <div style={{
+        background: 'var(--navy)',
+        backgroundImage: 'radial-gradient(ellipse 80% 60% at 20% 10%, rgba(26,26,110,0.6) 0%, transparent 60%), radial-gradient(ellipse 60% 80% at 80% 90%, rgba(245,166,35,0.06) 0%, transparent 50%)',
+        padding: '48px 44px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        borderRight: '1px solid rgba(255,255,255,0.07)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        {/* Barberpole stripe accent */}
+        <div style={{
+          position: 'absolute', top: 0, right: 0, width: 3, height: '100%',
+          background: 'repeating-linear-gradient(180deg, var(--amber) 0px, var(--amber) 18px, transparent 18px, transparent 36px, #fff 36px, #fff 54px, transparent 54px, transparent 72px)',
+          opacity: 0.12,
+        }} />
+
+        <div>
+          {/* Logo */}
+          <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 30, fontWeight: 800, color: '#fff', lineHeight: 1, marginBottom: 6 }}>
+            {prefix}<span style={{ color: 'var(--amber)' }}>{highlight}</span>
+          </div>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 28 }}>
+            {config.tagline}
+          </div>
+
+          {/* City pills */}
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 28 }}>
+            {config.locationPills.map((pill) => (
+              <div key={pill} style={{
+                background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: 'var(--r-full)', padding: '4px 12px',
+                fontSize: 10, fontWeight: 700, color: 'var(--amber)', letterSpacing: '0.06em',
+              }}>{pill}</div>
+            ))}
+            <div style={{
+              background: 'rgba(245,166,35,0.2)', border: '1px solid rgba(245,166,35,0.5)',
+              borderRadius: 'var(--r-full)', padding: '4px 12px',
+              fontSize: 10, fontWeight: 700, color: 'var(--amber)',
+            }}>+ every city</div>
+          </div>
+
+          {/* Feature bullets */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32 }}>
+            {features.map((text, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 12, color: 'rgba(255,255,255,0.5)', lineHeight: 1.5 }}>
+                <div style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--amber)', marginTop: 5, flexShrink: 0, opacity: 0.7 }} />
+                <span dangerouslySetInnerHTML={{ __html: text.replace(/^([^.!]+[.!])/, '<strong style="color:rgba(255,255,255,0.85);font-weight:500;">$1</strong>') }} />
               </div>
             ))}
-            <div style={{ fontSize: '9px', color: 'rgba(255,255,255,.2)', padding: '3px 4px', alignSelf: 'center' }}>
-              + every US airport
-            </div>
           </div>
 
-          {features.map((text, i) => (
-            <div className="login-feature" key={i}>
-              <div className="lf-dot" />
-              <div className="lf-text">{text}</div>
-            </div>
-          ))}
-
-          {role === 'driver' && (
-            <div className="login-feature" style={{ marginTop: 8 }}>
-              <div className="lf-dot" />
-              <div className="lf-text" style={{ fontWeight: 600, fontSize: 13 }}>
-                These aren&apos;t passengers. They&apos;re your clients. Treat them like it.
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Need a Regular Driver? CTA card */}
-        <div style={{
-          marginTop: '28px',
-          padding: '18px 20px',
-          background: 'rgba(245,166,35,.10)',
-          border: '2px solid #F5A623',
-          borderRadius: '14px',
-        }}>
-          <div style={{
-            fontFamily: 'Syne, sans-serif',
-            fontSize: '15px',
-            fontWeight: 800,
-            color: '#F5A623',
-            marginBottom: '4px',
-          }}>
-            Need a Regular Driver?
-          </div>
-          <div style={{
-            fontSize: '11px',
-            color: 'rgba(255,255,255,.5)',
-            marginBottom: '12px',
-            lineHeight: 1.5,
-          }}>
-            Daily &middot; Weekly &middot; Bi-Weekly<br />
-            Airport runs &middot; Commutes &middot; Appointments<br />
-            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,.3)' }}>
-              One-time matching fee &middot; Free if you have a driver code
-            </span>
-          </div>
-          <button
+          {/* Find a Barber card */}
+          <div
             onClick={() => router.push('/find-a-driver')}
             style={{
-              width: '100%',
-              background: '#0a0a2e',
-              border: 'none',
-              borderRadius: '9px',
-              padding: '11px',
-              fontSize: '13px',
-              fontWeight: 700,
-              color: '#F5A623',
-              cursor: 'pointer',
-              fontFamily: 'Syne, sans-serif',
-              transition: 'background .15s',
+              background: 'rgba(245,166,35,0.08)', border: '2px solid rgba(245,166,35,0.55)',
+              borderRadius: 'var(--r-lg)', padding: '1.2rem', cursor: 'pointer',
+              boxShadow: '0 0 0 1px rgba(245,166,35,0.15), 0 4px 20px rgba(245,166,35,0.08)',
+              transition: 'background 0.2s',
+            }}
+          >
+            <div style={{ fontFamily: "'Syne', sans-serif", fontSize: '0.85rem', fontWeight: 800, color: 'var(--amber)', marginBottom: '0.35rem', letterSpacing: '0.04em' }}>
+              Need a Regular {config.providerLabel}?
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.9rem', lineHeight: 1.5 }}>
+              Search the pool anytime.
+            </div>
+            <button style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', width: '100%',
+              background: 'var(--amber)', border: 'none', borderRadius: 'var(--r-lg)',
+              padding: '0.85rem 1rem', fontFamily: "'Syne', sans-serif", fontSize: '0.9rem',
+              fontWeight: 800, color: 'var(--navy)', letterSpacing: '0.04em', cursor: 'pointer',
             }}>
-            Find a Driver &rarr;
-          </button>
+              Find a {config.providerLabel} &rarr;
+            </button>
+          </div>
         </div>
 
-        <div className="login-footer-text" style={{ marginTop: '16px' }}>
-          &copy; {config.copyrightYear} {config.serviceName} &middot; {config.companyName}
+        {/* Bottom legal */}
+        <div style={{
+          fontSize: '0.65rem', color: 'rgba(255,255,255,0.25)', lineHeight: 1.8,
+          textAlign: 'center', width: '100%', paddingTop: '1rem',
+          borderTop: '1px solid rgba(255,255,255,0.07)',
+        }}>
+          {config.serviceName} is a private platform by {config.companyName}<br />
+          Professionals own their client relationships here.<br />
+          &copy; {config.copyrightYear} {config.companyName} All rights reserved.
         </div>
       </div>
 
-      {/* ── Right panel: login form ──────────────────────── */}
-      <div className="login-right">
-        <form onSubmit={handleSubmit} autoComplete="off">
-          <div className="login-title">Welcome back</div>
-          <div className="login-sub">
-            Sign in to {role === 'rider' ? `book your ${config.providerLabel.toLowerCase()}` : 'manage your clients'}
-          </div>
+      {/* ── RIGHT PANEL — FORM ──────────────────────────────── */}
+      <div style={{
+        background: 'var(--surface)', display: 'flex', alignItems: 'center',
+        justifyContent: 'center', padding: '48px 44px', position: 'relative',
+      }}>
+        <div style={{ width: '100%', maxWidth: 360 }}>
+          <form onSubmit={handleSubmit} autoComplete="off">
+            {/* Header */}
+            <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 800, color: 'var(--text-1)', marginBottom: 4 }}>
+              Welcome back
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--text-3)', marginBottom: 6 }}>
+              {role === 'client' ? `Sign in to book your ${config.providerLabel.toLowerCase()}` : 'Sign in to manage your clients'}
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--text-3)', marginBottom: 22, lineHeight: 1.6 }}>
+              Private booking between you and your {config.providerLabel.toLowerCase()}.<br />
+              No app store. No algorithm. No strangers.
+            </div>
 
-          {/* Role toggle */}
-          <div className="seg-control mb-20">
-            <button
-              type="button"
-              className={`seg-opt ${role === 'rider' ? 'on' : ''}`}
-              onClick={() => setRole('rider')}
-            >
-              {config.clientLabel}
-            </button>
-            <button
-              type="button"
-              className={`seg-opt ${role === 'driver' ? 'on' : ''}`}
-              onClick={() => setRole('driver')}
-            >
-              {config.providerLabel}
-            </button>
-          </div>
+            {/* Toggle */}
+            <div style={{
+              background: '#EBEBED', borderRadius: 'var(--r-lg)', padding: 4,
+              display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, marginBottom: 22,
+            }}>
+              <button
+                type="button"
+                onClick={() => setRole('client')}
+                style={{
+                  border: 'none', borderRadius: 'var(--r-md)', padding: '9px 0',
+                  fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                  background: role === 'client' ? '#fff' : 'transparent',
+                  color: role === 'client' ? 'var(--text-1)' : 'var(--text-3)',
+                  boxShadow: role === 'client' ? '0 2px 8px rgba(0,0,0,0.10)' : 'none',
+                }}
+              >{config.clientLabel}</button>
+              <button
+                type="button"
+                onClick={() => setRole('barber')}
+                style={{
+                  border: 'none', borderRadius: 'var(--r-md)', padding: '9px 0',
+                  fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                  background: role === 'barber' ? 'var(--navy)' : 'transparent',
+                  color: role === 'barber' ? 'var(--amber)' : 'var(--text-3)',
+                  boxShadow: role === 'barber' ? '0 2px 8px rgba(0,0,0,0.10)' : 'none',
+                }}
+              >{config.providerLabel}</button>
+            </div>
 
-          {error && <div className="form-error">{error}</div>}
+            {error && <div className="form-error">{error}</div>}
 
-          {/* Email */}
-          <div className="form-group">
-            <label className="form-label">Email</label>
-            <input
-              className="form-input"
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          {/* Driver Code — rider only, 3-part input */}
-          {role === 'rider' && (
+            {/* Email */}
             <div className="form-group">
-              <label className="form-label">{config.providerLabel} Code</label>
-              <div style={{
-                display: 'flex',
-                gap: 0,
-                background: '#F7F7F8',
-                border: '1.5px solid rgba(0,0,0,.09)',
-                borderRadius: '10px',
-                overflow: 'hidden',
-                width: '100%',
-                minWidth: 0,
-              }}>
-                {/* Airport code */}
-                <input
-                  type="text"
-                  name="code_airport"
-                  autoComplete="off"
-                  maxLength={3}
-                  placeholder="IAH"
-                  value={codeAirport}
-                  onChange={(e) => {
-                    const v = e.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 3);
-                    setCodeAirport(v);
-                    if (v.length === 3) (e.target.nextElementSibling?.nextElementSibling as HTMLInputElement)?.focus();
-                  }}
-                  style={{
-                    flex: '1 1 30%',
-                    minWidth: 0,
-                    background: 'var(--surface)',
-                    border: 'none',
-                    padding: '10px 4px',
-                    textAlign: 'center',
-                    fontFamily: 'Syne, sans-serif',
-                    fontWeight: 800,
-                    fontSize: '14px',
-                    color: '#0a0a2e',
-                    outline: 'none',
-                    letterSpacing: '.04em',
-                  }}
-                />
-                <div style={{ width: '1px', background: 'rgba(0,0,0,.1)', flexShrink: 0 }} />
-                {/* Initials */}
-                <input
-                  type="text"
-                  name="code_initials"
-                  autoComplete="off"
-                  maxLength={3}
-                  placeholder="JDR"
-                  value={codeInitials}
-                  onChange={(e) => {
-                    const v = e.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 3);
-                    setCodeInitials(v);
-                    if (v.length >= 2) (e.target.nextElementSibling?.nextElementSibling as HTMLInputElement)?.focus();
-                  }}
-                  style={{
-                    flex: '1 1 28%',
-                    minWidth: 0,
-                    background: 'var(--surface)',
-                    border: 'none',
-                    padding: '10px 4px',
-                    textAlign: 'center',
-                    fontFamily: 'Syne, sans-serif',
-                    fontWeight: 800,
-                    fontSize: '14px',
-                    color: '#0a0a2e',
-                    outline: 'none',
-                    letterSpacing: '.06em',
-                  }}
-                />
-                <div style={{ width: '1px', background: 'rgba(255,255,255,.1)', flexShrink: 0 }} />
-                {/* Digits */}
-                <input
-                  type="text"
-                  name="code_digits"
-                  autoComplete="off"
-                  inputMode="numeric"
-                  maxLength={4}
-                  placeholder="4207"
-                  value={codeDigits}
-                  onChange={(e) => {
-                    const v = e.target.value.replace(/\D/g, '').slice(0, 4);
-                    setCodeDigits(v);
-                  }}
-                  style={{
-                    flex: '1 1 42%',
-                    minWidth: 0,
-                    background: 'var(--surface)',
-                    border: 'none',
-                    padding: '10px 4px',
-                    textAlign: 'center',
-                    fontFamily: 'Syne, sans-serif',
-                    fontWeight: 700,
-                    fontSize: '14px',
-                    color: '#0a0a2e',
-                    outline: 'none',
-                    letterSpacing: '.2em',
-                  }}
-                />
-              </div>
-              {/* Helper labels */}
-              <div style={{ display: 'flex', marginTop: '5px' }}>
-                <div style={{ flex: '1 1 30%', textAlign: 'center', fontSize: '9px', color: '#D4830A', fontWeight: 600 }}>Airport</div>
-                <div style={{ flex: '0 0 1px' }} />
-                <div style={{ flex: '1 1 28%', textAlign: 'center', fontSize: '9px', color: '#6B6B7A', fontWeight: 600 }}>Initials</div>
-                <div style={{ flex: '0 0 1px' }} />
-                <div style={{ flex: '1 1 42%', textAlign: 'center', fontSize: '9px', color: '#6B6B7A', fontWeight: 600 }}>Digits</div>
-              </div>
-              {/* Example code badge */}
-              <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ fontSize: '10px', color: '#6B6B7A' }}>Example:</div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', borderRadius: '7px', overflow: 'hidden' }}>
-                  <div style={{ background: '#F5A623', padding: '4px 8px', fontFamily: 'Syne, sans-serif', fontSize: '11px', fontWeight: 800, color: '#0a0a2e' }}>IAH</div>
-                  <div style={{ background: '#0a0a2e', padding: '4px 7px', fontFamily: 'Syne, sans-serif', fontSize: '11px', fontWeight: 800, color: '#F5A623' }}>JDR</div>
-                  <div style={{ background: '#12124a', padding: '4px 8px', fontFamily: 'Syne, sans-serif', fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,.8)' }}>4207</div>
+              <label className="form-label">Email</label>
+              <input className="form-input" type="email" placeholder="your@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            </div>
+
+            {/* Barber Code — client only */}
+            {role === 'client' && (
+              <div className="form-group">
+                <label className="form-label">{config.providerLabel} Code</label>
+                <div style={{
+                  display: 'flex', borderRadius: 'var(--r-md)', overflow: 'hidden',
+                  border: '2px solid rgba(0,0,0,0.15)',
+                }}>
+                  <input
+                    type="text" maxLength={3} placeholder="HTX" value={codeCity}
+                    onChange={(e) => {
+                      const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
+                      setCodeCity(v);
+                      if (v.length === 3) document.getElementById('seg-init')?.focus();
+                    }}
+                    style={{
+                      border: 'none', outline: 'none', fontFamily: "'Syne', sans-serif",
+                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.5rem',
+                      textAlign: 'center', textTransform: 'uppercase', flex: 2.5,
+                      background: '#F5A623', color: '#0a0a2e', borderRight: '3px solid #fff',
+                    }}
+                  />
+                  <input
+                    id="seg-init" type="text" maxLength={3} placeholder="MRC" value={codeInitials}
+                    onChange={(e) => {
+                      const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
+                      setCodeInitials(v);
+                      if (v.length >= 2) document.getElementById('seg-digits')?.focus();
+                    }}
+                    style={{
+                      border: 'none', outline: 'none', fontFamily: "'Syne', sans-serif",
+                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.5rem',
+                      textAlign: 'center', textTransform: 'uppercase', flex: 1,
+                      background: '#0a0a2e', color: '#F5A623', borderRight: '3px solid #fff',
+                    }}
+                  />
+                  <input
+                    id="seg-digits" type="text" maxLength={4} placeholder="3341" value={codeDigits}
+                    inputMode="numeric"
+                    onChange={(e) => setCodeDigits(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                    style={{
+                      border: 'none', outline: 'none', fontFamily: "'Syne', sans-serif",
+                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.5rem',
+                      textAlign: 'center', flex: 1,
+                      background: '#12124a', color: '#fff',
+                    }}
+                  />
                 </div>
-                <div style={{ fontSize: '10px', color: '#6B6B7A' }}>= Houston driver</div>
+                <div style={{ display: 'flex', marginTop: 4 }}>
+                  <div style={{ flex: 2.5, textAlign: 'center', fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>City/Town</div>
+                  <div style={{ flex: 1, textAlign: 'center', fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>Initials</div>
+                  <div style={{ flex: 1, textAlign: 'center', fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>Digits</div>
+                </div>
+              </div>
+            )}
+
+            {/* Password */}
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input className="form-input" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            </div>
+
+            <div style={{ textAlign: 'right', marginTop: -6, marginBottom: 6 }}>
+              <Link href="#" style={{ fontSize: 11, color: 'var(--amber-dim)', textDecoration: 'none' }}>Forgot password?</Link>
+            </div>
+
+            {/* Barber note — barber mode only */}
+            {role === 'barber' && (
+              <div style={{
+                background: 'rgba(10,10,46,0.05)', border: '1px solid rgba(10,10,46,0.1)',
+                borderRadius: 'var(--r-md)', padding: '10px 14px',
+                fontSize: 11, color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 14, fontStyle: 'italic',
+              }}>
+                <strong style={{ color: 'var(--navy)', fontStyle: 'normal' }}>Barbers:</strong> These aren&apos;t customers. They&apos;re your clients. Your list. Your rates. Your relationship &mdash; protected.
+              </div>
+            )}
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: '100%', border: 'none', borderRadius: 'var(--r-lg)', padding: 14,
+                fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 800,
+                cursor: 'pointer', letterSpacing: '0.04em', marginBottom: 16,
+                background: role === 'barber' ? 'var(--amber)' : 'var(--navy)',
+                color: role === 'barber' ? 'var(--navy)' : 'var(--amber)',
+              }}
+            >
+              {loading ? 'Signing in...' : role === 'client' ? `Book My ${config.providerLabel}` : 'Enter My Dashboard'}
+            </button>
+
+            {/* Bottom links */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 18 }}>
+              <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-3)', lineHeight: 1.5 }}>
+                Don&apos;t have a code? Request one from your {config.providerLabel.toLowerCase()}.
+              </div>
+              <Link href="/register/rider" style={{ display: 'block', textAlign: 'center', fontSize: 12, color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
+                First time here? Create your {config.clientLabel.toLowerCase()} account &rarr;
+              </Link>
+              {role === 'client' && (
+                <Link href="/register/driver" style={{ display: 'block', textAlign: 'center', fontSize: 12, color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
+                  Are you a {config.providerLabel.toLowerCase()}? Create your account &rarr;
+                </Link>
+              )}
+            </div>
+
+            {/* Legal footer */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', width: '100%', marginTop: '0.8rem', paddingTop: '0.8rem', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
+              <Link href="/privacy" style={{ flex: 1, textAlign: 'center', fontSize: '0.65rem', color: 'var(--text-3)', textDecoration: 'none', padding: '0.2rem 0', borderRight: '1px solid rgba(0,0,0,0.12)' }}>Privacy</Link>
+              <Link href="/terms" style={{ flex: 1, textAlign: 'center', fontSize: '0.65rem', color: 'var(--text-3)', textDecoration: 'none', padding: '0.2rem 0', borderRight: '1px solid rgba(0,0,0,0.12)' }}>Terms</Link>
+              <Link href="/conditions" style={{ flex: 1, textAlign: 'center', fontSize: '0.65rem', color: 'var(--text-3)', textDecoration: 'none', padding: '0.2rem 0' }}>Conditions</Link>
+              <div style={{ width: '100%', textAlign: 'center', fontSize: '0.62rem', color: 'var(--text-3)', marginTop: '0.4rem' }}>
+                &copy; {config.copyrightYear} {config.companyName} All rights reserved.
               </div>
             </div>
-          )}
-
-          {/* Password */}
-          <div className="form-group">
-            <label className="form-label">Password</label>
-            <input
-              className="form-input"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            className={`btn btn-full btn-lg mb-12 ${role === 'driver' ? '' : 'btn-amber'}`}
-            style={{
-              marginTop: '4px',
-              ...(role === 'driver' ? { background: '#0a0a2e', color: '#F5A623', border: 'none' } : {}),
-            }}
-            disabled={loading}
-          >
-            {loading
-              ? 'Signing in...'
-              : role === 'rider'
-                ? `Find My ${config.providerLabel}`
-                : `${config.providerLabel} Login`}
-          </button>
-
-          {/* Helper links */}
-          {role === 'rider' && (
-            <div className="driver-link">
-              Don&apos;t have a code? Request one from your {config.providerLabel.toLowerCase()}.
-              &nbsp;|&nbsp;
-              <Link href="#">Forgot password?</Link>
-            </div>
-          )}
-
-          {role === 'driver' && (
-            <div className="driver-link">
-              <Link href="/forgot-code">Forgot your driver code?</Link>
-            </div>
-          )}
-
-          <div className="driver-link mt-12">
-            <Link href="/register/driver">
-              Are you a {config.providerLabel.toLowerCase()}? Create your account &rarr;
-            </Link>
-          </div>
-
-          <div className="driver-link" style={{ marginTop: 6 }}>
-            <Link href="/register/rider">
-              First time here? Create your rider account &rarr;
-            </Link>
-          </div>
-
-          {/* Footer links */}
-          <div className="page-footer">
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
-            <Link href="/conditions">Conditions</Link>
-            <span style={{ margin: '0 8px' }}>
-              &copy; {config.copyrightYear} {config.serviceName}
-            </span>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

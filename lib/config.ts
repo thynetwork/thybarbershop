@@ -1,37 +1,27 @@
 /* ============================================================
    THYFREELANCER — Multi-Tenant Configuration
-   Reads environment variables with ThyDriver defaults.
+   Reads environment variables with ThyBarberShop defaults.
    Every reference to service name, labels, colors comes from here.
    ============================================================ */
 
 export interface SiteConfig {
-  /** Display name — e.g. "ThyDriver" */
   serviceName: string;
-  /** Lowercase type key — e.g. "driver" */
   serviceType: string;
-  /** URL slug — e.g. "thydriver" */
   serviceSlug: string;
-  /** Brand accent color — e.g. "#F5A623" */
   accentColor: string;
-  /** Tagline shown on login — e.g. "Your Driver. Every Airport." */
   tagline: string;
-  /** What the provider is called — e.g. "Driver" */
   providerLabel: string;
-  /** What the client is called — e.g. "Rider" */
   clientLabel: string;
-  /** Driver code prefix — e.g. "DR" */
   codePrefix: string;
-  /** Code format — 'airport' = 3-part (airport+initials+digits), 'classic' = 2-part (initials+digits) */
-  codeFormat: 'airport' | 'classic';
-  /** Featured airport codes shown on login page */
-  airportCodes: string[];
-  /** Weekly subscription amount in dollars */
+  /** Code format — 'city' = 3-part (city+initials+digits), 'airport' = airport-based */
+  codeFormat: 'city' | 'airport';
+  /** First segment label for the code field */
+  codeFirstLabel: string;
+  /** Featured locations shown on login page */
+  locationPills: string[];
   subscriptionAmount: number;
-  /** Domain — e.g. "thydriver.com" */
   domain: string;
-  /** Copyright year */
   copyrightYear: number;
-  /** Company name */
   companyName: string;
 }
 
@@ -43,23 +33,24 @@ function env(key: string, fallback: string): string {
 }
 
 export const config: SiteConfig = {
-  serviceName: env('NEXT_PUBLIC_SERVICE_NAME', 'ThyDriver'),
-  serviceType: env('NEXT_PUBLIC_SERVICE_TYPE', 'driver'),
-  serviceSlug: env('NEXT_PUBLIC_SERVICE_SLUG', 'thydriver'),
+  serviceName: env('NEXT_PUBLIC_SERVICE_NAME', 'ThyBarberShop'),
+  serviceType: env('NEXT_PUBLIC_SERVICE_TYPE', 'barber'),
+  serviceSlug: env('NEXT_PUBLIC_SERVICE_SLUG', 'thybarbershop'),
   accentColor: env('NEXT_PUBLIC_ACCENT_COLOR', '#F5A623'),
-  tagline: env('NEXT_PUBLIC_TAGLINE', 'Your Driver. Every Airport.'),
-  providerLabel: env('NEXT_PUBLIC_PROVIDER_LABEL', 'Driver'),
-  clientLabel: env('NEXT_PUBLIC_CLIENT_LABEL', 'Rider'),
-  codePrefix: env('NEXT_PUBLIC_CODE_PREFIX', 'DR'),
-  codeFormat: 'airport',
-  airportCodes: ['IAH', 'HOU', 'MCO', 'LAX', 'ATL', 'ORD', 'DFW', 'JFK', 'MIA'],
+  tagline: env('NEXT_PUBLIC_TAGLINE', 'The Chair Is Waiting.'),
+  providerLabel: env('NEXT_PUBLIC_PROVIDER_LABEL', 'Barber'),
+  clientLabel: env('NEXT_PUBLIC_CLIENT_LABEL', 'Client'),
+  codePrefix: env('NEXT_PUBLIC_CODE_PREFIX', 'BR'),
+  codeFormat: 'city',
+  codeFirstLabel: 'City/Town',
+  locationPills: ['Watts, CA', 'South Houston, TX', 'HTX', 'ATL', 'NYC'],
   subscriptionAmount: parseFloat(env('NEXT_PUBLIC_SUBSCRIPTION_AMOUNT', '9.99')),
-  domain: env('NEXT_PUBLIC_DOMAIN', 'thydriver.com'),
+  domain: env('NEXT_PUBLIC_DOMAIN', 'thybarbershop.com'),
   copyrightYear: 2026,
-  companyName: 'ThyNetwork Inc.',
+  companyName: 'ThyFreelancers Inc.',
 };
 
-/** Split "ThyDriver" into {prefix:"Thy", highlight:"Driver"} for styled logos */
+/** Split "ThyBarberShop" into {prefix:"Thy", highlight:"BarberShop"} */
 export function splitServiceName(name?: string): { prefix: string; highlight: string } {
   const n = name ?? config.serviceName;
   if (n.startsWith('Thy')) {
@@ -68,14 +59,15 @@ export function splitServiceName(name?: string): { prefix: string; highlight: st
   return { prefix: '', highlight: n };
 }
 
-/** Feature bullets shown on login left panel — customisable per service type */
+/** Feature bullets shown on login left panel */
 export function getLoginFeatures(): string[] {
-  const pl = config.providerLabel.toLowerCase();
   return [
-    `Your trusted ${pl} at your home airport — and every airport you fly to`,
-    `Invite-only. Your ${pl} shared a personal code with you.`,
-    `Pay directly via Zelle, Venmo, Cash App — no commission cut`,
-    `Insured ${pl}s. Safety Protocol for both parties.`,
+    `These aren't customers. They're your clients. Treat them like it.`,
+    `Your barber. Locked in. Every time. No strangers, no roulette.`,
+    `Invite-only. Your barber's personal code gets you in.`,
+    `Pay directly. No commission cut. No platform fees on your cut.`,
+    `Licensed. Verified. Safety Protocol for both sides.`,
+    `Find a Barber Away From Home. Verified barbers in every city — whenever you need one.`,
   ];
 }
 
