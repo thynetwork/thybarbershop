@@ -8,16 +8,17 @@ export default function PendingApprovalPage() {
   const { prefix, highlight } = splitServiceName();
 
   // TODO: Replace with real data from API/session
-  const driverName = 'James Rivera';
-  const driverFirstName = driverName.split(' ')[0];
-  const driverAirport = 'IAH';
-  const driverInitials = 'JDR';
-  const driverDigits = '4207';
-  const riderId = 'TODD·4401';
-  const requestSent = 'Today · 9:14 am';
+  const barberName = 'Marcus Rivera';
+  const barberFirstName = barberName.split(' ')[0];
+  const barberCity = 'South Houst...';
+  const barberInitials = 'MRC';
+  const barberDigits = '3341';
+  const clientId = 'TODD\u00B74401';
+  const location = 'The Studio \u00B7 Houston, TX';
+  const requestSent = 'Today \u00B7 9:14 am';
 
   // 2-hour countdown
-  const [secondsLeft, setSecondsLeft] = useState(2 * 60 * 60); // 2 hours
+  const [secondsLeft, setSecondsLeft] = useState(2 * 60 * 60);
   const [windowExpired, setWindowExpired] = useState(false);
 
   useEffect(() => {
@@ -47,7 +48,7 @@ export default function PendingApprovalPage() {
         <Link href="/" style={{ textDecoration: 'none' }}>
           <div className="topbar-logo">{prefix}<span>{highlight}</span></div>
         </Link>
-        <div className="topbar-avatar" style={{
+        <div style={{
           width: 32, height: 32, borderRadius: '50%', background: 'var(--amber)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 11, color: 'var(--navy)',
@@ -63,37 +64,43 @@ export default function PendingApprovalPage() {
             <div className="timer-value">{timeDisplay}</div>
           </div>
 
-          <div className="t-title mb-4">Waiting for {driverFirstName}&hellip;</div>
+          <div className="t-title mb-4">Waiting for {barberFirstName}&hellip;</div>
           <div className="t-small mb-20">
-            Your request has been sent. {driverFirstName} has 2 hours to confirm.<br />
+            Your request has been sent. {barberFirstName} has 2 hours to confirm.<br />
             Time remaining to confirm.
           </div>
 
-          {/* Rider ID card */}
+          {/* Client ID card */}
           <div className="rider-id-card">
-            <div className="ric-label">Your Rider ID</div>
-            <div className="ric-id">{riderId}</div>
+            <div className="ric-label">Your Client ID</div>
+            <div className="ric-id">{clientId}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-1)', marginBottom: 12 }}>
+              Write this down right now.
+            </div>
             <div className="ric-note">
-              Please write this down. Your driver uses this to identify you on every booking request. This ID is yours &mdash; it stays with you across all drivers and airports.
+              This ID is yours permanently &mdash; it never changes, it never expires, and it
+              travels with you across every {config.providerLabel.toLowerCase()} and every platform.
+              Your {config.providerLabel.toLowerCase()} uses it to identify you on every booking.
+              Lose your phone. Change your email. Your Client ID remains.
             </div>
           </div>
 
           {/* Booking summary */}
           <div className="card mb-16" style={{ textAlign: 'left' }}>
             <div className="row">
-              <span className="row-label">Driver</span>
+              <span className="row-label">{config.providerLabel}</span>
               <span className="row-value" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                {driverName}
+                {barberName}
                 <div className="driver-code">
-                  <div className="dc-airport">{driverAirport}</div>
-                  <div className="dc-initials">{driverInitials}</div>
-                  <div className="dc-digits">{driverDigits}</div>
+                  <div className="dc-airport" style={{ fontSize: 10, padding: '3px 6px' }}>{barberCity}</div>
+                  <div className="dc-initials" style={{ fontSize: 10, padding: '3px 6px' }}>{barberInitials}</div>
+                  <div className="dc-digits" style={{ fontSize: 10, padding: '3px 6px' }}>{barberDigits}</div>
                 </div>
               </span>
             </div>
             <div className="row">
-              <span className="row-label">Airport</span>
-              <span className="row-value">{driverAirport} &mdash; Houston</span>
+              <span className="row-label">Location</span>
+              <span className="row-value">{location}</span>
             </div>
             <div className="row">
               <span className="row-label">Request sent</span>
@@ -109,7 +116,7 @@ export default function PendingApprovalPage() {
             </div>
             <div className="ss">
               <div className="ss-dot ss-amber" />
-              <span className="ss-text-amber">Waiting for {driverFirstName} to approve</span>
+              <span className="ss-text-amber">Waiting for {barberFirstName} to approve</span>
             </div>
             <div className="ss">
               <div className="ss-dot ss-gray" />
@@ -117,17 +124,13 @@ export default function PendingApprovalPage() {
             </div>
           </div>
 
-          {/* Cancel button — disabled during active window */}
+          {/* Cancel button */}
           {!windowExpired ? (
             <>
               <div className="t-small mb-16" style={{ color: 'var(--text-3)' }}>
                 Cancel button becomes available after the 2-hour window closes.
               </div>
-              <button
-                className="btn btn-ghost"
-                style={{ opacity: 0.4, cursor: 'not-allowed' }}
-                disabled
-              >
+              <button className="btn btn-ghost" style={{ opacity: 0.4, cursor: 'not-allowed' }} disabled>
                 Cancel request
               </button>
             </>
@@ -137,19 +140,9 @@ export default function PendingApprovalPage() {
                 The window has expired. You can cancel or give more time.
               </div>
               <Link href="/expired">
-                <button type="button" className="btn btn-primary btn-full btn-lg mb-8">
-                  View options &rarr;
-                </button>
+                <button type="button" className="btn btn-primary btn-full btn-lg mb-8">View options &rarr;</button>
               </Link>
-              <button
-                type="button"
-                className="btn btn-ghost btn-full"
-                onClick={() => {
-                  // TODO: Call cancel API
-                }}
-              >
-                Cancel request
-              </button>
+              <button type="button" className="btn btn-ghost btn-full">Cancel request</button>
             </>
           )}
         </div>
