@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [codeCity, setCodeCity] = useState('');
+  const [codeState, setCodeState] = useState('');
   const [codeInitials, setCodeInitials] = useState('');
   const [codeDigits, setCodeDigits] = useState('');
   const [error, setError] = useState('');
@@ -31,15 +32,16 @@ export default function LoginPage() {
         role: role === 'client' ? 'rider' : 'driver',
       };
       if (role === 'client') {
-        if (!codeCity || !codeInitials || !codeDigits) {
+        if (!codeCity || !codeState || !codeInitials || !codeDigits) {
           setError(`Enter your ${config.providerLabel} Code to continue.`);
           setLoading(false);
           return;
         }
         body.codeAirport = codeCity.toUpperCase();
+        body.codeState = codeState.toUpperCase();
         body.codeInitials = codeInitials.toUpperCase();
         body.codeDigits = codeDigits;
-        body.driverCode = `${codeCity.toUpperCase()}${codeInitials.toUpperCase()}${codeDigits}`;
+        body.driverCode = `${codeCity.toUpperCase()}${codeState.toUpperCase()}${codeInitials.toUpperCase()}${codeDigits}`;
       }
 
       const res = await fetch('/api/auth/login', {
@@ -219,7 +221,7 @@ export default function LoginPage() {
               <input className="form-input" type="email" placeholder="your@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
             </div>
 
-            {/* Barber Code — client only */}
+            {/* Barber Code — client only, 4-part: City · State · Initials · Digits */}
             {role === 'client' && (
               <div className="form-group">
                 <label className="form-label">{config.providerLabel} Code</label>
@@ -227,22 +229,46 @@ export default function LoginPage() {
                   display: 'flex', borderRadius: 'var(--r-md)', overflow: 'hidden',
                   border: '2px solid rgba(0,0,0,0.15)',
                 }}>
+                  {/* City/Town — wider, full name */}
                   <input
-                    type="text" maxLength={3} placeholder="HTX" value={codeCity}
+                    type="text" maxLength={15} placeholder="Huntsville" value={codeCity}
                     onChange={(e) => {
-                      const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
+                      const v = e.target.value.replace(/[^a-zA-Z\s]/g, '').slice(0, 15);
                       setCodeCity(v);
-                      if (v.length === 3) document.getElementById('seg-init')?.focus();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === ' ' || e.key === 'Tab') {
+                        if (codeCity.length >= 2) document.getElementById('seg-state')?.focus();
+                        if (e.key === ' ') e.preventDefault();
+                      }
                     }}
                     style={{
                       border: 'none', outline: 'none', fontFamily: "'Syne', sans-serif",
-                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.5rem',
-                      textAlign: 'center', textTransform: 'uppercase', flex: 2.5,
+                      fontWeight: 700, fontSize: '0.8rem', padding: '0.7rem 0.4rem',
+                      textAlign: 'center', textTransform: 'uppercase', flex: 3,
                       background: '#F5A623', color: '#0a0a2e', borderRight: '3px solid #fff',
+                      minWidth: 0,
                     }}
                   />
+                  {/* State — 2 char */}
                   <input
-                    id="seg-init" type="text" maxLength={3} placeholder="MRC" value={codeInitials}
+                    id="seg-state" type="text" maxLength={2} placeholder="TX" value={codeState}
+                    onChange={(e) => {
+                      const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 2);
+                      setCodeState(v);
+                      if (v.length === 2) document.getElementById('seg-init')?.focus();
+                    }}
+                    style={{
+                      border: 'none', outline: 'none', fontFamily: "'Syne', sans-serif",
+                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.3rem',
+                      textAlign: 'center', textTransform: 'uppercase', flex: 0.8,
+                      background: '#0a0a2e', color: '#F5A623', borderRight: '3px solid #fff',
+                      minWidth: 0,
+                    }}
+                  />
+                  {/* Initials — 2-3 char */}
+                  <input
+                    id="seg-init" type="text" maxLength={3} placeholder="MJW" value={codeInitials}
                     onChange={(e) => {
                       const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
                       setCodeInitials(v);
@@ -250,27 +276,36 @@ export default function LoginPage() {
                     }}
                     style={{
                       border: 'none', outline: 'none', fontFamily: "'Syne', sans-serif",
-                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.5rem',
-                      textAlign: 'center', textTransform: 'uppercase', flex: 1,
-                      background: '#0a0a2e', color: '#F5A623', borderRight: '3px solid #fff',
+                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.3rem',
+                      textAlign: 'center', textTransform: 'uppercase', flex: 0.8,
+                      background: '#0a0a2e', color: 'rgba(255,255,255,0.85)', borderRight: '3px solid #fff',
+                      minWidth: 0,
                     }}
                   />
+                  {/* Digits — 4-5 */}
                   <input
-                    id="seg-digits" type="text" maxLength={4} placeholder="3341" value={codeDigits}
+                    id="seg-digits" type="text" maxLength={5} placeholder="8096" value={codeDigits}
                     inputMode="numeric"
-                    onChange={(e) => setCodeDigits(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                    onChange={(e) => setCodeDigits(e.target.value.replace(/\D/g, '').slice(0, 5))}
                     style={{
                       border: 'none', outline: 'none', fontFamily: "'Syne', sans-serif",
-                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.5rem',
+                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.3rem',
                       textAlign: 'center', flex: 1,
                       background: '#12124a', color: '#fff',
+                      minWidth: 0,
                     }}
                   />
                 </div>
+                {/* Labels */}
                 <div style={{ display: 'flex', marginTop: 4 }}>
-                  <div style={{ flex: 2.5, textAlign: 'center', fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>City/Town</div>
-                  <div style={{ flex: 1, textAlign: 'center', fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>Initials</div>
-                  <div style={{ flex: 1, textAlign: 'center', fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>Digits</div>
+                  <div style={{ flex: 3, textAlign: 'center', fontSize: '0.55rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--amber-dim)' }}>City / Town</div>
+                  <div style={{ flex: 0.8, textAlign: 'center', fontSize: '0.55rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>State</div>
+                  <div style={{ flex: 0.8, textAlign: 'center', fontSize: '0.55rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>Initials</div>
+                  <div style={{ flex: 1, textAlign: 'center', fontSize: '0.55rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>Digits</div>
+                </div>
+                {/* Example */}
+                <div style={{ marginTop: 8, fontSize: 10, color: 'var(--text-3)', lineHeight: 1.6 }}>
+                  Example: <strong style={{ color: 'var(--text-2)' }}>Huntsville &middot; TX &middot; MJW &middot; 8096</strong>
                 </div>
               </div>
             )}
