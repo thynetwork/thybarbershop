@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import config, { splitServiceName } from '@/lib/config';
+import { ACCOUNT_PLAN, HOUSEHOLD_RENEWAL } from '@/lib/account';
 
 const BANNER_GRADIENTS: { key: string; title: string; gradient: string }[] = [
   { key: 'navy', title: 'Navy', gradient: 'linear-gradient(135deg,#1a1a6e,#0a0a2e)' },
@@ -187,10 +188,12 @@ export default function ClientSettingsPage() {
             <span className="rs-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
             <span className="rs-nav-label">My Profile</span>
           </Link>
-          <Link href="/household" className="rs-nav">
-            <span className="rs-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>
-            <span className="rs-nav-label">Household</span>
-          </Link>
+          {ACCOUNT_PLAN === 'household' && (
+            <Link href="/household" className="rs-nav">
+              <span className="rs-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>
+              <span className="rs-nav-label">Household</span>
+            </Link>
+          )}
           <Link href="/history" className="rs-nav">
             <span className="rs-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
             <span className="rs-nav-label">Appointment History</span>
@@ -373,24 +376,39 @@ export default function ClientSettingsPage() {
           {/* Membership */}
           <div className="rs-card">
             <div className="rs-card-title">Membership</div>
-            <div className="rs-row">
-              <div className="rs-left">
-                <div className="rs-label">Single Platform</div>
-                <div className="rs-sub">{config.serviceName} &middot; one-time access fee paid</div>
+            {ACCOUNT_PLAN === 'household' ? (
+              <div className="rs-row">
+                <div className="rs-left">
+                  <div className="rs-label">Household Pass &middot; $19.99/year</div>
+                  <div className="rs-sub">All {config.companyName.replace(' Inc.', '')} platforms &middot; up to 5 members &middot; renews {HOUSEHOLD_RENEWAL}</div>
+                </div>
+                <div className="rs-right" style={{ display: 'flex', alignItems: 'center', gap: '.6rem' }}>
+                  <span className="rs-active-pill">Active</span>
+                  <Link href="/household" className="rs-link amber">Manage Household &rarr;</Link>
+                </div>
               </div>
-              <div className="rs-right">
-                <span className="rs-active-pill">Active</span>
-              </div>
-            </div>
-            <div className="rs-row">
-              <div className="rs-left">
-                <div className="rs-label">Household Pass</div>
-                <div className="rs-sub">Upgrade to access all {config.companyName.replace(' Inc.', '')} platforms &middot; up to 5 members &middot; $19.99/year</div>
-              </div>
-              <div className="rs-right">
-                <button type="button" className="rs-upgrade-btn" onClick={() => showToast('Opens Household Pass upgrade flow')}>Upgrade</button>
-              </div>
-            </div>
+            ) : (
+              <>
+                <div className="rs-row">
+                  <div className="rs-left">
+                    <div className="rs-label">Single Platform</div>
+                    <div className="rs-sub">{config.serviceName} &middot; one-time access fee paid</div>
+                  </div>
+                  <div className="rs-right">
+                    <span className="rs-active-pill">Active</span>
+                  </div>
+                </div>
+                <div className="rs-row">
+                  <div className="rs-left">
+                    <div className="rs-label">Household Pass</div>
+                    <div className="rs-sub">Upgrade to access all {config.companyName.replace(' Inc.', '')} platforms &middot; up to 5 members &middot; $19.99/year</div>
+                  </div>
+                  <div className="rs-right">
+                    <button type="button" className="rs-upgrade-btn" onClick={() => showToast('Opens Household Pass upgrade flow')}>Upgrade</button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Danger Zone */}

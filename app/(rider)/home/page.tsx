@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import config, { splitServiceName } from '@/lib/config';
+import { ACCOUNT_PLAN, HOUSEHOLD_MEMBERS } from '@/lib/account';
 
 /* ── Demo data ─────────────────────────────────────────────── */
 const client = { name: 'Sarah Chen', initials: 'SC', clientId: 'SARA\u00B78834' };
@@ -40,6 +41,7 @@ export default function ClientHomePage() {
 
   const [activeBarber, setActiveBarber] = useState(0);
   const [serviceIdx, setServiceIdx] = useState(0);
+  const [activeMemberId, setActiveMemberId] = useState<string>(HOUSEHOLD_MEMBERS[0].id);
   const trackRef = useRef<HTMLDivElement>(null);
 
   const b = barbers[activeBarber];
@@ -78,6 +80,57 @@ export default function ClientHomePage() {
 
       {/* ── Page ────────────────────────────────────────────── */}
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '1.25rem 1.25rem 4rem' }}>
+
+        {/* ── Household Member Selector (household plan only) ── */}
+        {ACCOUNT_PLAN === 'household' && (
+          <div style={{
+            background: '#fff', border: '1.5px solid rgba(0,0,0,0.09)', borderRadius: 'var(--r-xl, 1.25rem)',
+            padding: '1rem 1.1rem', marginBottom: '1rem', boxShadow: '0 4px 16px rgba(0,0,0,0.07)',
+          }}>
+            <div style={{
+              fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase',
+              color: '#9A9AAA', marginBottom: '0.6rem',
+            }}>Who&rsquo;s booking today?</div>
+            <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', paddingBottom: '0.25rem' }}>
+              {HOUSEHOLD_MEMBERS.map(m => {
+                const active = activeMemberId === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setActiveMemberId(m.id)}
+                    style={{
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.35rem',
+                      flex: '0 0 auto', minWidth: '4.5rem', padding: '0.65rem 0.5rem',
+                      borderRadius: '1rem',
+                      border: active ? '1.5px solid #F5A623' : '1.5px solid rgba(0,0,0,0.09)',
+                      background: active ? 'rgba(245,166,35,0.08)' : '#fff',
+                      cursor: 'pointer', fontFamily: 'inherit',
+                    }}
+                  >
+                    <div style={{
+                      width: '2.4rem', height: '2.4rem', borderRadius: '50%',
+                      background: m.bg, color: m.fg,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: '0.72rem',
+                      border: '0.15rem solid rgba(0,0,0,0.06)',
+                    }}>{m.initials}</div>
+                    <div style={{
+                      fontFamily: "'Syne', sans-serif", fontSize: '0.65rem', fontWeight: 800,
+                      color: active ? '#0a0a2e' : '#5A5A6A', textAlign: 'center', lineHeight: 1.1,
+                    }}>{m.shortName}</div>
+                    {m.primary && (
+                      <div style={{
+                        fontSize: '0.55rem', fontWeight: 700, color: active ? '#D4830A' : '#9A9AAA',
+                        textTransform: 'uppercase', letterSpacing: '0.06em',
+                      }}>Primary</div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* ── Greeting Card ──────────────────────────────────── */}
         <div style={{
