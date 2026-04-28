@@ -17,10 +17,24 @@ interface PayMethod {
   isCash?: boolean;
 }
 
-const SPECIALTIES = [
-  'Adult Cuts', 'Kid Cuts', 'Beard & Mustache', 'Razor Shaves',
-  'Classic Cuts', 'Clean Style Cuts', 'Fades', 'Tapers',
-  'Parts & Designs', 'Toupees', 'Man Weaves',
+interface Specialty {
+  name: string;
+  active: boolean;
+  rate: string;
+}
+
+const INITIAL_SPECIALTIES: Specialty[] = [
+  { name: 'Adult Cuts', active: true, rate: '45' },
+  { name: 'Kid Cuts', active: true, rate: '25' },
+  { name: 'Beard & Mustache', active: false, rate: '' },
+  { name: 'Razor Shaves', active: false, rate: '' },
+  { name: 'Classic Cuts', active: false, rate: '' },
+  { name: 'Clean Style Cuts', active: true, rate: '45' },
+  { name: 'Fades', active: true, rate: '55' },
+  { name: 'Tapers', active: true, rate: '50' },
+  { name: 'Parts & Designs', active: false, rate: '' },
+  { name: 'Toupees', active: false, rate: '' },
+  { name: 'Man Weaves', active: false, rate: '' },
 ];
 
 const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -31,9 +45,7 @@ export default function EditProfilePage() {
   const [vibeText, setVibeText] = useState(
     "South Houston's spot for clean fades and sharp line-ups. Twelve years behind the chair — professional, consistent, and on time. The chair is where you reset. Come correct, leave sharp."
   );
-  const [activeSpecs, setActiveSpecs] = useState<Set<string>>(
-    new Set(['Adult Cuts', 'Kid Cuts', 'Clean Style Cuts', 'Fades', 'Tapers'])
-  );
+  const [specialties, setSpecialties] = useState<Specialty[]>(INITIAL_SPECIALTIES);
   const [locType, setLocType] = useState<'Shop' | 'Mobile' | 'Both'>('Shop');
   const [afterHours, setAfterHours] = useState<'By request' | 'Not available'>('By request');
   const [activeDays, setActiveDays] = useState<Set<string>>(
@@ -53,12 +65,16 @@ export default function EditProfilePage() {
     setTimeout(() => setToast(''), 2500);
   }
 
-  function toggleSpec(s: string) {
-    setActiveSpecs(prev => {
-      const next = new Set(prev);
-      if (next.has(s)) next.delete(s); else next.add(s);
-      return next;
-    });
+  function toggleSpec(name: string) {
+    setSpecialties(prev => prev.map(s =>
+      s.name === name
+        ? { ...s, active: !s.active, rate: s.active ? '' : s.rate }
+        : s
+    ));
+  }
+
+  function updateSpecRate(name: string, rate: string) {
+    setSpecialties(prev => prev.map(s => s.name === name ? { ...s, rate } : s));
   }
 
   function toggleDay(d: string) {
@@ -155,11 +171,20 @@ export default function EditProfilePage() {
         .ep-btn-photo:hover{border-color:#F5A623;color:#D4830A;}
         .ep-btn-thyhair{background:#0a0a2e;border:none;border-radius:1rem;padding:.6rem;font-family:'Syne',sans-serif;font-size:.75rem;font-weight:800;color:#F5A623;cursor:pointer;text-align:center;}
 
-        .ep-spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;}
+        .ep-spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;}
+        .ep-spec-wrap{display:flex;flex-direction:column;gap:0;}
         .ep-spec{border:1.5px solid rgba(0,0,0,.09);border-radius:.75rem;padding:.55rem .7rem;font-size:.72rem;font-weight:600;cursor:pointer;background:#fff;color:#5A5A6A;display:flex;align-items:center;gap:.4rem;font-family:'DM Sans',sans-serif;}
         .ep-spec:hover{border-color:rgba(245,166,35,.25);}
-        .ep-spec.on{background:#0a0a2e;border-color:#0a0a2e;color:#F5A623;}
+        .ep-spec.on{background:#0a0a2e;border-color:#0a0a2e;color:#F5A623;border-radius:.75rem .75rem 0 0;}
         .ep-spec-dot{width:.35rem;height:.35rem;border-radius:50%;background:currentColor;flex-shrink:0;}
+        .ep-spec-price{display:none;align-items:center;justify-content:space-between;background:#F7F7F8;border:1.5px solid #0a0a2e;border-top:none;border-radius:0 0 .75rem .75rem;padding:.4rem .7rem;}
+        .ep-spec-price.on{display:flex;}
+        .ep-spec-price-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#9A9AAA;}
+        .ep-spec-price-wrap{display:flex;align-items:center;gap:.2rem;}
+        .ep-spec-dollar{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:800;color:#0a0a2e;}
+        .ep-spec-price-input{width:3.5rem;border:1px solid rgba(0,0,0,.09);border-radius:.4rem;padding:.2rem .35rem;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:800;color:#0a0a2e;text-align:right;outline:none;background:#fff;}
+        .ep-spec-price-input:focus{border-color:#F5A623;}
+        .ep-spec-price-input:disabled{background:transparent;border-color:transparent;color:#9A9AAA;}
 
         .ep-loc-toggle{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;margin-bottom:.75rem;}
         .ep-loc-toggle.two{grid-template-columns:1fr 1fr;}
@@ -347,15 +372,30 @@ export default function EditProfilePage() {
             <div className="ep-card-title">The Craft</div>
 
             <div className="ep-field">
-              <div className="ep-label">Specialties <span className="sub">shown as badges on your public profile</span></div>
+              <div className="ep-label">Specialties &amp; Rates <span className="sub">toggle on &middot; enter your price &middot; shown on your profile and booking screens</span></div>
               <div className="ep-spec-grid">
-                {SPECIALTIES.map(spec => (
-                  <div
-                    key={spec}
-                    className={'ep-spec' + (activeSpecs.has(spec) ? ' on' : '')}
-                    onClick={() => toggleSpec(spec)}
-                  >
-                    <div className="ep-spec-dot"></div>{spec}
+                {specialties.map(spec => (
+                  <div key={spec.name} className="ep-spec-wrap">
+                    <div
+                      className={'ep-spec' + (spec.active ? ' on' : '')}
+                      onClick={() => toggleSpec(spec.name)}
+                    >
+                      <div className="ep-spec-dot"></div>{spec.name}
+                    </div>
+                    <div className={'ep-spec-price' + (spec.active ? ' on' : '')}>
+                      <span className="ep-spec-price-label">Rate</span>
+                      <div className="ep-spec-price-wrap">
+                        <span className="ep-spec-dollar">$</span>
+                        <input
+                          className="ep-spec-price-input"
+                          type="number"
+                          placeholder="0"
+                          value={spec.rate}
+                          disabled={!spec.active}
+                          onChange={(e) => updateSpecRate(spec.name, e.target.value)}
+                        />
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
