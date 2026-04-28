@@ -584,8 +584,9 @@ export default function DriverCardPage() {
                 time: selectedTime ?? '',
                 location: locationValue,
                 locationType: selectedLocation,
+                price: String(services[selectedService].price),
               });
-              router.push(`/book/confirmed?${params.toString()}`);
+              router.push(`/book/payment?${params.toString()}`);
             }}
             disabled={!canProceed}
             style={{
