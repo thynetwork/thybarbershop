@@ -24,14 +24,14 @@ interface Specialty {
 }
 
 const INITIAL_SPECIALTIES: Specialty[] = [
-  { name: 'Adult Cuts', active: true, rate: '45' },
-  { name: 'Kid Cuts', active: true, rate: '25' },
+  { name: 'Adult Cuts', active: false, rate: '' },
+  { name: 'Kid Cuts', active: false, rate: '' },
   { name: 'Beard & Mustache', active: false, rate: '' },
   { name: 'Razor Shaves', active: false, rate: '' },
   { name: 'Classic Cuts', active: false, rate: '' },
-  { name: 'Clean Style Cuts', active: true, rate: '45' },
-  { name: 'Fades', active: true, rate: '55' },
-  { name: 'Tapers', active: true, rate: '50' },
+  { name: 'Clean Style Cuts', active: false, rate: '' },
+  { name: 'Fades', active: false, rate: '' },
+  { name: 'Tapers', active: false, rate: '' },
   { name: 'Parts & Designs', active: false, rate: '' },
   { name: 'Toupees', active: false, rate: '' },
   { name: 'Man Weaves', active: false, rate: '' },
