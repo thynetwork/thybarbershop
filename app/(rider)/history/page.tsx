@@ -67,7 +67,7 @@ export default function AppointmentHistoryPage() {
   }
 
   function bookAgain() {
-    router.push('/driver/MRC');
+    router.push('/barber/MRC');
   }
 
   return (
@@ -193,7 +193,7 @@ export default function AppointmentHistoryPage() {
             <span className="ah-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
             <span className="ah-nav-label">Appointment History</span>
           </Link>
-          <Link href="/rider-settings" className="ah-nav">
+          <Link href="/client-settings" className="ah-nav">
             <span className="ah-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M20 12h2M2 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/></svg></span>
             <span className="ah-nav-label">Settings</span>
           </Link>

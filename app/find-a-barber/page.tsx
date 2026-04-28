@@ -44,10 +44,10 @@ export default function FindABarberPage() {
     const fallback = NO_MATCH_FALLBACK[z];
     if (fallback) {
       setNoMatchNote(`No ${config.providerLabel.toLowerCase()}s in ${z} · showing nearby ${fallback} area ${config.providerLabel.toLowerCase()}s instead.`);
-      setTimeout(() => router.push(`/find-a-driver/${z}`), 1200);
+      setTimeout(() => router.push(`/find-a-barber/${z}`), 1200);
     } else {
       setNoMatchNote('');
-      router.push(`/find-a-driver/${z}`);
+      router.push(`/find-a-barber/${z}`);
     }
   }
 
@@ -133,7 +133,7 @@ export default function FindABarberPage() {
             <span className="fa-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
             <span className="fa-nav-label">Home</span>
           </Link>
-          <Link href="/find-a-driver" className="fa-nav on">
+          <Link href="/find-a-barber" className="fa-nav on">
             <span className="fa-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
             <span className="fa-nav-label">Find a {config.providerLabel}</span>
           </Link>
@@ -151,7 +151,7 @@ export default function FindABarberPage() {
             <span className="fa-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
             <span className="fa-nav-label">Appointment History</span>
           </Link>
-          <Link href="/rider-settings" className="fa-nav">
+          <Link href="/client-settings" className="fa-nav">
             <span className="fa-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M20 12h2M2 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/></svg></span>
             <span className="fa-nav-label">Settings</span>
           </Link>

@@ -81,7 +81,7 @@ export default function JoinPage() {
             <div className="t-small mb-24" style={{ lineHeight: 1.6 }}>
               This invite link is invalid or expired. Ask your driver for a new link, or find a driver at your airport.
             </div>
-            <Link href="/find-a-driver">
+            <Link href="/find-a-barber">
               <button type="button" className="btn btn-amber btn-full btn-lg mb-8">
                 Find a Driver &rarr;
               </button>

@@ -93,7 +93,7 @@ function StripePaymentForm({
     if (paymentIntent?.status === 'succeeded') {
       // Now create the driver request
       try {
-        const res = await fetch(`/api/find-a-driver/${airport}/${driverId}/request`, {
+        const res = await fetch(`/api/find-a-barber/${airport}/${driverId}/request`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ paymentIntentId: paymentIntent.id }),
@@ -210,7 +210,7 @@ export default function RequestPage() {
         </div>
         <div style={{ padding: '60px', textAlign: 'center' }}>
           <div className="t-display mb-8">{config.providerLabel} not found</div>
-          <button className="btn btn-ghost" onClick={() => router.push(`/find-a-driver/${airport}`)}>
+          <button className="btn btn-ghost" onClick={() => router.push(`/find-a-barber/${airport}`)}>
             &larr; Back to pool
           </button>
         </div>
@@ -249,7 +249,7 @@ export default function RequestPage() {
             </div>
             <button
               className="btn btn-amber btn-full mb-8"
-              onClick={() => router.push(`/find-a-driver/${airport}`)}
+              onClick={() => router.push(`/find-a-barber/${airport}`)}
             >
               Back to {airportCity} Drivers
             </button>
@@ -360,7 +360,7 @@ export default function RequestPage() {
 
             <button
               className="btn btn-ghost btn-full mb-16"
-              onClick={() => router.push(`/find-a-driver/${airport}/${driverId}`)}
+              onClick={() => router.push(`/find-a-barber/${airport}/${driverId}`)}
             >
               &larr; Back to profile
             </button>

@@ -128,7 +128,7 @@ export default function LoginPage() {
 
           {/* Find a Barber card */}
           <div
-            onClick={() => router.push('/find-a-driver')}
+            onClick={() => router.push('/find-a-barber')}
             style={{
               background: 'rgba(245,166,35,0.08)', border: '2px solid rgba(245,166,35,0.55)',
               borderRadius: 'var(--r-lg)', padding: '1.2rem', cursor: 'pointer',

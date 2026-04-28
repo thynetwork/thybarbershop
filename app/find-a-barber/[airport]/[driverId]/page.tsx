@@ -177,7 +177,7 @@ export default function DriverProfilePage() {
         </div>
         <div style={{ padding: '60px', textAlign: 'center' }}>
           <div className="t-display mb-8">{config.providerLabel} not found</div>
-          <button className="btn btn-ghost" onClick={() => router.push(`/find-a-driver/${airport}`)}>
+          <button className="btn btn-ghost" onClick={() => router.push(`/find-a-barber/${airport}`)}>
             &larr; Back to pool
           </button>
         </div>
@@ -286,13 +286,13 @@ export default function DriverProfilePage() {
 
             <button
               className="btn btn-primary btn-full btn-lg"
-              onClick={() => router.push(`/find-a-driver/${airport}/${driverId}/register`)}
+              onClick={() => router.push(`/find-a-barber/${airport}/${driverId}/register`)}
             >
               Request Connection &middot; $9.99 &rarr;
             </button>
             <button
               className="btn btn-ghost btn-full mt-8"
-              onClick={() => router.push(`/find-a-driver/${airport}`)}
+              onClick={() => router.push(`/find-a-barber/${airport}`)}
             >
               &larr; Back to pool
             </button>

@@ -73,7 +73,7 @@ export default function ExpiredWindowPage() {
               </div>
             </div>
 
-            <Link href="/find-a-driver">
+            <Link href="/find-a-barber">
               <button type="button" className="btn btn-amber btn-full btn-lg mb-8">Find a Driver &rarr;</button>
             </Link>
             <Link href="/home">
@@ -123,7 +123,7 @@ export default function ExpiredWindowPage() {
               </div>
             </div>
 
-            <Link href="/find-a-driver">
+            <Link href="/find-a-barber">
               <button type="button" className="btn btn-amber btn-full btn-lg mb-8">Find a Driver &rarr;</button>
             </Link>
             <Link href="/home">

@@ -152,10 +152,10 @@ export default function BarberPoolPage() {
         .fp-tb-avatar{width:2rem;height:2rem;border-radius:50%;background:#F5A623;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.72rem;color:#0a0a2e;}
 
         .fp-sidebar{background:linear-gradient(180deg,#0d0d38,#0a0a2e);border-right:1px solid rgba(255,255,255,.06);padding:1.5rem 0;overflow-y:auto;display:flex;flex-direction:column;}
-        .fp-side-id{display:flex;flex-direction:column;align-items:center;text-align:center;padding:1.25rem 1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:.5rem;}
-        .fp-si-avatar{width:3.75rem;height:3.75rem;border-radius:50%;background:#F5A623;color:#0a0a2e;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;border:.2rem solid rgba(255,255,255,.15);margin-bottom:.6rem;box-shadow:0 .25rem .75rem rgba(0,0,0,.3);}
-        .fp-si-name{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:800;color:#fff;margin-bottom:.2rem;}
-        .fp-si-id{font-family:'DM Mono',monospace;font-size:.65rem;color:rgba(255,255,255,.4);}
+        .sidebar-identity{display:flex;flex-direction:column;align-items:center;text-align:center;padding:1.25rem 1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:0.5rem;}
+        .si-avatar{width:3.75rem;height:3.75rem;border-radius:50%;background:#F5A623;color:#0a0a2e;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;border:0.2rem solid rgba(255,255,255,0.15);margin-bottom:0.6rem;box-shadow:0 0.25rem 0.75rem rgba(0,0,0,0.3);}
+        .si-name{font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:800;color:#fff;margin-bottom:0.2rem;}
+        .si-id{font-family:'DM Mono',monospace;font-size:0.65rem;color:rgba(255,255,255,0.4);}
         .fp-side-section{font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:0 1.25rem;margin-bottom:.5rem;margin-top:1rem;}
         .fp-nav{display:flex;align-items:center;gap:.7rem;padding:.65rem 1.25rem;cursor:pointer;border:none;background:none;width:100%;text-align:left;border-left:.1875rem solid transparent;text-decoration:none;}
         .fp-nav:hover{background:rgba(255,255,255,.05);}
@@ -237,10 +237,10 @@ export default function BarberPoolPage() {
         </nav>
 
         <aside className="fp-sidebar">
-          <div className="fp-side-id">
-            <div className="fp-si-avatar">{client.initials}</div>
-            <div className="fp-si-name">{client.name}</div>
-            <div className="fp-si-id">{client.clientId}</div>
+          <div className="sidebar-identity">
+            <div className="si-avatar">{client.initials}</div>
+            <div className="si-name">{client.name}</div>
+            <div className="si-id">{client.clientId}</div>
           </div>
 
           <div className="fp-side-section">Booking</div>
@@ -248,7 +248,7 @@ export default function BarberPoolPage() {
             <span className="fp-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
             <span className="fp-nav-label">Home</span>
           </Link>
-          <Link href="/find-a-driver" className="fp-nav on">
+          <Link href="/find-a-barber" className="fp-nav on">
             <span className="fp-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
             <span className="fp-nav-label">Find a {config.providerLabel}</span>
           </Link>
@@ -266,7 +266,7 @@ export default function BarberPoolPage() {
             <span className="fp-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
             <span className="fp-nav-label">Appointment History</span>
           </Link>
-          <Link href="/rider-settings" className="fp-nav">
+          <Link href="/client-settings" className="fp-nav">
             <span className="fp-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M20 12h2M2 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/></svg></span>
             <span className="fp-nav-label">Settings</span>
           </Link>
@@ -281,7 +281,7 @@ export default function BarberPoolPage() {
         <main className="fp-main">
           <div className="fp-top-row">
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <button type="button" className="fp-back" onClick={() => router.push('/find-a-driver')}>
+              <button type="button" className="fp-back" onClick={() => router.push('/find-a-barber')}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"/></svg>
                 Back
               </button>
@@ -346,7 +346,7 @@ export default function BarberPoolPage() {
                   <div className="fp-hours">{b.hours}{b.afterHours ? ' · After hours by request' : ''}</div>
                   <div className="fp-footer-btns">
                     <button type="button" className="fp-view-btn" onClick={() => router.push('/public-profile')}>View Profile</button>
-                    <button type="button" className="fp-request-btn" onClick={() => router.push(`/find-a-driver/${zip}/${b.id}/request`)}>Request</button>
+                    <button type="button" className="fp-request-btn" onClick={() => router.push(`/find-a-barber/${zip}/${b.id}/request`)}>Request</button>
                   </div>
                 </div>
               </div>
