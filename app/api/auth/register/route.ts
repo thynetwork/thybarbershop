@@ -154,6 +154,18 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      // Pre-generate the shareable invite QR (SC1 reads barber.qr_code_url).
+      // Failure here doesn't abort registration — SC1 can re-generate later.
+      try {
+        const { generateAndUploadBarberQr } = await import('@/lib/qr');
+        const qrUrl = await generateAndUploadBarberQr({ initials, digits: codeDigits });
+        if (qrUrl) {
+          await supabase.from('drivers').update({ qr_code_url: qrUrl }).eq('id', newUser.id);
+        }
+      } catch (qrErr) {
+        console.error('QR generation failed:', qrErr);
+      }
+
       const fullCode = driverAirportCode
         ? `${driverAirportCode}·${initials}·${codeDigits}`
         : `${initials}${codeDigits}`;

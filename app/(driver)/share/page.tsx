@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import config, { splitServiceName } from '@/lib/config';
 
@@ -21,18 +21,6 @@ const INVITES: Invite[] = [
 
 const STATS = { connected: 14, pending: 3, taps: 47 };
 
-const QR_PATTERN = [
-  1,1,1,1,1,1,1,0,1,
-  1,0,0,0,0,0,1,0,0,
-  1,0,1,1,1,0,1,0,1,
-  1,0,1,1,1,0,1,0,1,
-  1,0,0,0,0,0,1,0,0,
-  1,1,1,1,1,1,1,0,1,
-  0,0,0,0,0,0,0,0,1,
-  1,0,1,1,0,1,0,0,0,
-  0,1,1,0,1,0,1,1,1,
-];
-
 const barber = {
   initials: 'JM',
   name: 'John Merrick',
@@ -44,13 +32,32 @@ const barber = {
   codeDigits: '7749',
 };
 
-const INVITE_PATH = `/invite/${barber.codeInitials}${barber.codeDigits}`;
-const INVITE_DISPLAY = `thybarber.shop${INVITE_PATH}`;
-
 export default function ShareCodePage() {
   const { prefix, highlight } = splitServiceName();
 
   const [toast, setToast] = useState('');
+  const [inviteUrl, setInviteUrl] = useState<string>(`https://thybarber.shop/invite/${barber.codeInitials}${barber.codeDigits}`);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
+
+  // Strip the protocol for the on-card display ("thybarber.shop/invite/…").
+  const inviteDisplay = inviteUrl.replace(/^https?:\/\//, '');
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/driver/share');
+        if (!res.ok) return;
+        const data = (await res.json()) as { inviteUrl?: string; qrCodeUrl?: string };
+        if (cancelled) return;
+        if (data.inviteUrl) setInviteUrl(data.inviteUrl);
+        if (data.qrCodeUrl) setQrCodeUrl(data.qrCodeUrl);
+      } catch {
+        // Keep local fallback values.
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   function showToast(msg: string) {
     setToast(msg);
@@ -58,13 +65,36 @@ export default function ShareCodePage() {
   }
 
   function copyLink() {
-    navigator.clipboard.writeText(INVITE_DISPLAY)
-      .then(() => showToast('Link copied — ' + INVITE_DISPLAY))
-      .catch(() => showToast(INVITE_DISPLAY));
+    navigator.clipboard.writeText(inviteUrl)
+      .then(() => showToast('Link copied — ' + inviteDisplay))
+      .catch(() => showToast(inviteDisplay));
   }
 
   function shareVia(platform: string) {
     showToast('Sharing via ' + platform + ' in production');
+  }
+
+  async function downloadQr() {
+    if (!qrCodeUrl) {
+      showToast('QR is being generated — try again in a moment');
+      return;
+    }
+    try {
+      const res = await fetch(qrCodeUrl);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = `QR_${barber.codeInitials}${barber.codeDigits}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(objectUrl);
+      showToast('QR code downloaded');
+    } catch {
+      showToast('Could not download QR — opening in new tab');
+      window.open(qrCodeUrl, '_blank');
+    }
   }
 
   return (
@@ -270,7 +300,7 @@ export default function ShareCodePage() {
                 <div className="sh-ch-shop">{barber.shop}</div>
 
                 <div className="sh-link-wrap">
-                  <div className="sh-link-text">{INVITE_DISPLAY}</div>
+                  <div className="sh-link-text">{inviteDisplay}</div>
                   <button type="button" className="sh-link-copy" onClick={copyLink}>Copy Link</button>
                 </div>
 
@@ -294,13 +324,20 @@ export default function ShareCodePage() {
                 </div>
 
                 <div className="sh-qr-wrap">
-                  <div className="sh-qr-grid">
-                    {QR_PATTERN.map((v, i) => (
-                      <div key={i} className="sh-qr-cell" style={{ background: v ? '#0a0a2e' : '#fff' }}></div>
-                    ))}
-                  </div>
-                  <div className="sh-qr-label">Scan to connect with {barber.name.split(' ')[0]} &middot; {INVITE_DISPLAY}</div>
-                  <button type="button" className="sh-btn-dl-qr" onClick={() => showToast('Downloading QR code as PNG')}>Download QR Code</button>
+                  {qrCodeUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={qrCodeUrl}
+                      alt={`Invite QR · ${barber.codeInitials}${barber.codeDigits}`}
+                      width={300}
+                      height={300}
+                      style={{ width: '12.6rem', height: '12.6rem', display: 'block', marginBottom: '.75rem', borderRadius: '.5rem' }}
+                    />
+                  ) : (
+                    <div style={{ width: '12.6rem', height: '12.6rem', marginBottom: '.75rem', borderRadius: '.5rem', background: '#F7F7F8', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9A9AAA', fontSize: '.7rem' }}>Generating QR…</div>
+                  )}
+                  <div className="sh-qr-label">Scan to connect with {barber.name.split(' ')[0]} &middot; {inviteDisplay}</div>
+                  <button type="button" className="sh-btn-dl-qr" onClick={downloadQr} disabled={!qrCodeUrl}>Download QR Code</button>
                 </div>
               </div>
             </div>

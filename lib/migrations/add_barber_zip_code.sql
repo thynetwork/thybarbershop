@@ -13,6 +13,9 @@ ALTER TABLE drivers
   ADD CONSTRAINT drivers_zip_code_format
   CHECK (zip_code IS NULL OR zip_code ~ '^[0-9]{5}$');
 
+-- Public URL for the barber's pre-generated invite QR (Supabase storage).
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS qr_code_url text;
+
 -- Indexes that power the FA1 pool query:
 --   barber.zip_code = $1
 --   OR $1 = ANY(barber.service_areas)
