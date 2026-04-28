@@ -1,9 +1,11 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import config, { splitServiceName } from '@/lib/config';
+
+type ConnectionState = 'none' | 'pending' | 'connected';
 
 const BANNER_GRADIENTS: { key: string; title: string; gradient: string }[] = [
   { key: 'navy', title: 'Navy', gradient: 'linear-gradient(135deg,#1a1a6e,#0a0a2e)' },
@@ -46,16 +48,37 @@ function PublicProfileContent() {
 
   const [bannerKey, setBannerKey] = useState('navy');
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [requestState, setRequestState] = useState<'idle' | 'sending' | 'sent'>('idle');
+  const [connectionState, setConnectionState] = useState<ConnectionState>('none');
+  const [submitting, setSubmitting] = useState(false);
   const currentGradient = BANNER_GRADIENTS.find(g => g.key === bannerKey)?.gradient ?? BANNER_GRADIENTS[0].gradient;
+
+  // On mount in visitor mode, check the existing connection between the
+  // logged-in client and this barber so the CTA reflects reality.
+  useEffect(() => {
+    if (isOwner || !barberId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/connections?barberId=${encodeURIComponent(barberId)}`);
+        if (!res.ok) return;
+        const data = (await res.json()) as { status?: ConnectionState };
+        if (!cancelled && (data.status === 'pending' || data.status === 'connected' || data.status === 'none')) {
+          setConnectionState(data.status);
+        }
+      } catch {
+        // No-op: keep default 'none' if the API isn't reachable.
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [isOwner, barberId]);
 
   function goThyHair() {
     alert('Opening ThyHair portfolio page for Marcus Rivera in production.');
   }
 
   async function requestConnection() {
-    if (requestState !== 'idle') return;
-    setRequestState('sending');
+    if (connectionState !== 'none' || submitting) return;
+    setSubmitting(true);
     try {
       await fetch('/api/connections', {
         method: 'POST',
@@ -65,7 +88,8 @@ function PublicProfileContent() {
     } catch {
       // Non-blocking: UI confirms intent even if API isn't wired yet.
     }
-    setRequestState('sent');
+    setConnectionState('pending');
+    setSubmitting(false);
   }
 
   function backToPool() {
@@ -120,8 +144,8 @@ function PublicProfileContent() {
         .pp-request-bar{max-width:60rem;margin:0 auto;padding:1rem 1.5rem 0;display:flex;justify-content:flex-end;}
         .pp-request-cta{background:#F5A623;border:none;border-radius:1rem;padding:.75rem 1.5rem;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:800;color:#0a0a2e;cursor:pointer;box-shadow:0 .25rem 1rem rgba(245,166,35,.3);}
         .pp-request-cta:hover{opacity:.9;}
-        .pp-request-cta.sent{background:#3B6D11;color:#fff;cursor:default;}
-        .pp-request-cta:disabled{opacity:.7;cursor:wait;}
+        .pp-request-cta.pending{background:rgba(245,166,35,.15);color:#D4830A;border:1.5px solid rgba(245,166,35,.4);box-shadow:none;cursor:not-allowed;}
+        .pp-request-cta:disabled{opacity:.85;cursor:not-allowed;}
         .pp-hero-rating{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#F5A623;line-height:1;}
         .pp-hero-rating-label{font-size:.6rem;color:rgba(255,255,255,.35);margin-top:.2rem;}
         .pp-hero-visits{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:rgba(255,255,255,.6);margin-top:.5rem;}
@@ -249,15 +273,19 @@ function PublicProfileContent() {
         </div>
       </div>
 
-      {!isOwner && (
+      {!isOwner && connectionState !== 'connected' && (
         <div className="pp-request-bar">
           <button
             type="button"
-            className={'pp-request-cta' + (requestState === 'sent' ? ' sent' : '')}
+            className={'pp-request-cta' + (connectionState === 'pending' ? ' pending' : '')}
             onClick={requestConnection}
-            disabled={requestState !== 'idle'}
+            disabled={connectionState === 'pending' || submitting}
           >
-            {requestState === 'sent' ? '✓ Request Sent' : requestState === 'sending' ? 'Sending…' : 'Request Connection'}
+            {connectionState === 'pending'
+              ? 'Request Pending'
+              : submitting
+                ? 'Sending…'
+                : 'Request Connection'}
           </button>
         </div>
       )}
