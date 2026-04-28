@@ -85,7 +85,7 @@ const NAV_BUSINESS = [
   { icon: '\uD83D\uDD17', label: 'Share Code', href: '/share' },
 ];
 const NAV_ACCOUNT = [
-  { icon: '\uD83D\uDC64', label: 'Profile', href: '/profile' },
+  { icon: '\uD83D\uDC64', label: 'Profile', href: '/edit-profile'},
   { icon: '\uD83D\uDCCB', label: 'Work History', href: '/history', badge: '312', badgeColor: 'amber' as const },
   { icon: '\u2699\uFE0F', label: 'Settings', href: '/settings' },
   { icon: '\uD83D\uDCDE', label: 'Support', href: '/support' },
@@ -399,6 +399,11 @@ export default function ClientsPage() {
 
         </div>
       </div>
+
+      <footer className="site-footer">
+        &copy; {config.copyrightYear} {config.serviceName} &middot; {config.companyName}{' '}
+        <a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/conditions">Conditions</a>
+      </footer>
     </div>
   );
 }

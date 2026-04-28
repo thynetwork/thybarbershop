@@ -144,7 +144,7 @@ export default function FindADriverPage() {
 
       {/* Footer */}
       <div className="site-footer">
-        &copy; {config.copyrightYear} {config.serviceName}{' '}
+        &copy; {config.copyrightYear} {config.serviceName} &middot; {config.companyName}{' '}
         <a href="#">Privacy</a>
         <a href="#">Terms</a>
         <a href="#">Conditions</a>

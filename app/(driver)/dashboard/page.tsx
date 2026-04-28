@@ -96,7 +96,7 @@ const NAV_BUSINESS = [
   { icon: '\uD83D\uDD17', label: 'Share Code', href: '/share' },
 ];
 const NAV_ACCOUNT = [
-  { icon: '\uD83D\uDC64', label: 'Profile', href: '/profile' },
+  { icon: '\uD83D\uDC64', label: 'Profile', href: '/edit-profile'},
   { icon: '\uD83D\uDCCB', label: 'Work History', href: '/history', badge: '312', badgeColor: 'amber' as const },
   { icon: '\u2699\uFE0F', label: 'Settings', href: '/settings' },
   { icon: '\uD83D\uDCDE', label: 'Support', href: '/support' },
@@ -518,7 +518,7 @@ export default function BarberDashboard() {
               <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 15, color: 'var(--amber-dim)', marginBottom: 2 }}>Complete your profile</div>
               <div style={{ fontSize: 12, color: 'var(--text-2)', lineHeight: 1.4 }}>Add your services, chair rate, and availability so clients know what to expect.</div>
             </div>
-            <a href="/profile" style={{ fontSize: 13, fontWeight: 700, color: 'var(--amber-dim)', textDecoration: 'none', whiteSpace: 'nowrap' }} onClick={e => e.preventDefault()}>
+            <a href="/edit-profile" style={{ fontSize: 13, fontWeight: 700, color: 'var(--amber-dim)', textDecoration: 'none', whiteSpace: 'nowrap' }}>
               Complete &rarr;
             </a>
           </div>
@@ -544,6 +544,11 @@ export default function BarberDashboard() {
 
         </div>
       </div>
+
+      <footer className="site-footer">
+        &copy; {config.copyrightYear} {config.serviceName} &middot; {config.companyName}{' '}
+        <a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/conditions">Conditions</a>
+      </footer>
     </div>
   );
 }

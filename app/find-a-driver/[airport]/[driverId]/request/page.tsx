@@ -256,7 +256,7 @@ export default function RequestPage() {
           </div>
         </div>
         <div className="site-footer">
-          &copy; {config.copyrightYear} {config.serviceName}{' '}
+          &copy; {config.copyrightYear} {config.serviceName} &middot; {config.companyName}{' '}
           <a href="#">Privacy</a>
           <a href="#">Terms</a>
           <a href="#">Conditions</a>
@@ -376,7 +376,7 @@ export default function RequestPage() {
 
       {/* Footer */}
       <div className="site-footer">
-        &copy; {config.copyrightYear} {config.serviceName}{' '}
+        &copy; {config.copyrightYear} {config.serviceName} &middot; {config.companyName}{' '}
         <a href="#">Privacy</a>
         <a href="#">Terms</a>
         <a href="#">Conditions</a>

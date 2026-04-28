@@ -142,7 +142,7 @@ export default function TripReviewPage() {
       </div>
 
       <footer className="site-footer">
-        &copy; {config.copyrightYear} {config.serviceName}{' '}
+        &copy; {config.copyrightYear} {config.serviceName} &middot; {config.companyName}{' '}
         <a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/conditions">Conditions</a>
       </footer>
     </div>
