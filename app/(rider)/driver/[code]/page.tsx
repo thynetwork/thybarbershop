@@ -5,295 +5,509 @@ import { useRouter, useParams } from 'next/navigation';
 import config, { splitServiceName } from '@/lib/config';
 
 /* ── Demo data ─────────────────────────────────────────────── */
-const demoDriver = {
-  name: 'James Rivera',
-  code: 'JDR\u00B74207',
-  initials: 'JR',
-  city: 'Houston, TX',
-  airportPermitted: true,
-  safetyComplete: true,
-  rateHourly: 35,
-  flatLocal: 25,
-  flatLocalLabel: '\u226410 miles',
-  insuranceProvider: 'Allstate',
-  insuranceCoverage: 'Rideshare coverage',
-  vehicleMakeModel: '2022 Toyota Camry XSE',
-  vehicleColor: 'Silver',
-  vehicleSeats: 3,
-  seatbeltsConfirmed: true,
-  availabilityDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-  availabilityHours: '7:00 am \u2013 10:00 pm',
+const barber = {
+  initials: 'MR',
+  name: 'Marcus Rivera',
+  location: 'The Studio · South Houston, TX',
+  codeParts: ['South Houston', 'TX', 'MRC', '3341'],
+  rating: 4.97,
+  licensed: true,
+  safetyProtocol: true,
 };
+
+const services = [
+  { label: 'Adult Haircut', price: 45 },
+  { label: 'Fade + Line-up', price: 55 },
+  { label: 'Beard Trim', price: 25 },
+  { label: 'Full Service', price: 75 },
+];
+
+const availDays = [
+  { label: 'Mo', on: true },
+  { label: 'Tu', on: true },
+  { label: 'We', on: true },
+  { label: 'Th', on: true },
+  { label: 'Fr', on: false },
+  { label: 'Sa', on: true },
+  { label: 'Su', on: false },
+];
 
 const demoUser = { name: 'Sarah Chen', initials: 'SC' };
 
-const DAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+/* Calendar: July 2026 */
+const YEAR = 2026;
+const MONTH = 6; // 0-indexed July
+const TODAY = 17;
+const UNAVAILABLE_DATES = [4, 11, 18, 25]; // Saturdays that are off
+const AVAILABLE_DOW = [1, 2, 3, 4, 6]; // Mon-Thu + Sat
 
-const CALENDAR_DAYS = [
-  { n: 1, state: 'off' },
-  { n: 2, state: 'open' }, { n: 3, state: 'open' }, { n: 4, state: 'open' },
-  { n: 5, state: 'open' }, { n: 6, state: 'open' }, { n: 7, state: 'blocked' },
-  { n: 8, state: 'blocked' }, { n: 9, state: 'open' }, { n: 10, state: 'open' },
-  { n: 11, state: 'open' }, { n: 12, state: 'open' }, { n: 13, state: 'open' },
-  { n: 14, state: 'blocked' }, { n: 15, state: 'blocked' }, { n: 16, state: 'open' },
-  { n: 17, state: 'open' }, { n: 18, state: 'open' }, { n: 19, state: 'open' },
-  { n: 20, state: 'open' }, { n: 21, state: 'blocked' }, { n: 22, state: 'blocked' },
-  { n: 23, state: 'open' }, { n: 24, state: 'open' }, { n: 25, state: 'open' },
-  { n: 26, state: 'open' }, { n: 27, state: 'open' }, { n: 28, state: 'blocked' },
-];
+const DAY_HEADERS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
-const TIME_SLOTS = [
-  { label: '7:00 am', state: 'taken' },
-  { label: '8:00 am', state: 'open' },
-  { label: '9:00 am', state: 'open' },
-  { label: '10:00 am', state: 'open' },
-  { label: '11:00 am', state: 'open' },
-  { label: '12:00 pm', state: 'taken' },
-  { label: '1:00 pm', state: 'open' },
-  { label: '2:00 pm', state: 'open' },
+const REGULAR_SLOTS = [
+  '8:00 am', '9:00 am', '10:00 am', '11:00 am',
+  '12:00 pm', '1:00 pm', '2:00 pm', '3:00 pm',
+  '4:00 pm', '5:00 pm',
 ];
+const AFTER_HOURS_SLOTS = ['6:00 pm', '7:00 pm', '8:00 pm'];
+const BOOKED_SLOTS = ['9:00 am', '2:00 pm'];
+
+function getDaysInMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate();
+}
+function getFirstDow(year: number, month: number): number {
+  return new Date(year, month, 1).getDay();
+}
 
 export default function DriverCardPage() {
   const router = useRouter();
   const params = useParams();
+  const _code = params?.code as string | undefined;
   const { prefix, highlight } = splitServiceName();
 
-  const [selectedDate, setSelectedDate] = useState(17);
-  const [selectedTime, setSelectedTime] = useState('9:00 am');
-  const [calendarMode, setCalendarMode] = useState<'calendar' | 'manual'>('calendar');
+  const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [calMode, setCalMode] = useState<'calendar' | 'manual'>('calendar');
+  const [selectedService, setSelectedService] = useState<number>(0);
 
-  function handleDateClick(day: { n: number; state: string }) {
-    if (day.state === 'open' || day.state === 'sel') {
-      setSelectedDate(day.n);
-    }
+  const daysInMonth = getDaysInMonth(YEAR, MONTH);
+  const firstDow = getFirstDow(YEAR, MONTH);
+
+  function isDayAvailable(day: number): boolean {
+    if (UNAVAILABLE_DATES.includes(day)) return false;
+    const dow = new Date(YEAR, MONTH, day).getDay();
+    return AVAILABLE_DOW.includes(dow);
   }
 
-  function handleTimeClick(slot: { label: string; state: string }) {
-    if (slot.state !== 'taken') {
-      setSelectedTime(slot.label);
-    }
+  function isDayPast(day: number): boolean {
+    return day < TODAY;
   }
+
+  function handleDateClick(day: number) {
+    if (isDayPast(day) || !isDayAvailable(day)) return;
+    setSelectedDate(day);
+    setSelectedTime(null);
+  }
+
+  function handleTimeClick(slot: string) {
+    if (BOOKED_SLOTS.includes(slot)) return;
+    setSelectedTime(slot);
+  }
+
+  const canProceed = selectedDate !== null && selectedTime !== null;
+
+  /* ── Styles ─────────────────────────────────────────────── */
+  const navy = '#1B2A4A';
+  const amber = '#F5A623';
+  const amberLight = '#FFF8EC';
+  const grayLight = '#F3F4F6';
+  const grayText = '#9CA3AF';
+  const borderColor = '#E5E7EB';
 
   return (
-    <div className="app-shell">
+    <div style={{ minHeight: '100vh', background: '#F9FAFB', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
       {/* ── Topbar ──────────────────────────────────────────── */}
-      <div className="app-topbar">
-        <button
-          onClick={() => router.push('/home')}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'rgba(255,255,255,0.7)',
-            fontSize: 22,
-            cursor: 'pointer',
-            padding: '4px 8px',
-            marginRight: 4,
-            lineHeight: 1,
-          }}
-          aria-label="Back to home"
-        >
-          &larr;
-        </button>
-        <div className="topbar-logo">{prefix}<span>{highlight}</span></div>
-        <div className="topbar-right">
-          <div className="topbar-name">{demoUser.name}</div>
-          <div className="topbar-avatar">{demoUser.initials}</div>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: navy, color: '#fff', padding: '0 24px', height: 56,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button
+            onClick={() => router.back()}
+            style={{
+              background: 'none', border: 'none', color: 'rgba(255,255,255,0.7)',
+              fontSize: 22, cursor: 'pointer', padding: '4px 8px', lineHeight: 1,
+            }}
+            aria-label="Back"
+          >&larr;</button>
+          <div style={{ fontSize: 18, fontWeight: 700, letterSpacing: -0.5 }}>
+            {prefix}<span style={{ color: amber }}>{highlight}</span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>{demoUser.name}</span>
+          <div style={{
+            width: 34, height: 34, borderRadius: '50%', background: amber,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 13, fontWeight: 700, color: navy,
+          }}>{demoUser.initials}</div>
         </div>
       </div>
 
-      <div className="layout-2col">
-        {/* ── Sidebar: Driver info ─────────────────────────── */}
-        <div className="sidebar">
-          {/* Progress bar (step 2 active) */}
-          <div className="progress-bar">
-            <div className="progress-step done" />
-            <div className="progress-step active" />
-            <div className="progress-step" />
-          </div>
+      {/* ── 2-Column Layout ──────────────────────────────────── */}
+      <div style={{ display: 'flex', minHeight: 'calc(100vh - 56px)' }}>
 
-          {/* Driver identity */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-            <div className="avatar av-amber av-lg av-check">{demoDriver.initials}</div>
-            <div>
-              <div className="t-subtitle">{demoDriver.name}</div>
-              <div className="t-small" style={{ marginTop: 2 }}>
-                {demoDriver.code} &middot; {demoDriver.city}
-              </div>
-              <div style={{ display: 'flex', gap: 5, marginTop: 5, flexWrap: 'wrap' }}>
-                {demoDriver.airportPermitted && (
-                  <span className="badge badge-blue">&#9992; Airport</span>
-                )}
-                {demoDriver.safetyComplete && (
-                  <span className="badge badge-green">&#10003; Safety</span>
-                )}
+        {/* ── LEFT PANEL (30%) ─────────────────────────────── */}
+        <div style={{
+          width: '30%', minWidth: 320, background: '#fff',
+          borderRight: `1px solid ${borderColor}`, padding: 24, overflowY: 'auto',
+        }}>
+
+          {/* Barber identity card */}
+          <div style={{
+            background: `linear-gradient(135deg, ${navy} 0%, #2D3F66 100%)`,
+            borderRadius: 14, padding: 20, color: '#fff', marginBottom: 20,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
+              <div style={{
+                width: 52, height: 52, borderRadius: '50%', background: amber,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 18, fontWeight: 800, color: navy,
+              }}>{barber.initials}</div>
+              <div>
+                <div style={{ fontSize: 17, fontWeight: 700 }}>{barber.name}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginTop: 2 }}>{barber.location}</div>
               </div>
             </div>
-          </div>
 
-          {/* Insurance strip */}
-          <div className="ins-strip">
-            <div className="ins-dot" />
-            <div className="ins-text">
-              Insured by {demoDriver.insuranceProvider} &middot; {demoDriver.insuranceCoverage}
+            {/* 4-part code badge */}
+            <div style={{
+              display: 'flex', gap: 0, borderRadius: 8, overflow: 'hidden',
+              fontSize: 11, fontWeight: 600, marginBottom: 14,
+            }}>
+              {barber.codeParts.map((part, i) => (
+                <div key={i} style={{
+                  flex: 1, textAlign: 'center', padding: '5px 6px',
+                  background: i % 2 === 0 ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)',
+                  color: i === 0 ? amber : 'rgba(255,255,255,0.85)',
+                  borderRight: i < 3 ? '1px solid rgba(255,255,255,0.08)' : 'none',
+                }}>{part}</div>
+              ))}
             </div>
-          </div>
 
-          {/* Rate cards */}
-          <div className="grid-2 mb-12">
-            <div className="card-surface">
-              <div className="t-label mb-4">Hourly</div>
-              <div className="t-subtitle">${demoDriver.rateHourly}/hr</div>
-            </div>
-            <div className="card-surface">
-              <div className="t-label mb-4">Flat local</div>
-              <div className="t-subtitle">${demoDriver.flatLocal}</div>
-              <div className="t-small">{demoDriver.flatLocalLabel}</div>
-            </div>
-          </div>
-
-          {/* Vehicle */}
-          <div className="card-surface mb-12">
-            <div className="flex-between mb-4">
-              <span className="t-label">Vehicle</span>
-              {demoDriver.seatbeltsConfirmed && (
-                <span className="badge badge-green">&#10003; Seatbelts</span>
+            {/* Badges */}
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <span style={{
+                fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20,
+                background: 'rgba(245,166,35,0.2)', color: amber,
+              }}>&#9733; {barber.rating}</span>
+              {barber.licensed && (
+                <span className="badge badge-green" style={{ fontSize: 11 }}>&#10003; License</span>
+              )}
+              {barber.safetyProtocol && (
+                <span className="badge badge-green" style={{ fontSize: 11 }}>&#10003; Safety Protocol</span>
               )}
             </div>
-            <div className="t-body" style={{ fontSize: 13, fontWeight: 500 }}>
-              {demoDriver.vehicleMakeModel}
+          </div>
+
+          {/* Services & Rates */}
+          <div style={{ marginBottom: 20 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: navy, marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+              Services &amp; Rates
             </div>
-            <div className="t-small mt-8" style={{ display: 'flex', gap: 8 }}>
-              <span>{demoDriver.vehicleColor}</span>
-              <span>&middot;</span>
-              <span>{demoDriver.vehicleSeats} passengers max</span>
+            {services.map((svc, i) => {
+              const isSelected = selectedService === i;
+              return (
+                <div
+                  key={i}
+                  onClick={() => setSelectedService(i)}
+                  style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    padding: '11px 14px', borderRadius: 10, marginBottom: 6, cursor: 'pointer',
+                    background: isSelected ? amberLight : '#fff',
+                    border: `1.5px solid ${isSelected ? amber : borderColor}`,
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <span style={{ fontSize: 14, fontWeight: isSelected ? 600 : 500, color: navy }}>{svc.label}</span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: isSelected ? amber : navy }}>${svc.price}</span>
+                </div>
+              );
+            })}
+            <div style={{ textAlign: 'right', marginTop: 4 }}>
+              <span style={{ fontSize: 12, color: amber, fontWeight: 600, cursor: 'pointer' }}>View all &rarr;</span>
             </div>
           </div>
 
           {/* Availability */}
-          <div className="card-surface">
-            <div className="t-label mb-8">Availability</div>
-            <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-              {demoDriver.availabilityDays.map((d) => (
-                <span key={d} className="badge badge-navy">{d}</span>
+          <div style={{
+            background: grayLight, borderRadius: 12, padding: 16,
+          }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: navy, marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+              Availability
+            </div>
+
+            {/* Day circles */}
+            <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
+              {availDays.map((d) => (
+                <div key={d.label} style={{
+                  width: 36, height: 36, borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 12, fontWeight: 600,
+                  background: d.on ? navy : 'transparent',
+                  color: d.on ? '#fff' : grayText,
+                  border: d.on ? 'none' : `1.5px dashed ${grayText}`,
+                }}>{d.label}</div>
               ))}
             </div>
-            <div className="t-small mt-8">{demoDriver.availabilityHours}</div>
+
+            <div style={{ fontSize: 13, color: '#374151', marginBottom: 4 }}>
+              <span style={{ fontWeight: 600 }}>Hours:</span> 8:00 am &ndash; 6:00 pm
+            </div>
+            <div style={{ fontSize: 12, color: grayText }}>
+              <span style={{ fontWeight: 600 }}>After hours:</span> By request
+            </div>
           </div>
         </div>
 
-        {/* ── Main: Calendar + time ────────────────────────── */}
-        <div className="main-content">
-          <div className="t-title mb-4">Select Date &amp; Time</div>
-          <div className="t-small mb-16">
-            {demoDriver.name} &middot; New Destination
+        {/* ── RIGHT PANEL (70%) ────────────────────────────── */}
+        <div style={{ flex: 1, padding: '32px 40px', overflowY: 'auto' }}>
+
+          {/* Header */}
+          <div style={{ fontSize: 24, fontWeight: 800, color: navy, marginBottom: 4 }}>
+            Select Date &amp; Time
+          </div>
+          <div style={{ fontSize: 14, color: grayText, marginBottom: 24 }}>
+            {barber.name} &middot; New Visit
           </div>
 
-          {/* Tab toggle */}
-          <div className="seg-control mb-16" style={{ maxWidth: 280 }}>
+          {/* Toggle */}
+          <div style={{
+            display: 'inline-flex', background: grayLight, borderRadius: 10,
+            padding: 3, marginBottom: 24, gap: 2,
+          }}>
             <button
-              className={`seg-opt ${calendarMode === 'calendar' ? 'on' : ''}`}
-              onClick={() => setCalendarMode('calendar')}
-            >
-              Calendar
-            </button>
+              onClick={() => setCalMode('calendar')}
+              style={{
+                padding: '8px 18px', borderRadius: 8, border: 'none', cursor: 'pointer',
+                fontSize: 13, fontWeight: 600,
+                background: calMode === 'calendar' ? '#fff' : 'transparent',
+                color: calMode === 'calendar' ? navy : grayText,
+                boxShadow: calMode === 'calendar' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+              }}
+            >&#128197; Calendar</button>
             <button
-              className={`seg-opt ${calendarMode === 'manual' ? 'on' : ''}`}
-              onClick={() => setCalendarMode('manual')}
-            >
-              Enter manually
-            </button>
+              onClick={() => setCalMode('manual')}
+              style={{
+                padding: '8px 18px', borderRadius: 8, border: 'none', cursor: 'pointer',
+                fontSize: 13, fontWeight: 600,
+                background: calMode === 'manual' ? '#fff' : 'transparent',
+                color: calMode === 'manual' ? navy : grayText,
+                boxShadow: calMode === 'manual' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+              }}
+            >&#9999;&#65039; Enter manually</button>
           </div>
 
-          {calendarMode === 'calendar' ? (
+          {calMode === 'calendar' ? (
             <>
-              {/* Month header */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                <div className="t-subtitle">July 2026</div>
-                <div style={{ display: 'flex', gap: 4 }}>
-                  <button className="btn btn-ghost btn-sm">&lsaquo;</button>
-                  <button className="btn btn-ghost btn-sm">&rsaquo;</button>
+              {/* Calendar card */}
+              <div style={{
+                background: '#fff', borderRadius: 16, padding: 24,
+                boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginBottom: 24,
+              }}>
+                {/* Month nav */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <button style={{
+                    width: 32, height: 32, borderRadius: 8, border: `1px solid ${borderColor}`,
+                    background: '#fff', cursor: 'pointer', fontSize: 16, color: navy,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>&lsaquo;</button>
+                  <span style={{ fontSize: 16, fontWeight: 700, color: navy }}>July 2026</span>
+                  <button style={{
+                    width: 32, height: 32, borderRadius: 8, border: `1px solid ${borderColor}`,
+                    background: '#fff', cursor: 'pointer', fontSize: 16, color: navy,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>&rsaquo;</button>
+                </div>
+
+                {/* Day headers */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 6 }}>
+                  {DAY_HEADERS.map((h) => (
+                    <div key={h} style={{
+                      textAlign: 'center', fontSize: 11, fontWeight: 700,
+                      color: grayText, padding: '4px 0', textTransform: 'uppercase',
+                    }}>{h}</div>
+                  ))}
+                </div>
+
+                {/* Calendar grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4 }}>
+                  {/* Empty cells for offset */}
+                  {Array.from({ length: firstDow }).map((_, i) => (
+                    <div key={`empty-${i}`} />
+                  ))}
+
+                  {/* Day cells */}
+                  {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
+                    const past = isDayPast(day);
+                    const avail = isDayAvailable(day);
+                    const isToday = day === TODAY;
+                    const isSel = day === selectedDate;
+
+                    let bg = 'transparent';
+                    let color = navy;
+                    let cursor: string = 'default';
+                    let textDecoration = 'none';
+                    let opacity = 1;
+                    let fontWeight = 500;
+                    let border = '2px solid transparent';
+
+                    if (isSel && !past) {
+                      bg = navy;
+                      color = amber;
+                      fontWeight = 700;
+                      cursor = 'pointer';
+                    } else if (past) {
+                      color = '#D1D5DB';
+                      opacity = 0.6;
+                    } else if (!avail) {
+                      color = grayText;
+                      textDecoration = 'line-through';
+                    } else {
+                      cursor = 'pointer';
+                    }
+
+                    return (
+                      <div
+                        key={day}
+                        onClick={() => handleDateClick(day)}
+                        style={{
+                          width: '100%', aspectRatio: '1', borderRadius: 10,
+                          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 14, fontWeight, background: bg, color, cursor,
+                          textDecoration, opacity, border, position: 'relative',
+                          transition: 'all 0.15s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!past && avail && !isSel) {
+                            (e.currentTarget as HTMLDivElement).style.background = amberLight;
+                            (e.currentTarget as HTMLDivElement).style.border = `2px solid ${amber}`;
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isSel) {
+                            (e.currentTarget as HTMLDivElement).style.background = 'transparent';
+                            (e.currentTarget as HTMLDivElement).style.border = '2px solid transparent';
+                          }
+                        }}
+                      >
+                        {day}
+                        {isToday && (
+                          <div style={{
+                            width: 5, height: 5, borderRadius: '50%', background: amber,
+                            position: 'absolute', bottom: 4,
+                          }} />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Calendar grid */}
-              <div className="cal-grid mb-16">
-                {DAY_LABELS.map((l) => (
-                  <div key={l} className="cal-day-label">{l}</div>
-                ))}
-                {CALENDAR_DAYS.map((day) => {
-                  let cls = `cal-day ${day.state}`;
-                  if (day.n === selectedDate && day.state !== 'blocked' && day.state !== 'off') {
-                    cls = 'cal-day sel';
-                  }
-                  return (
-                    <div
-                      key={day.n}
-                      className={cls}
-                      onClick={() => handleDateClick(day)}
-                    >
-                      {day.n}
-                    </div>
-                  );
-                })}
-              </div>
+              {/* Time slots (only when date selected) */}
+              {selectedDate !== null && (
+                <div style={{
+                  background: '#fff', borderRadius: 16, padding: 24,
+                  boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginBottom: 24,
+                }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: navy, marginBottom: 16 }}>
+                    Available Times &mdash; {(() => {
+                      const d = new Date(YEAR, MONTH, selectedDate);
+                      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                      return `${days[d.getDay()]} Jul ${selectedDate}`;
+                    })()}
+                  </div>
 
-              {/* Time slots */}
-              <div className="t-label mb-8">
-                Available times &mdash; Thu Jul {selectedDate}
-              </div>
-              <div className="time-slots mb-20">
-                {TIME_SLOTS.map((slot) => {
-                  let cls = 'time-slot';
-                  if (slot.state === 'taken') {
-                    cls += ' ts-taken';
-                  } else if (slot.label === selectedTime) {
-                    cls += ' ts-sel';
-                  } else {
-                    cls += ' ts-open';
-                  }
-                  return (
-                    <div
-                      key={slot.label}
-                      className={cls}
-                      onClick={() => handleTimeClick(slot)}
-                    >
-                      {slot.label}
-                    </div>
-                  );
-                })}
-              </div>
+                  {/* Regular time slots - 4 col grid */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 16 }}>
+                    {REGULAR_SLOTS.map((slot) => {
+                      const booked = BOOKED_SLOTS.includes(slot);
+                      const isSel = selectedTime === slot;
+
+                      return (
+                        <button
+                          key={slot}
+                          onClick={() => handleTimeClick(slot)}
+                          disabled={booked}
+                          style={{
+                            padding: '10px 0', borderRadius: 10, fontSize: 13, fontWeight: 600,
+                            cursor: booked ? 'not-allowed' : 'pointer',
+                            border: isSel ? `2px solid ${navy}` : `1.5px solid ${booked ? '#E5E7EB' : borderColor}`,
+                            background: isSel ? navy : booked ? '#FAFAFA' : '#fff',
+                            color: isSel ? amber : booked ? '#C4C4C4' : navy,
+                            textDecoration: booked ? 'line-through' : 'none',
+                            transition: 'all 0.15s ease',
+                          }}
+                        >{slot}</button>
+                      );
+                    })}
+                  </div>
+
+                  {/* After Hours divider */}
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12,
+                  }}>
+                    <div style={{ flex: 1, height: 1, background: borderColor }} />
+                    <span style={{ fontSize: 11, fontWeight: 700, color: grayText, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                      After Hours
+                    </span>
+                    <div style={{ flex: 1, height: 1, background: borderColor }} />
+                  </div>
+
+                  {/* After hours slots */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+                    {AFTER_HOURS_SLOTS.map((slot) => {
+                      const isSel = selectedTime === slot;
+
+                      return (
+                        <button
+                          key={slot}
+                          onClick={() => handleTimeClick(slot)}
+                          style={{
+                            padding: '10px 0', borderRadius: 10, fontSize: 13, fontWeight: 600,
+                            cursor: 'pointer',
+                            border: isSel ? `2px solid ${navy}` : `1.5px dashed ${amber}`,
+                            background: isSel ? navy : amberLight,
+                            color: isSel ? amber : navy,
+                            transition: 'all 0.15s ease',
+                          }}
+                        >{slot}</button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </>
           ) : (
-            <div className="mb-20">
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label">Date</label>
-                  <input className="form-input" type="date" />
+            <div style={{
+              background: '#fff', borderRadius: 16, padding: 24,
+              boxShadow: '0 2px 12px rgba(0,0,0,0.06)', marginBottom: 24,
+            }}>
+              <div style={{ display: 'flex', gap: 16 }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: navy, marginBottom: 6 }}>Date</label>
+                  <input type="date" style={{
+                    width: '100%', padding: '10px 12px', borderRadius: 10,
+                    border: `1.5px solid ${borderColor}`, fontSize: 14, color: navy,
+                    outline: 'none',
+                  }} />
                 </div>
-                <div className="form-group">
-                  <label className="form-label">Time</label>
-                  <input className="form-input" type="time" />
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: navy, marginBottom: 6 }}>Time</label>
+                  <input type="time" style={{
+                    width: '100%', padding: '10px 12px', borderRadius: 10,
+                    border: `1.5px solid ${borderColor}`, fontSize: 14, color: navy,
+                    outline: 'none',
+                  }} />
                 </div>
               </div>
             </div>
           )}
 
+          {/* Next button */}
           <button
-            className="btn btn-primary btn-lg"
-            onClick={() => router.push('/book/route')}
+            onClick={() => canProceed && router.push('/book/confirm')}
+            disabled={!canProceed}
+            style={{
+              width: '100%', padding: '16px 0', borderRadius: 12, border: 'none',
+              fontSize: 16, fontWeight: 700, cursor: canProceed ? 'pointer' : 'not-allowed',
+              background: canProceed ? navy : '#D1D5DB',
+              color: canProceed ? amber : '#fff',
+              transition: 'all 0.2s ease',
+              opacity: canProceed ? 1 : 0.7,
+            }}
           >
-            Next &mdash; Enter Route Details &rarr;
+            Next &mdash; Confirm Booking &rarr;
           </button>
-
-          {/* Payment history */}
-          <div style={{ textAlign: 'right', marginTop: 14 }}>
-            <a
-              href="/payments"
-              style={{ fontSize: 13, color: 'var(--navy)', fontWeight: 500 }}
-            >
-              View payment history &rarr;
-            </a>
-          </div>
         </div>
       </div>
     </div>
