@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import config, { splitServiceName } from '@/lib/config';
 
 const demoUser = { name: 'Sarah Chen', initials: 'SC' };
-const demoDriverName = 'James';
-const demoDriverCode = 'JDR\u00B74207';
+const demoDriverName = 'Marcus';
+const demoDriverCode = 'MRC\u00B73341';
 
 export default function PendingPage() {
   const router = useRouter();

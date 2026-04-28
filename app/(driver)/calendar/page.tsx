@@ -29,10 +29,10 @@ const DAYS: CalDay[] = Array.from({ length: 28 }, (_, i) => {
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const UPCOMING = [
-  { id: 'u1', riderId: 'SARA\u00B78834', name: 'Sarah W.', initials: 'SW', date: 'Sat Jul 5', time: '9:00 am', route: 'IAH \u2192 Home', amount: '$50' },
-  { id: 'u2', riderId: 'MARC\u00B75521', name: 'Marcus J.', initials: 'MJ', date: 'Sat Jul 12', time: '7:30 am', route: 'IAH \u2192 Downtown', amount: '$95' },
-  { id: 'u3', riderId: 'LISA\u00B73310', name: 'Lisa M.', initials: 'LM', date: 'Thu Jul 17', time: '3:00 pm', route: 'HOU \u2192 Galleria', amount: '$45' },
-  { id: 'u4', riderId: 'TODD\u00B74401', name: 'Todd W.', initials: 'TW', date: 'Fri Jul 25', time: '11:00 am', route: 'MCO \u2192 Resort', amount: '$120' },
+  { id: 'u1', riderId: 'SARA\u00B78834', name: 'Sarah W.', initials: 'SW', date: 'Sat Jul 5', time: '9:00 am', route: 'Fade + Lineup', amount: '$50' },
+  { id: 'u2', riderId: 'MARC\u00B75521', name: 'Marcus J.', initials: 'MJ', date: 'Sat Jul 12', time: '7:30 am', route: 'Full Service', amount: '$95' },
+  { id: 'u3', riderId: 'LISA\u00B73310', name: 'Lisa M.', initials: 'LM', date: 'Thu Jul 17', time: '3:00 pm', route: 'Beard Trim', amount: '$45' },
+  { id: 'u4', riderId: 'TODD\u00B74401', name: 'Todd W.', initials: 'TW', date: 'Fri Jul 25', time: '11:00 am', route: 'Cut + Shave', amount: '$120' },
 ];
 
 const STATUS_STYLES: Record<DayStatus, React.CSSProperties> = {
@@ -66,11 +66,11 @@ export default function CalendarPage() {
         <div className="topbar-logo">{prefix}<span>{highlight}</span></div>
         <div className="topbar-right">
           <div className="driver-code">
-            <div className="dc-airport">IAH</div>
-            <div className="dc-initials">JDR</div>
-            <div className="dc-digits">4207</div>
+            <div className="dc-airport">South Houston</div>
+            <div className="dc-initials">MRC</div>
+            <div className="dc-digits">3341</div>
           </div>
-          <div className="topbar-avatar">JR</div>
+          <div className="topbar-avatar">MR</div>
         </div>
       </div>
 

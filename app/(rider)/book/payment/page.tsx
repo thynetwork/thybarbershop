@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import config, { splitServiceName } from '@/lib/config';
 
 const demoUser = { name: 'Dana Torres', initials: 'DT' };
-const demoDriverName = 'James';
+const demoDriverName = 'Marcus';
 
 const PAYMENT_METHODS = [
   {
@@ -13,21 +13,21 @@ const PAYMENT_METHODS = [
     icon: 'Z',
     iconClass: 'pi-z',
     name: 'Zelle',
-    handle: 'jrivera@email.com',
+    handle: 'mrivera@email.com',
   },
   {
     key: 'venmo',
     icon: 'V',
     iconClass: 'pi-v',
     name: 'Venmo',
-    handle: '@james-rivera-htx',
+    handle: '@marcus-rivera-htx',
   },
   {
     key: 'cashapp',
     icon: '$',
     iconClass: 'pi-c',
     name: 'Cash App',
-    handle: '$JamesHTX',
+    handle: '$MarcusHTX',
   },
   {
     key: 'stripe',
@@ -155,12 +155,12 @@ export default function PaymentPage() {
           <div className="card-surface mb-12">
             <div className="row">
               <span className="row-label">{config.providerLabel}</span>
-              <span className="row-value">James Rivera</span>
+              <span className="row-value">Marcus Rivera</span>
             </div>
             <div className="row">
               <span className="row-label">Code</span>
               <span className="row-value t-mono" style={{ color: 'var(--amber-dim)' }}>
-                JDR&middot;4207
+                MRC&middot;3341
               </span>
             </div>
             <div className="row">

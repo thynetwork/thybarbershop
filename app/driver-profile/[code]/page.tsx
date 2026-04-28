@@ -5,15 +5,15 @@ import config, { splitServiceName } from '@/lib/config';
 
 /* ── Demo data ─────────────────────────────────────────────── */
 const driver = {
-  initials: 'JR',
-  name: 'James R.',
-  airportCode: 'IAH',
-  codeInitials: 'JDR',
-  codeDigits: '4207',
+  initials: 'MR',
+  name: 'Marcus R.',
+  airportCode: 'South Houston',
+  codeInitials: 'MRC',
+  codeDigits: '3341',
   rating: 4.97,
   rides: 312,
   airports: [
-    { code: 'IAH', name: 'George Bush Intercontinental' },
+    { code: 'South Houston', name: 'South Houston, TX' },
     { code: 'HOU', name: 'William P. Hobby' },
   ],
   safetyProtocol: true,

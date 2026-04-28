@@ -20,16 +20,16 @@ interface Notification {
 }
 
 const NOTIFICATIONS: Notification[] = [
-  { id: 'n1', category: 'booking', icon: '\uD83D\uDCC5', iconBg: 'var(--blue-pale)', iconColor: 'var(--blue)', title: 'New booking request', subtitle: 'Sarah W. wants to book IAH \u2192 Home on Jul 17', timeAgo: '12 min ago', read: false, group: 'today' },
-  { id: 'n2', category: 'client', icon: '\uD83D\uDC64', iconBg: 'var(--amber-pale)', iconColor: 'var(--amber-dim)', title: 'New client request', subtitle: 'Todd W. found you via Find a Driver at MCO', timeAgo: '45 min ago', read: false, group: 'today' },
+  { id: 'n1', category: 'booking', icon: '\uD83D\uDCC5', iconBg: 'var(--blue-pale)', iconColor: 'var(--blue)', title: 'New booking request', subtitle: 'Sarah W. wants to book Fade + Lineup on Jul 17', timeAgo: '12 min ago', read: false, group: 'today' },
+  { id: 'n2', category: 'client', icon: '\uD83D\uDC64', iconBg: 'var(--amber-pale)', iconColor: 'var(--amber-dim)', title: 'New client request', subtitle: 'Todd W. found you via Find a Barber', timeAgo: '45 min ago', read: false, group: 'today' },
   { id: 'n3', category: 'booking', icon: '\u2705', iconBg: 'var(--green-pale)', iconColor: 'var(--green)', title: 'Payment received', subtitle: 'Marcus J. paid $95 via Cash App for Jul 12 trip', timeAgo: '2 hr ago', read: false, group: 'today' },
   { id: 'n4', category: 'admin', icon: '\uD83D\uDD14', iconBg: 'var(--purple-pale)', iconColor: 'var(--purple)', title: 'Subscription renewed', subtitle: 'Your $9.99/week subscription has been renewed', timeAgo: '5 hr ago', read: true, group: 'today' },
-  { id: 'n5', category: 'booking', icon: '\uD83D\uDCC5', iconBg: 'var(--blue-pale)', iconColor: 'var(--blue)', title: 'Booking confirmed', subtitle: 'Lisa M. confirmed HOU \u2192 Galleria on Jul 18', timeAgo: '1 day ago', read: true, group: 'yesterday' },
+  { id: 'n5', category: 'booking', icon: '\uD83D\uDCC5', iconBg: 'var(--blue-pale)', iconColor: 'var(--blue)', title: 'Booking confirmed', subtitle: 'Lisa M. confirmed Beard Trim on Jul 18', timeAgo: '1 day ago', read: true, group: 'yesterday' },
   { id: 'n6', category: 'client', icon: '\uD83D\uDC65', iconBg: 'var(--amber-pale)', iconColor: 'var(--amber-dim)', title: 'Client completed safety protocol', subtitle: 'Sarah W. has completed the safety protocol', timeAgo: '1 day ago', read: true, group: 'yesterday' },
   { id: 'n7', category: 'booking', icon: '\u274C', iconBg: 'var(--red-pale)', iconColor: 'var(--red)', title: 'Booking cancelled', subtitle: 'Marcus J. cancelled his Jun 9 booking', timeAgo: '1 day ago', read: true, group: 'yesterday' },
   { id: 'n8', category: 'admin', icon: '\uD83D\uDCE2', iconBg: 'var(--surface)', iconColor: 'var(--text-2)', title: 'New feature: Payment log', subtitle: 'Track all your payments in one place. Check it out!', timeAgo: '3 days ago', read: true, group: 'this_week' },
   { id: 'n9', category: 'client', icon: '\u2B50', iconBg: 'var(--amber-pale)', iconColor: 'var(--amber-dim)', title: 'New review from Lisa M.', subtitle: '"Great driver, always on time. Highly recommend!"', timeAgo: '4 days ago', read: true, group: 'this_week' },
-  { id: 'n10', category: 'booking', icon: '\uD83D\uDCC5', iconBg: 'var(--blue-pale)', iconColor: 'var(--blue)', title: 'Booking completed', subtitle: 'Trip with Todd W. MCO \u2192 Resort completed successfully', timeAgo: '5 days ago', read: true, group: 'this_week' },
+  { id: 'n10', category: 'booking', icon: '\uD83D\uDCC5', iconBg: 'var(--blue-pale)', iconColor: 'var(--blue)', title: 'Booking completed', subtitle: 'Appointment with Todd W. Cut + Shave completed successfully', timeAgo: '5 days ago', read: true, group: 'this_week' },
 ];
 
 const GROUP_LABELS: Record<string, string> = {
@@ -89,11 +89,11 @@ export default function NotificationsPage() {
             )}
           </div>
           <div className="driver-code">
-            <div className="dc-airport">IAH</div>
-            <div className="dc-initials">JDR</div>
-            <div className="dc-digits">4207</div>
+            <div className="dc-airport">South Houston</div>
+            <div className="dc-initials">MRC</div>
+            <div className="dc-digits">3341</div>
           </div>
-          <div className="topbar-avatar">JR</div>
+          <div className="topbar-avatar">MR</div>
         </div>
       </div>
 

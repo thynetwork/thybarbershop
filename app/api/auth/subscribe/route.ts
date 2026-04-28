@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       })
 
       const cookieStore = await cookies()
-      cookieStore.set('thydriver_session', token, {
+      cookieStore.set('thybarbershop_session', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',

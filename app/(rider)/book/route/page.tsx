@@ -50,7 +50,7 @@ export default function RouteDetailsPage() {
 
           <div className="t-title mb-4">Route Details</div>
           <div className="t-small mb-24">
-            Thu Jul 17 &middot; 9:00 am &middot; James Rivera
+            Thu Jul 17 &middot; 9:00 am &middot; Marcus Rivera
           </div>
 
           {/* ── Route inputs ──────────────────────────────────── */}

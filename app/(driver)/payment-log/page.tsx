@@ -22,12 +22,12 @@ interface Transaction {
 }
 
 const TRANSACTIONS: Transaction[] = [
-  { id: 't1', initials: 'SW', avatarClass: 'av-amber', riderId: 'SARA\u00B78834', name: 'Sarah W.', date: 'Thu Jul 17', route: 'IAH \u2192 Home', amount: '$50', method: 'Zelle', status: 'paid' },
-  { id: 't2', initials: 'LM', avatarClass: 'av-amber', riderId: 'LISA\u00B73310', name: 'Lisa M.', date: 'Fri Jul 18', route: 'HOU \u2192 Galleria', amount: '$45', method: 'Venmo', status: 'paid' },
-  { id: 't3', initials: 'MJ', avatarClass: 'av-navy', riderId: 'MARC\u00B75521', name: 'Marcus J.', date: 'Sat Jul 12', route: 'IAH \u2192 Downtown', amount: '$95', method: 'Cash App', status: 'paid' },
-  { id: 't4', initials: 'TW', avatarClass: 'av-navy', riderId: 'TODD\u00B74401', name: 'Todd W.', date: 'Mon Jul 7', route: 'MCO \u2192 Resort', amount: '$120', method: 'Cash', status: 'paid' },
-  { id: 't5', initials: 'SW', avatarClass: 'av-amber', riderId: 'SARA\u00B78834', name: 'Sarah W.', date: 'Thu Jul 10', route: 'IAH \u2192 Home', amount: '$50', method: 'Zelle', status: 'paid' },
-  { id: 't6', initials: 'LM', avatarClass: 'av-amber', riderId: 'LISA\u00B73310', name: 'Lisa M.', date: 'Wed Jul 2', route: 'HOU \u2192 Galleria', amount: '$0', method: 'Zelle', status: 'waived' },
+  { id: 't1', initials: 'SW', avatarClass: 'av-amber', riderId: 'SARA\u00B78834', name: 'Sarah W.', date: 'Thu Jul 17', route: 'Fade + Lineup', amount: '$50', method: 'Zelle', status: 'paid' },
+  { id: 't2', initials: 'LM', avatarClass: 'av-amber', riderId: 'LISA\u00B73310', name: 'Lisa M.', date: 'Fri Jul 18', route: 'Beard Trim', amount: '$45', method: 'Venmo', status: 'paid' },
+  { id: 't3', initials: 'MJ', avatarClass: 'av-navy', riderId: 'MARC\u00B75521', name: 'Marcus J.', date: 'Sat Jul 12', route: 'Full Service', amount: '$95', method: 'Cash App', status: 'paid' },
+  { id: 't4', initials: 'TW', avatarClass: 'av-navy', riderId: 'TODD\u00B74401', name: 'Todd W.', date: 'Mon Jul 7', route: 'Cut + Shave', amount: '$120', method: 'Cash', status: 'paid' },
+  { id: 't5', initials: 'SW', avatarClass: 'av-amber', riderId: 'SARA\u00B78834', name: 'Sarah W.', date: 'Thu Jul 10', route: 'Fade + Lineup', amount: '$50', method: 'Zelle', status: 'paid' },
+  { id: 't6', initials: 'LM', avatarClass: 'av-amber', riderId: 'LISA\u00B73310', name: 'Lisa M.', date: 'Wed Jul 2', route: 'Beard Trim', amount: '$0', method: 'Zelle', status: 'waived' },
 ];
 
 const TOP_CLIENTS = [
@@ -55,11 +55,11 @@ export default function PaymentLogPage() {
         <div className="topbar-logo">{prefix}<span>{highlight}</span></div>
         <div className="topbar-right">
           <div className="driver-code">
-            <div className="dc-airport">IAH</div>
-            <div className="dc-initials">JDR</div>
-            <div className="dc-digits">4207</div>
+            <div className="dc-airport">South Houston</div>
+            <div className="dc-initials">MRC</div>
+            <div className="dc-digits">3341</div>
           </div>
-          <div className="topbar-avatar">JR</div>
+          <div className="topbar-avatar">MR</div>
         </div>
       </div>
 

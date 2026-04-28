@@ -12,7 +12,7 @@ export default function ExpiredWindowPage() {
   // TODO: Replace with real data from API/session
   // source comes from connection record: 'invite' | 'find_a_driver' | 'manual'
   const source: 'invite' | 'find_a_driver' | 'manual' = 'invite';
-  const driverName = 'James';
+  const driverName = 'Marcus';
   const riderId = 'TODD·4401';
 
   const [extraHours, setExtraHours] = useState('');

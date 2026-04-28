@@ -40,8 +40,8 @@ interface ConnectedClient {
 const DEMO_PENDING: PendingRequest[] = [
   {
     id: 'p1', initials: 'SW', avatarClass: 'av-amber', name: 'Sarah W.', riderId: 'SARA\u00B78834',
-    preferredName: 'Sarah', source: 'invite', sourceLabel: 'Invited by you \u00B7 IAH\u00B7JDR\u00B74207', sourceIcon: '\uD83D\uDD17',
-    note: 'Hey James, $50 is perfect see you Thursday at 3pm', preSetAmount: 50,
+    preferredName: 'Sarah', source: 'invite', sourceLabel: 'Invited by you \u00B7 South Houston\u00B7MRC\u00B73341', sourceIcon: '\uD83D\uDD17',
+    note: 'Hey Marcus, $50 is perfect see you Thursday at 3pm', preSetAmount: 50,
     preferences: [
       { label: 'Contact', value: 'Text only' }, { label: 'Music', value: 'No music' },
       { label: 'Ride', value: 'Quiet' }, { label: 'Travel', value: 'Weekly \u00B7 Thu' },
@@ -50,7 +50,7 @@ const DEMO_PENDING: PendingRequest[] = [
   },
   {
     id: 'p2', initials: 'TW', avatarClass: 'av-navy', name: 'Todd W.', riderId: 'TODD\u00B74401',
-    preferredName: 'Todd', source: 'find_a_driver', sourceLabel: 'Found you at MCO \u00B7 Find a Driver', sourceIcon: '\uD83D\uDD0D',
+    preferredName: 'Todd', source: 'find_a_driver', sourceLabel: 'Found you via Find a Barber', sourceIcon: '\uD83D\uDD0D',
     preferences: [
       { label: 'Contact', value: 'Either' }, { label: 'Music', value: 'No preference' },
       { label: 'Ride', value: 'No preference' }, { label: 'Travel', value: 'Weekly' },
@@ -60,7 +60,7 @@ const DEMO_PENDING: PendingRequest[] = [
   {
     id: 'p3', initials: 'MJ', avatarClass: 'av-amber', name: 'Marcus J.', riderId: 'MARC\u00B75521',
     preferredName: 'Marc', source: 'manual', sourceLabel: 'Entered your code manually', sourceIcon: '\u2328',
-    note: 'Hi James, we met at IAH last Tuesday. You gave me your code.',
+    note: 'Hi Marcus, we met at the shop last Tuesday. You gave me your code.',
     preferences: [
       { label: 'Contact', value: 'Call' }, { label: 'Music', value: 'Low volume' },
       { label: 'Ride', value: 'Happy to chat' }, { label: 'Travel', value: 'Monthly' },
@@ -70,10 +70,10 @@ const DEMO_PENDING: PendingRequest[] = [
 ];
 
 const DEMO_CONNECTED: ConnectedClient[] = [
-  { id: 'c1', initials: 'SW', avatarClass: 'av-amber', hasCheck: true, name: 'Sarah W.', riderId: 'SARA\u00B78834', airport: 'IAH', lastBooking: 'Thu Jul 17', safetyComplete: true, setAmount: 50, setAmountStatus: 'confirmed', travelPattern: 'Weekly \u00B7 Thu' },
-  { id: 'c2', initials: 'TW', avatarClass: 'av-amber', hasCheck: true, name: 'Todd W.', riderId: 'TODD\u00B74401', airport: 'MCO', lastBooking: 'Sat Jul 19', safetyComplete: true, setAmountStatus: 'none', travelPattern: 'Monthly' },
-  { id: 'c3', initials: 'MJ', avatarClass: 'av-navy', hasCheck: true, name: 'Marcus J.', riderId: 'MARC\u00B75521', airport: 'IAH', lastBooking: 'Mon Jul 14', safetyComplete: true, setAmount: 95, setAmountStatus: 'confirmed', travelPattern: 'Weekly \u00B7 Mon' },
-  { id: 'c4', initials: 'LM', avatarClass: 'av-amber', hasCheck: false, name: 'Lisa M.', riderId: 'LISA\u00B73310', airport: 'HOU', lastBooking: 'Fri Jul 18', safetyComplete: false, setAmount: 45, setAmountStatus: 'pending', travelPattern: 'Bi-weekly' },
+  { id: 'c1', initials: 'SW', avatarClass: 'av-amber', hasCheck: true, name: 'Sarah W.', riderId: 'SARA\u00B78834', airport: 'South Houston', lastBooking: 'Thu Jul 17', safetyComplete: true, setAmount: 50, setAmountStatus: 'confirmed', travelPattern: 'Weekly \u00B7 Thu' },
+  { id: 'c2', initials: 'TW', avatarClass: 'av-amber', hasCheck: true, name: 'Todd W.', riderId: 'TODD\u00B74401', airport: 'Watts', lastBooking: 'Sat Jul 19', safetyComplete: true, setAmountStatus: 'none', travelPattern: 'Monthly' },
+  { id: 'c3', initials: 'MJ', avatarClass: 'av-navy', hasCheck: true, name: 'Marcus J.', riderId: 'MARC\u00B75521', airport: 'South Houston', lastBooking: 'Mon Jul 14', safetyComplete: true, setAmount: 95, setAmountStatus: 'confirmed', travelPattern: 'Weekly \u00B7 Mon' },
+  { id: 'c4', initials: 'LM', avatarClass: 'av-amber', hasCheck: false, name: 'Lisa M.', riderId: 'LISA\u00B73310', airport: 'HTX', lastBooking: 'Fri Jul 18', safetyComplete: false, setAmount: 45, setAmountStatus: 'pending', travelPattern: 'Bi-weekly' },
 ];
 
 export default function ClientsPage() {
@@ -111,11 +111,11 @@ export default function ClientsPage() {
         <div className="topbar-logo">{prefix}<span>{highlight}</span></div>
         <div className="topbar-right">
           <div className="driver-code">
-            <div className="dc-airport">IAH</div>
-            <div className="dc-initials">JDR</div>
-            <div className="dc-digits">4207</div>
+            <div className="dc-airport">South Houston</div>
+            <div className="dc-initials">MRC</div>
+            <div className="dc-digits">3341</div>
           </div>
-          <div className="topbar-avatar">JR</div>
+          <div className="topbar-avatar">MR</div>
         </div>
       </div>
 

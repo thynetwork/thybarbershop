@@ -25,11 +25,11 @@ export default function DriverProfileEditPage() {
         <div className="topbar-logo">{prefix}<span>{highlight}</span></div>
         <div className="topbar-right">
           <div className="driver-code">
-            <div className="dc-airport">IAH</div>
-            <div className="dc-initials">JDR</div>
-            <div className="dc-digits">4207</div>
+            <div className="dc-airport">South Houston</div>
+            <div className="dc-initials">MRC</div>
+            <div className="dc-digits">3341</div>
           </div>
-          <div className="topbar-avatar">JR</div>
+          <div className="topbar-avatar">MR</div>
         </div>
       </div>
 

@@ -216,7 +216,7 @@ export default function DriverStep4() {
               ))}
             </div>
             <div className="t-small" style={{ marginTop: 8, color: 'var(--text-2)' }}>
-              Vehicle must be 2018 or newer. ThyDriver admin reviews photos before pool activation.
+              Vehicle must be 2018 or newer. ThyBarberShop admin reviews photos before activation.
             </div>
           </div>
 

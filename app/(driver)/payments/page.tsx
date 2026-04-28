@@ -45,8 +45,8 @@ export default function PaymentLog() {
             background: 'rgba(245,166,35,.15)', border: '1px solid rgba(245,166,35,.3)',
             borderRadius: 'var(--r-full)', padding: '4px 12px',
             fontSize: 11, color: 'var(--amber)', fontWeight: 600,
-          }}>JDR&middot;4207</div>
-          <div className="topbar-avatar">JR</div>
+          }}>MRC&middot;3341</div>
+          <div className="topbar-avatar">MR</div>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 -- ============================================================
 -- THYFREELANCER — Complete Database Schema (Supabase / PostgreSQL)
--- Instance: ThyDriver
+-- Instance: ThyBarberShop
 -- RLS disabled — access controlled at API layer (like ThyID approach)
 -- ============================================================
 

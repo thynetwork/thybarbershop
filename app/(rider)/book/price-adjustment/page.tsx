@@ -6,10 +6,10 @@ import config, { splitServiceName } from '@/lib/config';
 
 const demoUser = { name: 'Dana Torres', initials: 'DT' };
 const demoDriver = {
-  name: 'James',
-  fullName: 'James Rivera',
-  code: 'JDR\u00B74207',
-  initials: 'JR',
+  name: 'Marcus',
+  fullName: 'Marcus Rivera',
+  code: 'MRC\u00B73341',
+  initials: 'MR',
 };
 
 const REASONS = [

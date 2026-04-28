@@ -24,11 +24,11 @@ export async function GET(request: Request) {
 
   const connectedDriver = {
     id: 'd1',
-    name: 'James Rivera',
-    initials: 'JR',
-    code: 'JDR\u00B74207',
-    codeInitials: 'JDR',
-    codeDigits: '4207',
+    name: 'Marcus Rivera',
+    initials: 'MR',
+    code: 'MRC\u00B73341',
+    codeInitials: 'MRC',
+    codeDigits: '3341',
     rating: 4.97,
     airportPermitted: true,
     insuranceProvider: 'Allstate',

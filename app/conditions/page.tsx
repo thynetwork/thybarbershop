@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Conditions of Use — ThyDriver',
-  description: 'ThyDriver conditions of use including SMS terms, booking conditions, payment conditions, and platform rules.',
+  title: 'Conditions of Use — ThyBarberShop',
+  description: 'ThyBarberShop conditions of use including SMS terms, booking conditions, payment conditions, and platform rules.',
 };
 
 export default function ConditionsPage() {
@@ -11,7 +11,7 @@ export default function ConditionsPage() {
       {/* ── Topbar ──────────────────────────────────────── */}
       <div className="app-topbar">
         <Link href="/" style={{ textDecoration: 'none' }}>
-          <div className="topbar-logo">Thy<span>Driver</span></div>
+          <div className="topbar-logo">Thy<span>BarberShop</span></div>
         </Link>
         <div className="topbar-right">
           <Link href="/privacy" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontWeight: 500 }}>Privacy</Link>
@@ -26,18 +26,18 @@ export default function ConditionsPage() {
         <p className="legal-updated">Last Updated: April 2026</p>
 
         <p className="legal-intro">
-          These Conditions of Use outline specific terms governing SMS communications, booking procedures, payment processes, vehicle standards, insurance requirements, and platform rules for all ThyDriver users. These Conditions supplement our <Link href="/terms" style={{ color: 'var(--navy)', fontWeight: 600 }}>Terms of Service</Link> and <Link href="/privacy" style={{ color: 'var(--navy)', fontWeight: 600 }}>Privacy Policy</Link>.
+          These Conditions of Use outline specific terms governing SMS communications, booking procedures, payment processes, vehicle standards, insurance requirements, and platform rules for all ThyBarberShop users. These Conditions supplement our <Link href="/terms" style={{ color: 'var(--navy)', fontWeight: 600 }}>Terms of Service</Link> and <Link href="/privacy" style={{ color: 'var(--navy)', fontWeight: 600 }}>Privacy Policy</Link>.
         </p>
 
         {/* ── 1. SMS / Text Message Terms ───────────────── */}
         <h2 className="legal-heading">1. SMS / Text Message Terms</h2>
         <p className="legal-body">
-          By creating a ThyDriver account and providing your mobile phone number, you expressly consent to receive SMS (Short Message Service) and text message notifications from ThyDriver. Please review the following terms carefully:
+          By creating a ThyBarberShop account and providing your mobile phone number, you expressly consent to receive SMS (Short Message Service) and text message notifications from ThyBarberShop. Please review the following terms carefully:
         </p>
 
         <h3 className="legal-subheading">Consent</h3>
         <p className="legal-body">
-          By creating a ThyDriver account, you consent to receive automated SMS notifications related to your account, bookings, and platform activity. This consent is not a condition of purchasing any goods or services, though opting out may affect the timeliness of booking-related communications.
+          By creating a ThyBarberShop account, you consent to receive automated SMS notifications related to your account, bookings, and platform activity. This consent is not a condition of purchasing any goods or services, though opting out may affect the timeliness of booking-related communications.
         </p>
 
         <h3 className="legal-subheading">Message Types</h3>
@@ -59,25 +59,25 @@ export default function ConditionsPage() {
 
         <h3 className="legal-subheading">Costs</h3>
         <p className="legal-body">
-          Standard message and data rates from your wireless carrier may apply to SMS messages sent to or received from ThyDriver. ThyDriver does not charge any additional fee for SMS notifications. Contact your carrier for details about your messaging plan.
+          Standard message and data rates from your wireless carrier may apply to SMS messages sent to or received from ThyBarberShop. ThyBarberShop does not charge any additional fee for SMS notifications. Contact your carrier for details about your messaging plan.
         </p>
 
         <h3 className="legal-subheading">Opt-Out</h3>
         <p className="legal-body">
-          You may opt out of SMS notifications at any time by replying <strong>STOP</strong> to any ThyDriver text message. Upon receiving your STOP request, we will send a single confirmation message and cease all further SMS communications. Opting out of SMS does not close your account or affect your ability to use the platform through the website.
+          You may opt out of SMS notifications at any time by replying <strong>STOP</strong> to any ThyBarberShop text message. Upon receiving your STOP request, we will send a single confirmation message and cease all further SMS communications. Opting out of SMS does not close your account or affect your ability to use the platform through the website.
         </p>
 
         <h3 className="legal-subheading">Help</h3>
         <p className="legal-body">
-          For assistance with ThyDriver SMS messages, reply <strong>HELP</strong> to any message, or contact us at support@thydriver.com. You may also call or text our support line for immediate assistance.
+          For assistance with ThyBarberShop SMS messages, reply <strong>HELP</strong> to any message, or contact us at support@thybarbershop.com. You may also call or text our support line for immediate assistance.
         </p>
 
         <h3 className="legal-subheading">Carrier Information</h3>
         <p className="legal-body">
-          ThyDriver SMS messages are sent via Twilio from the following registered number:
+          ThyBarberShop SMS messages are sent via Twilio from the following registered number:
         </p>
         <div className="legal-highlight">
-          <p><strong>ThyDriver SMS Number:</strong> +1 (620) 254-8664</p>
+          <p><strong>ThyBarberShop SMS Number:</strong> +1 (620) 254-8664</p>
           <p><strong>Messaging Provider:</strong> Twilio</p>
           <p><strong>Supported Carriers:</strong> All major US carriers including AT&amp;T, T-Mobile, Verizon, and others</p>
         </div>
@@ -85,12 +85,12 @@ export default function ConditionsPage() {
         {/* ── 2. Booking Conditions ────────────────────── */}
         <h2 className="legal-heading">2. Booking Conditions</h2>
         <p className="legal-body">
-          The following conditions apply to all bookings made through the ThyDriver platform:
+          The following conditions apply to all bookings made through the ThyBarberShop platform:
         </p>
         <ul className="legal-list">
-          <li><strong>Direct Arrangement:</strong> All bookings represent a direct arrangement between the rider and driver. ThyDriver facilitates the connection and provides the scheduling tools, but is not a party to the transportation agreement.</li>
-          <li><strong>Platform Facilitator:</strong> ThyDriver is a technology platform, not a transportation provider. We do not dispatch drivers, set fares, or guarantee ride availability.</li>
-          <li><strong>Safety Protocol Required:</strong> Riders must complete the ThyDriver Safety Protocol before their first ride with any driver. This includes submitting emergency contact information and identity verification. Bookings cannot be confirmed until both parties have completed the protocol.</li>
+          <li><strong>Direct Arrangement:</strong> All bookings represent a direct arrangement between the rider and driver. ThyBarberShop facilitates the connection and provides the scheduling tools, but is not a party to the transportation agreement.</li>
+          <li><strong>Platform Facilitator:</strong> ThyBarberShop is a technology platform, not a transportation provider. We do not dispatch drivers, set fares, or guarantee ride availability.</li>
+          <li><strong>Safety Protocol Required:</strong> Riders must complete the ThyBarberShop Safety Protocol before their first ride with any driver. This includes submitting emergency contact information and identity verification. Bookings cannot be confirmed until both parties have completed the protocol.</li>
           <li><strong>Driver Approval:</strong> All booking requests are subject to driver acceptance. Drivers may decline booking requests at their discretion based on availability, location, or other factors.</li>
           <li><strong>Driver Credentials:</strong> Drivers must maintain valid credentials and active insurance coverage at all times. Drivers whose credentials expire or are revoked will have their accounts suspended until credentials are renewed.</li>
           <li><strong>Booking Accuracy:</strong> Riders are responsible for providing accurate pickup and dropoff locations, dates, and times. Significant changes to booking details after confirmation may require a new booking request.</li>
@@ -99,16 +99,16 @@ export default function ConditionsPage() {
         {/* ── 3. Payment Conditions ────────────────────── */}
         <h2 className="legal-heading">3. Payment Conditions</h2>
         <p className="legal-body">
-          ThyDriver maintains a clear separation between ride payments and platform fees:
+          ThyBarberShop maintains a clear separation between ride payments and platform fees:
         </p>
 
         <h3 className="legal-subheading">Ride Payments</h3>
         <ul className="legal-list">
           <li>All ride payments go directly from the rider to the driver using the driver&rsquo;s preferred payment method(s).</li>
-          <li>ThyDriver does not process, hold, collect, escrow, or transfer any ride fare payments.</li>
-          <li>Payment methods displayed on a driver&rsquo;s profile (Zelle, Venmo, Cash App, etc.) are the driver&rsquo;s own personal accounts. ThyDriver is not responsible for the accuracy of payment information provided by drivers.</li>
+          <li>ThyBarberShop does not process, hold, collect, escrow, or transfer any ride fare payments.</li>
+          <li>Payment methods displayed on a driver&rsquo;s profile (Zelle, Venmo, Cash App, etc.) are the driver&rsquo;s own personal accounts. ThyBarberShop is not responsible for the accuracy of payment information provided by drivers.</li>
           <li>Riders and drivers are responsible for resolving any payment disputes directly between themselves.</li>
-          <li>ThyDriver may assist in mediation upon request but is not obligated to do so and bears no liability for payment disputes.</li>
+          <li>ThyBarberShop may assist in mediation upon request but is not obligated to do so and bears no liability for payment disputes.</li>
         </ul>
 
         <h3 className="legal-subheading">Driver Subscription</h3>
@@ -124,13 +124,13 @@ export default function ConditionsPage() {
           <li>Riders who use the Find a Driver feature to be matched with a new driver are charged a one-time matching fee of <strong>$9.99</strong>.</li>
           <li>This fee is billed via Stripe at the time of match confirmation.</li>
           <li>The matching fee is non-refundable once a driver has been matched and a driver code issued.</li>
-          <li>Riders who already have a driver code from an existing ThyDriver driver do not pay a matching fee.</li>
+          <li>Riders who already have a driver code from an existing ThyBarberShop driver do not pay a matching fee.</li>
         </ul>
 
         {/* ── 4. Vehicle Standards ─────────────────────── */}
         <h2 className="legal-heading">4. Vehicle Standards</h2>
         <p className="legal-body">
-          All vehicles used on the ThyDriver platform must meet the following minimum standards:
+          All vehicles used on the ThyBarberShop platform must meet the following minimum standards:
         </p>
         <ul className="legal-list">
           <li><strong>Model Year:</strong> 2018 or newer.</li>
@@ -138,8 +138,8 @@ export default function ConditionsPage() {
           <li><strong>Climate Control:</strong> Working air conditioning and heating systems in full operational condition.</li>
           <li><strong>Safety Equipment:</strong> All seatbelts must be present and functional for every seating position.</li>
           <li><strong>Cleanliness:</strong> Vehicles must be clean, well-maintained, and free of offensive odors at the time of each ride.</li>
-          <li><strong>Admin Approval:</strong> All vehicles must be reviewed and approved by a ThyDriver administrator before the driver can accept bookings. Drivers must submit four vehicle photographs (front exterior, rear exterior, front interior, rear interior) during registration.</li>
-          <li><strong>Ongoing Compliance:</strong> Vehicles are subject to periodic review. ThyDriver reserves the right to require updated photographs or suspend a driver whose vehicle no longer meets platform standards.</li>
+          <li><strong>Admin Approval:</strong> All vehicles must be reviewed and approved by a ThyBarberShop administrator before the driver can accept bookings. Drivers must submit four vehicle photographs (front exterior, rear exterior, front interior, rear interior) during registration.</li>
+          <li><strong>Ongoing Compliance:</strong> Vehicles are subject to periodic review. ThyBarberShop reserves the right to require updated photographs or suspend a driver whose vehicle no longer meets platform standards.</li>
         </ul>
 
         {/* ── 5. Insurance Requirements ────────────────── */}
@@ -154,7 +154,7 @@ export default function ConditionsPage() {
           <li><strong>XLL Class:</strong> Commercial livery insurance required. Personal auto insurance with a rideshare endorsement is not sufficient.</li>
         </ul>
         <p className="legal-body">
-          Drivers must upload proof of active insurance during registration and update their insurance documents whenever their policy is renewed. Operating without valid insurance is a violation of ThyDriver&rsquo;s Terms of Service and applicable law, and will result in immediate account suspension.
+          Drivers must upload proof of active insurance during registration and update their insurance documents whenever their policy is renewed. Operating without valid insurance is a violation of ThyBarberShop&rsquo;s Terms of Service and applicable law, and will result in immediate account suspension.
         </p>
 
         {/* ── 6. Platform Rules ────────────────────────── */}
@@ -165,12 +165,12 @@ export default function ConditionsPage() {
 
         <h3 className="legal-subheading">Contact Information Protection</h3>
         <p className="legal-body">
-          Riders browsing the driver pool may not solicit or share a driver&rsquo;s personal contact information (phone number, email, social media) outside of the ThyDriver platform. Once a rider and driver are connected via a driver code, contact information is shared through the platform for booking purposes only.
+          Riders browsing the driver pool may not solicit or share a driver&rsquo;s personal contact information (phone number, email, social media) outside of the ThyBarberShop platform. Once a rider and driver are connected via a driver code, contact information is shared through the platform for booking purposes only.
         </p>
 
         <h3 className="legal-subheading">Credential Integrity</h3>
         <p className="legal-body">
-          Falsifying any credentials, safety information, insurance documents, vehicle details, or personal identification submitted to ThyDriver is strictly prohibited and will result in immediate and permanent account termination. ThyDriver may also report fraudulent submissions to appropriate authorities.
+          Falsifying any credentials, safety information, insurance documents, vehicle details, or personal identification submitted to ThyBarberShop is strictly prohibited and will result in immediate and permanent account termination. ThyBarberShop may also report fraudulent submissions to appropriate authorities.
         </p>
 
         <h3 className="legal-subheading">Booking Reliability</h3>
@@ -189,17 +189,17 @@ export default function ConditionsPage() {
           For questions about these Conditions of Use, contact us:
         </p>
         <div className="legal-contact">
-          <p><strong>ThyNetwork Inc.</strong></p>
+          <p><strong>ThyFreelancers Inc.</strong></p>
           <p>Houston, Texas</p>
-          <p>Email: <a href="mailto:support@thydriver.com">support@thydriver.com</a></p>
-          <p>Website: <a href="https://thydriver.com" target="_blank" rel="noopener noreferrer">thydriver.com</a></p>
+          <p>Email: <a href="mailto:support@thybarbershop.com">support@thybarbershop.com</a></p>
+          <p>Website: <a href="https://thybarbershop.com" target="_blank" rel="noopener noreferrer">thybarbershop.com</a></p>
         </div>
       </div>
 
       {/* ── Footer ──────────────────────────────────────── */}
       <footer className="legal-footer">
         <div>
-          &copy; 2026 ThyDriver &middot; ThyNetwork Inc.
+          &copy; 2026 ThyBarberShop &middot; ThyFreelancers Inc.
         </div>
         <div className="legal-footer-links">
           <Link href="/privacy">Privacy</Link>

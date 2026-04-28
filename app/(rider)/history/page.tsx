@@ -19,9 +19,9 @@ interface Booking {
 }
 
 const DRIVER = {
-  name: 'James Rivera',
-  initials: 'JR',
-  code: { airport: 'IAH', initials: 'JDR', digits: '4207' },
+  name: 'Marcus Rivera',
+  initials: 'MR',
+  code: { airport: 'South Houston', initials: 'MRC', digits: '3341' },
 };
 
 const SUMMARY = {
@@ -31,14 +31,14 @@ const SUMMARY = {
 };
 
 const BOOKINGS: Booking[] = [
-  { id: 'b1', date: 'Thursday, July 17, 2026', dateShort: 'Jul 17', route: 'IAH \u2192 Home', terminal: 'Terminal C', flight: 'UA 1847', amount: '$50', status: 'confirmed' },
-  { id: 'b2', date: 'Friday, July 18, 2026', dateShort: 'Jul 18', route: 'Home \u2192 IAH', terminal: 'Terminal A', flight: 'AA 302', amount: '$50', status: 'confirmed' },
-  { id: 'b3', date: 'Saturday, July 12, 2026', dateShort: 'Jul 12', route: 'IAH \u2192 Downtown', terminal: 'Terminal E', flight: 'DL 719', amount: '$95', status: 'completed' },
-  { id: 'b4', date: 'Thursday, July 10, 2026', dateShort: 'Jul 10', route: 'IAH \u2192 Home', terminal: 'Terminal C', flight: 'UA 1292', amount: '$50', status: 'completed' },
-  { id: 'b5', date: 'Monday, July 7, 2026', dateShort: 'Jul 7', route: 'Home \u2192 IAH', terminal: 'Terminal A', flight: 'AA 110', amount: '$50', status: 'completed' },
-  { id: 'b6', date: 'Friday, June 27, 2026', dateShort: 'Jun 27', route: 'IAH \u2192 Home', terminal: 'Terminal C', flight: 'UA 1847', amount: '$50', status: 'completed' },
-  { id: 'b7', date: 'Wednesday, June 18, 2026', dateShort: 'Jun 18', route: 'IAH \u2192 Galleria', terminal: 'Terminal B', flight: 'SW 445', amount: '$65', status: 'completed' },
-  { id: 'b8', date: 'Monday, June 9, 2026', dateShort: 'Jun 9', route: 'Home \u2192 IAH', terminal: 'Terminal A', flight: 'AA 302', amount: '$0', status: 'cancelled' },
+  { id: 'b1', date: 'Thursday, July 17, 2026', dateShort: 'Jul 17', route: 'Fade + Lineup', terminal: 'South Houston', flight: '', amount: '$50', status: 'confirmed' },
+  { id: 'b2', date: 'Friday, July 18, 2026', dateShort: 'Jul 18', route: 'Beard Trim', terminal: 'South Houston', flight: '', amount: '$50', status: 'confirmed' },
+  { id: 'b3', date: 'Saturday, July 12, 2026', dateShort: 'Jul 12', route: 'Full Service', terminal: 'South Houston', flight: '', amount: '$95', status: 'completed' },
+  { id: 'b4', date: 'Thursday, July 10, 2026', dateShort: 'Jul 10', route: 'Fade + Lineup', terminal: 'South Houston', flight: '', amount: '$50', status: 'completed' },
+  { id: 'b5', date: 'Monday, July 7, 2026', dateShort: 'Jul 7', route: 'Fade + Lineup', terminal: 'South Houston', flight: '', amount: '$50', status: 'completed' },
+  { id: 'b6', date: 'Friday, June 27, 2026', dateShort: 'Jun 27', route: 'Fade + Lineup', terminal: 'South Houston', flight: '', amount: '$50', status: 'completed' },
+  { id: 'b7', date: 'Wednesday, June 18, 2026', dateShort: 'Jun 18', route: 'Cut + Style', terminal: 'South Houston', flight: '', amount: '$65', status: 'completed' },
+  { id: 'b8', date: 'Monday, June 9, 2026', dateShort: 'Jun 9', route: 'Fade + Lineup', terminal: 'South Houston', flight: '', amount: '$0', status: 'cancelled' },
 ];
 
 const STATUS_BADGE: Record<BookingStatus, { cls: string; label: string }> = {
@@ -190,7 +190,7 @@ export default function RiderHistoryPage() {
               <div className="t-label mb-8">Quick stats</div>
               <div className="pref-row">
                 <span className="pref-label">Most common route</span>
-                <span className="pref-value">IAH \u2192 Home</span>
+                <span className="pref-value">Fade + Lineup</span>
               </div>
               <div className="pref-row">
                 <span className="pref-label">Avg. trip cost</span>

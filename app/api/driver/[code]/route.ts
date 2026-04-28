@@ -4,7 +4,7 @@ import { getSupabaseServer } from '@/lib/supabase';
 /**
  * GET /api/driver/[code]
  * Returns a driver's public profile by their driver code.
- * Code format: "JDR4207" (no dot in URL, dot added for display)
+ * Code format: "MRC3341" (no dot in URL, dot added for display)
  */
 export async function GET(
   request: Request,
@@ -36,7 +36,7 @@ export async function GET(
   // Demo driver profile
   const driver = {
     id: 'd1',
-    name: 'James Rivera',
+    name: 'Marcus Rivera',
     initials: 'JR',
     codeInitials,
     codeDigits,
@@ -83,7 +83,7 @@ export async function GET(
     cancellationPolicy: 'Free cancellation >24hrs. 50% within 24hrs. Full no-show.',
     paymentTiming: 'on_pickup',
     paymentMethods: [
-      { method: 'zelle', handle: 'jrivera@email.com', qrImageUrl: null, isEnabled: true },
+      { method: 'zelle', handle: 'mrivera@email.com', qrImageUrl: null, isEnabled: true },
       { method: 'venmo', handle: '@james-rivera-htx', qrImageUrl: null, isEnabled: true },
       { method: 'cashapp', handle: '$JamesHTX', qrImageUrl: null, isEnabled: true },
     ],

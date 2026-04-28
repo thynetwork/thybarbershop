@@ -19,7 +19,7 @@ export default function JoinPage() {
   useEffect(() => {
     async function fetchDriver() {
       try {
-        // Parse code: IAH·JDR·4207 or IAHJDR4207
+        // Parse code: SouthHouston·MRC·3341 or similar
         const cleaned = rawCode.replace(/[·.]/g, '');
         if (cleaned.length < 7) {
           setInvalid(true);

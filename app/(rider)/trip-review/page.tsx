@@ -10,8 +10,8 @@ export default function TripReviewPage() {
 
   // TODO: Get from query params or session
   const trip = {
-    driverName: 'James R.',
-    driverCode: 'IAH\u00B7JDR\u00B74207',
+    driverName: 'Marcus R.',
+    driverCode: 'South Houston\u00B7MRC\u00B73341',
     date: 'Thu Jul 17',
     time: '9:00 am',
     route: 'Airport to Home',

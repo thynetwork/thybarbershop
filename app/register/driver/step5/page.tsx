@@ -19,9 +19,9 @@ export default function DriverStep5() {
   const router = useRouter();
 
   const [payMethods, setPayMethods] = useState<PayMethod[]>([
-    { key: 'zelle', name: 'Zelle', iconClass: 'pi-z', iconText: 'Z', placeholder: 'jrivera@email.com', enabled: true, handle: '' },
-    { key: 'venmo', name: 'Venmo', iconClass: 'pi-v', iconText: 'V', placeholder: '@james-rivera-htx', enabled: true, handle: '' },
-    { key: 'cashapp', name: 'Cash App', iconClass: 'pi-c', iconText: '$', placeholder: '$JamesHTX', enabled: true, handle: '' },
+    { key: 'zelle', name: 'Zelle', iconClass: 'pi-z', iconText: 'Z', placeholder: 'mrivera@email.com', enabled: true, handle: '' },
+    { key: 'venmo', name: 'Venmo', iconClass: 'pi-v', iconText: 'V', placeholder: '@marcus-rivera-htx', enabled: true, handle: '' },
+    { key: 'cashapp', name: 'Cash App', iconClass: 'pi-c', iconText: '$', placeholder: '$MarcusHTX', enabled: true, handle: '' },
     { key: 'stripe', name: 'Stripe', iconClass: 'pi-s', iconText: 'St', placeholder: 'Enter email to generate payment link', enabled: false, handle: '' },
   ]);
   const [cashAccepted, setCashAccepted] = useState(false);
@@ -35,7 +35,7 @@ export default function DriverStep5() {
 
   // Get driver code from session for right panel display
   const driverCode = typeof window !== 'undefined' ? sessionStorage.getItem('driverCode') || '' : '';
-  const codeParts = driverCode ? [driverCode.slice(0, 3), driverCode.slice(3, 6), driverCode.slice(6)] : ['IAH', 'JDR', '4207'];
+  const codeParts = driverCode ? [driverCode.slice(0, 3), driverCode.slice(3, 6), driverCode.slice(6)] : ['SHT', 'MRC', '3341'];
 
   function toggleMethod(key: string) {
     setPayMethods((prev) =>
@@ -249,7 +249,7 @@ export default function DriverStep5() {
 
           {/* Professional Standard */}
           <hr className="divider" />
-          <div className="t-label mb-12">ThyDriver Professional Standard</div>
+          <div className="t-label mb-12">ThyBarberShop Professional Standard</div>
           <div className="card-surface mb-16">
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 12 }}>
               <input

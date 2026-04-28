@@ -7,7 +7,7 @@ import { SignJWT, jwtVerify, type JWTPayload } from 'jose';
 import { cookies } from 'next/headers';
 
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? 'thydriver-jwt-secret-change-in-production-min-32-chars!!'
+  process.env.JWT_SECRET ?? 'thybarbershop-jwt-secret-change-in-production-min-32-chars!!'
 );
 
 const JWT_ISSUER = 'thyfreelancer';
@@ -88,7 +88,7 @@ export async function verifySession(token: string): Promise<SessionPayload | nul
 export async function getSession(): Promise<SessionPayload | null> {
   try {
     const cookieStore = await cookies();
-    const token = cookieStore.get('thydriver_session')?.value;
+    const token = cookieStore.get('thybarbershop_session')?.value;
     if (!token) return null;
     return verifySession(token);
   } catch {

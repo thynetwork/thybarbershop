@@ -164,7 +164,7 @@ export async function POST(req: NextRequest) {
           `City: ${(body as Record<string, string>).city || 'Not provided'}\n` +
           `Airport: ${driverAirportCode || 'Not set'}\n` +
           `Driver Code: ${fullCode}\n\n` +
-          `Review and approve at: https://thyadmin.com/platforms/thyfreelancers/thydriver\n`
+          `Review and approve at: https://thyadmin.com/platforms/thyfreelancers/thybarbershop\n`
         );
       } catch (emailErr) {
         console.error('Admin notification email failed:', emailErr);
@@ -196,7 +196,7 @@ export async function POST(req: NextRequest) {
         const codeMatch = driverCode.match(/^([A-Z]{2,3})(\d{4})$/i);
         if (!codeMatch) {
           return NextResponse.json(
-            { error: 'Invalid Driver Code format. Expected airport code + initials + digits (e.g., IAH·JDR·4207).' },
+            { error: 'Invalid Barber Code format. Expected city + initials + digits (e.g., South Houston·MRC·3341).' },
             { status: 400 }
           );
         }

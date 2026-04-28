@@ -334,7 +334,7 @@ export default function RiderRegistrationForm({ mode, driver, preSetAmount }: Pr
               name="code_airport"
               autoComplete="off"
               maxLength={3}
-              placeholder="IAH"
+              placeholder="HTX"
               value={codeAirport}
               onChange={(e) => {
                 const v = e.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 3);
@@ -353,7 +353,7 @@ export default function RiderRegistrationForm({ mode, driver, preSetAmount }: Pr
               name="code_initials"
               autoComplete="off"
               maxLength={3}
-              placeholder="JDR"
+              placeholder="MRC"
               value={codeInitials}
               onChange={(e) => {
                 const v = e.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 3);
@@ -373,7 +373,7 @@ export default function RiderRegistrationForm({ mode, driver, preSetAmount }: Pr
               autoComplete="off"
               inputMode="numeric"
               maxLength={4}
-              placeholder="4207"
+              placeholder="3341"
               value={codeDigits}
               onChange={(e) => setCodeDigits(e.target.value.replace(/\D/g, '').slice(0, 4))}
               style={{
@@ -408,7 +408,7 @@ export default function RiderRegistrationForm({ mode, driver, preSetAmount }: Pr
             placeholder={
               mode === 'invite' && driverFirstName
                 ? `Remind your driver who you are or reference your conversation\ne.g. Hey ${driverFirstName}, this is Sarah — airport trip $80. See you Thursday!`
-                : 'Remind your driver who you are or reference your conversation\ne.g. Hey James, this is Sarah — airport trip $80'
+                : 'Remind your barber who you are or reference your conversation\ne.g. Hey Marcus, this is Sarah — regular fade $50'
             }
             value={noteToDriver}
             onChange={(e) => setNoteToDriver(e.target.value.slice(0, 160))}

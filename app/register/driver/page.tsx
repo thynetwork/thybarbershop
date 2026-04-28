@@ -220,7 +220,7 @@ export default function DriverRegistrationStep1() {
               <input
                 className="form-input"
                 type="text"
-                placeholder="James"
+                placeholder="Marcus"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required

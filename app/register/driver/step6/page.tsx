@@ -151,7 +151,7 @@ export default function DriverStep6() {
   const [error, setError] = useState('');
 
   const driverCode = typeof window !== 'undefined' ? sessionStorage.getItem('driverCode') || '' : '';
-  const codeParts = driverCode ? [driverCode.slice(0, 3), driverCode.slice(3, 6), driverCode.slice(6)] : ['IAH', 'JDR', '4207'];
+  const codeParts = driverCode ? [driverCode.slice(0, 3), driverCode.slice(3, 6), driverCode.slice(6)] : ['SHT', 'MRC', '3341'];
 
   async function handlePaymentSuccess(paymentIntentId: string) {
     setActivating(true);

@@ -72,8 +72,8 @@ export default function SupportPage() {
             background: 'rgba(245,166,35,.15)', border: '1px solid rgba(245,166,35,.3)',
             borderRadius: 'var(--r-full)', padding: '4px 12px',
             fontSize: 11, color: 'var(--amber)', fontWeight: 600,
-          }}>JDR&middot;4207</div>
-          <div className="topbar-avatar">JR</div>
+          }}>MRC&middot;3341</div>
+          <div className="topbar-avatar">MR</div>
         </div>
       </div>
 
@@ -98,8 +98,8 @@ export default function SupportPage() {
 
           {/* ═══ YOUR DRIVER ═════════════════════════════════ */}
           <div className="t-label mb-8">YOUR DRIVER</div>
-          <SupportOption icon="&#128222;" title="Call driver" sub="Ring James Rivera directly" color="green" />
-          <SupportOption icon="&#128172;" title="Text driver" sub="Send a message to James" color="green" />
+          <SupportOption icon="&#128222;" title="Call barber" sub="Ring Marcus Rivera directly" color="green" />
+          <SupportOption icon="&#128172;" title="Text barber" sub="Send a message to Marcus" color="green" />
 
           <div style={{ height: 20 }} />
 

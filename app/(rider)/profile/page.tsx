@@ -24,7 +24,7 @@ export default function RiderProfilePage() {
   const [music, setMusic] = useState('none');
   const [conversation, setConversation] = useState('quiet');
   const [temperature, setTemperature] = useState('ac');
-  const [accommodations, setAccommodations] = useState('Usually have two carry-on bags. Prefer Terminal C entrance at IAH.');
+  const [accommodations, setAccommodations] = useState('Prefer morning appointments. Regular fade client.');
   const [travelFreq, setTravelFreq] = useState('weekly');
   const [travelDaysMode, setTravelDaysMode] = useState<'set' | 'varies'>('set');
   const [travelDays, setTravelDays] = useState([true, false, false, true, false, false, false]);
@@ -204,10 +204,10 @@ export default function RiderProfilePage() {
           <div className="t-label" style={{ marginBottom: 8 }}>My drivers</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'var(--navy)', borderRadius: 10, padding: '10px 12px' }}>
-              <div className="avatar av-amber av-sm">JR</div>
+              <div className="avatar av-amber av-sm">MR</div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>James R.</div>
-                <div style={{ fontSize: 10, color: 'rgba(255,255,255,.5)' }}>IAH &middot; JDR&middot;4207</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#fff' }}>Marcus R.</div>
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,.5)' }}>South Houston &middot; MRC&middot;3341</div>
               </div>
               <span className="badge badge-green" style={{ fontSize: 9 }}>&#10003; Connected</span>
             </div>

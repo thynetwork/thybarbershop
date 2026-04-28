@@ -14,24 +14,24 @@ const demoClient = {
   source: 'invite' as const,
   sourceLabel: 'Invited by you',
   safetyComplete: true,
-  airport: 'IAH',
+  airport: 'South Houston',
   setAmount: 50,
   setAmountConfirmed: true,
-  note: 'Hey James, $50 is perfect see you Thursday at 3pm',
+  note: 'Hey Marcus, $50 is perfect see you Thursday at 3pm',
   preferences: [
     { label: 'Contact', value: 'Text only' },
     { label: 'Music', value: 'No music' },
     { label: 'Ride', value: 'Quiet \u2014 may be working' },
     { label: 'Temperature', value: 'AC preferred' },
     { label: 'Travel', value: 'Weekly \u00B7 Thursdays' },
-    { label: 'Default terminal', value: 'Terminal C \u00B7 Domestic' },
+    { label: 'Default terminal', value: 'South Houston \u00B7 TX' },
     { label: 'Service animal', value: 'No' },
-    { label: 'Accommodations', value: 'Two carry-ons. Terminal C entrance at IAH.' },
+    { label: 'Accommodations', value: 'Prefers morning appointments. Regular fade client.' },
   ],
   bookingHistory: [
-    { date: 'Thu Jul 17', route: 'Airport to Home', detail: 'IAH Terminal C \u00B7 $50', status: 'Completed' },
-    { date: 'Thu Jul 10', route: 'Airport to Home', detail: 'IAH Terminal C \u00B7 $50', status: 'Completed' },
-    { date: 'Thu Jul 3', route: 'Airport to Home', detail: 'IAH Terminal C \u00B7 $50 \u00B7 No-show waived', status: 'Waived' },
+    { date: 'Thu Jul 17', route: 'Fade + Lineup', detail: 'South Houston \u00B7 $50', status: 'Completed' },
+    { date: 'Thu Jul 10', route: 'Fade + Lineup', detail: 'South Houston \u00B7 $50', status: 'Completed' },
+    { date: 'Thu Jul 3', route: 'Fade + Lineup', detail: 'South Houston \u00B7 $50 \u00B7 No-show waived', status: 'Waived' },
   ],
   policies: {
     cancellation: 'flexible' as const,
@@ -58,11 +58,11 @@ export default function ClientProfilePage() {
         <div className="topbar-logo">{prefix}<span>{highlight}</span></div>
         <div className="topbar-right">
           <div className="driver-code">
-            <div className="dc-airport">IAH</div>
-            <div className="dc-initials">JDR</div>
-            <div className="dc-digits">4207</div>
+            <div className="dc-airport">South Houston</div>
+            <div className="dc-initials">MRC</div>
+            <div className="dc-digits">3341</div>
           </div>
-          <div className="topbar-avatar">JR</div>
+          <div className="topbar-avatar">MR</div>
         </div>
       </div>
 

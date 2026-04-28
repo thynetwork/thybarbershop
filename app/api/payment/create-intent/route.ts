@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 
 const PRICES: Record<string, { amount: number; description: string }> = {
-  matching_fee: { amount: 999, description: 'ThyDriver Matching Fee' },
-  subscription: { amount: 999, description: 'ThyDriver Weekly Subscription — $9.99/week' },
+  matching_fee: { amount: 999, description: 'ThyBarberShop Matching Fee' },
+  subscription: { amount: 999, description: 'ThyBarberShop Weekly Subscription — $9.99/week' },
 }
 
 export async function POST(request: NextRequest) {
