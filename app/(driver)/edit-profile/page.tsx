@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import config, { splitServiceName } from '@/lib/config';
 
 interface PayMethod {
@@ -41,6 +42,7 @@ const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 export default function EditProfilePage() {
   const { prefix, highlight } = splitServiceName();
+  const router = useRouter();
 
   const [vibeText, setVibeText] = useState(
     "South Houston's spot for clean fades and sharp line-ups. Twelve years behind the chair — professional, consistent, and on time. The chair is where you reset. Come correct, leave sharp."
@@ -542,7 +544,7 @@ export default function EditProfilePage() {
       <div className="ep-savebar">
         <div className="ep-savebar-note"><strong>Review before saving</strong> &middot; View your public profile to see exactly what clients will see &mdash; then save when ready.</div>
         <div className="ep-savebar-actions">
-          <button type="button" className="ep-btn-view" onClick={() => showToast('Opening public profile')}>View Public Profile</button>
+          <button type="button" className="ep-btn-view" onClick={() => router.push('/public-profile')}>View Public Profile</button>
           <button type="button" className="ep-btn-save" onClick={() => showToast('Profile saved successfully')}>Save Profile</button>
         </div>
       </div>
