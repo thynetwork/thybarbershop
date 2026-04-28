@@ -537,6 +537,19 @@ export default function EditProfilePage() {
               </div>
             </div>
             <div className="ep-field" style={{ marginTop: '0.85rem' }}>
+              <div className="ep-label">Zip Code <span className="sub">&middot; required &middot; feeds the pool search so clients can find you</span></div>
+              <input
+                className="ep-input"
+                type="text"
+                inputMode="numeric"
+                maxLength={5}
+                placeholder="77587"
+                defaultValue="77587"
+                style={{ maxWidth: '8rem', textAlign: 'center', letterSpacing: '0.05em', fontWeight: 600 }}
+                onChange={(e) => { e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '').slice(0, 5); }}
+              />
+            </div>
+            <div className="ep-field" style={{ marginTop: '0.85rem' }}>
               <div className="ep-label">Availability</div>
               <div className="ep-days">
                 {DAYS.map(d => (

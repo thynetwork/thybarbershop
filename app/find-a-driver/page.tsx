@@ -4,39 +4,38 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { config, splitServiceName } from '@/lib/config';
 
-const POPULAR_AIRPORTS = [
-  { code: 'IAH', city: 'Houston', drivers: 17 },
-  { code: 'MCO', city: 'Orlando', drivers: 9 },
-  { code: 'ATL', city: 'Atlanta', drivers: 24 },
-  { code: 'LAX', city: 'Los Angeles', drivers: 31 },
-  { code: 'DFW', city: 'Dallas', drivers: 22 },
-  { code: 'ORD', city: 'Chicago', drivers: 18 },
-  { code: 'JFK', city: 'New York', drivers: 28 },
-  { code: 'MIA', city: 'Miami', drivers: 15 },
+const POPULAR_AREAS = [
+  { zip: '77587', city: 'South Houston', state: 'TX', count: 12 },
+  { zip: '77002', city: 'Houston', state: 'TX', count: 17 },
+  { zip: '90002', city: 'Watts', state: 'CA', count: 9 },
+  { zip: '90001', city: 'Los Angeles', state: 'CA', count: 31 },
+  { zip: '30303', city: 'Atlanta', state: 'GA', count: 24 },
+  { zip: '60601', city: 'Chicago', state: 'IL', count: 18 },
+  { zip: '10001', city: 'New York', state: 'NY', count: 28 },
+  { zip: '33101', city: 'Miami', state: 'FL', count: 15 },
 ];
 
-export default function FindADriverPage() {
+export default function FindABarberPage() {
   const router = useRouter();
   const { prefix, highlight } = splitServiceName();
-  const [airportCode, setAirportCode] = useState('');
-  const [selectedAirport, setSelectedAirport] = useState<string | null>(null);
+  const [zipCode, setZipCode] = useState('');
+  const [selectedZip, setSelectedZip] = useState<string | null>(null);
 
   function handleSearch() {
-    const code = (airportCode || selectedAirport || '').toUpperCase().trim();
-    if (code.length >= 2) {
-      router.push(`/find-a-driver/${code}`);
+    const z = (zipCode || selectedZip || '').trim();
+    if (/^\d{5}$/.test(z)) {
+      router.push(`/find-a-driver/${z}`);
     }
   }
 
-  function handleAirportClick(code: string) {
-    setSelectedAirport(code);
-    setAirportCode(code);
-    router.push(`/find-a-driver/${code}`);
+  function handleAreaClick(zip: string) {
+    setSelectedZip(zip);
+    setZipCode(zip);
+    router.push(`/find-a-driver/${zip}`);
   }
 
   return (
     <>
-      {/* Top bar */}
       <div className="app-topbar">
         <div className="topbar-logo">
           {prefix}<span>{highlight}</span>
@@ -46,57 +45,66 @@ export default function FindADriverPage() {
         </div>
       </div>
 
-      {/* Main content */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '620px', background: 'var(--white)', padding: '40px' }}>
         <div style={{ maxWidth: '540px', width: '100%' }}>
           <div className="text-center mb-24">
-            <div style={{ fontSize: '36px', marginBottom: '12px' }}>&#9992;</div>
+            <div style={{ fontSize: '36px', marginBottom: '12px' }}>&#9986;</div>
             <div className="t-display mb-8">Find a {config.providerLabel}</div>
             <div className="t-body" style={{ color: 'var(--text-2)' }}>
-              Enter the airport code where you need a trusted {config.providerLabel.toLowerCase()}. Browse verified {config.providerLabel.toLowerCase()}s, check their vehicles, and choose who you want.
+              Enter your zip code. We&rsquo;ll show every {config.providerLabel.toLowerCase()} in your area &mdash; their shop, their rates, and how to reach them. Browse anonymously.
             </div>
           </div>
 
           <div className="form-group mb-16">
-            <label className="form-label">Airport code</label>
+            <label className="form-label">Zip code</label>
             <div style={{ display: 'flex', gap: '10px' }}>
               <input
                 className="form-input"
-                placeholder="e.g. MCO, LAX, ATL"
-                value={airportCode}
+                placeholder="77587"
+                value={zipCode}
+                inputMode="numeric"
                 onChange={(e) => {
-                  setAirportCode(e.target.value.toUpperCase());
-                  setSelectedAirport(null);
+                  const v = e.target.value.replace(/\D/g, '').slice(0, 5);
+                  setZipCode(v);
+                  setSelectedZip(null);
                 }}
-                maxLength={4}
+                maxLength={5}
                 style={{
                   fontFamily: "'Syne', sans-serif",
                   fontSize: '20px',
                   fontWeight: 800,
-                  letterSpacing: '0.15em',
+                  letterSpacing: '0.2em',
                   textAlign: 'center',
                   color: 'var(--navy)',
                 }}
               />
-              <button className="btn btn-primary btn-lg" style={{ whiteSpace: 'nowrap' }} onClick={handleSearch}>
+              <button
+                className="btn btn-primary btn-lg"
+                style={{ whiteSpace: 'nowrap', opacity: /^\d{5}$/.test(zipCode) ? 1 : 0.5 }}
+                onClick={handleSearch}
+                disabled={!/^\d{5}$/.test(zipCode)}
+              >
                 Search &rarr;
               </button>
+            </div>
+            <div className="t-small" style={{ marginTop: 6 }}>
+              5 digits required. We match {config.providerLabel.toLowerCase()}s whose zip equals yours OR whose service areas include it.
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
             <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
-            <div className="t-small">Popular airports</div>
+            <div className="t-small">Popular areas</div>
             <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
           </div>
 
           <div className="grid-4 mb-24" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
-            {POPULAR_AIRPORTS.map((ap) => {
-              const isSelected = selectedAirport === ap.code || airportCode === ap.code;
+            {POPULAR_AREAS.map((a) => {
+              const isSelected = selectedZip === a.zip || zipCode === a.zip;
               return (
                 <div
-                  key={ap.code}
-                  onClick={() => handleAirportClick(ap.code)}
+                  key={a.zip}
+                  onClick={() => handleAreaClick(a.zip)}
                   style={{
                     background: isSelected ? 'var(--amber)' : 'var(--surface)',
                     border: isSelected ? '1px solid var(--amber)' : '1px solid var(--border)',
@@ -112,21 +120,22 @@ export default function FindADriverPage() {
                     fontWeight: 800,
                     color: 'var(--navy)',
                     marginBottom: '3px',
+                    letterSpacing: '0.05em',
                   }}>
-                    {ap.code}
+                    {a.zip}
                   </div>
                   <div style={{
                     fontSize: '10px',
                     color: isSelected ? 'rgba(10,10,46,.6)' : 'var(--text-2)',
                   }}>
-                    {ap.city}
+                    {a.city} &middot; {a.state}
                   </div>
                   <div style={{
                     fontSize: '10px',
                     color: isSelected ? 'var(--navy)' : 'var(--green)',
                     marginTop: '4px',
                   }}>
-                    &#9679; {ap.drivers} {config.providerLabel.toLowerCase()}s
+                    &#9679; {a.count} {config.providerLabel.toLowerCase()}s
                   </div>
                 </div>
               );
@@ -142,12 +151,11 @@ export default function FindADriverPage() {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="site-footer">
         &copy; {config.copyrightYear} {config.serviceName} &middot; {config.companyName}{' '}
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Conditions</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/conditions">Conditions</a>
       </div>
     </>
   );

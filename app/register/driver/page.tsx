@@ -36,6 +36,7 @@ export default function DriverRegistrationStep1() {
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
+  const [zipCode, setZipCode] = useState('');
   const [airportCodes, setAirportCodes] = useState<string[]>(['', '', '', '', '']);
   const [password, setPassword] = useState('');
   const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
@@ -71,6 +72,12 @@ export default function DriverRegistrationStep1() {
       return;
     }
 
+    if (!/^\d{5}$/.test(zipCode)) {
+      setError('Please enter a valid 5-digit zip code.');
+      setLoading(false);
+      return;
+    }
+
     if (password.length < 8) {
       setError('Password must be at least 8 characters.');
       setLoading(false);
@@ -88,6 +95,7 @@ export default function DriverRegistrationStep1() {
           phone: phone || undefined,
           city: city || undefined,
           state: state.toUpperCase() || undefined,
+          zipCode,
           airportCodes: filledAirports,
           role: 'driver',
         }),
@@ -264,7 +272,7 @@ export default function DriverRegistrationStep1() {
             />
           </div>
 
-          {/* City + State row */}
+          {/* City + State + Zip row */}
           <div className="form-row">
             <div className="form-group" style={{ flex: 2 }}>
               <label className="form-label">City</label>
@@ -286,6 +294,20 @@ export default function DriverRegistrationStep1() {
                 onChange={(e) => setState(e.target.value.toUpperCase().replace(/[^A-Z]/gi, '').slice(0, 2))}
                 maxLength={2}
                 style={{ textTransform: 'uppercase', textAlign: 'center', fontWeight: 700 }}
+              />
+            </div>
+            <div className="form-group" style={{ flex: 1.2 }}>
+              <label className="form-label">Zip <span style={{ fontWeight: 400, color: 'var(--text-3)' }}>· required</span></label>
+              <input
+                className="form-input"
+                type="text"
+                inputMode="numeric"
+                placeholder="77587"
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                maxLength={5}
+                style={{ textAlign: 'center', fontWeight: 600, letterSpacing: '0.05em' }}
+                required
               />
             </div>
           </div>

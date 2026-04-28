@@ -6,7 +6,7 @@ import { generateRiderId } from '@/lib/rider-id';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { email, password, name, phone, role, driverCode, airportCode, airportCodes, codeAirport, codeInitials: bodyCodeInitials, codeDigits: bodyCodeDigits, preferredName, noteToDriver, source, acceptedSetAmount, driverId } = body as {
+    const { email, password, name, phone, role, driverCode, airportCode, airportCodes, codeAirport, codeInitials: bodyCodeInitials, codeDigits: bodyCodeDigits, preferredName, noteToDriver, source, acceptedSetAmount, driverId, zipCode, city, state, serviceAreas } = body as {
       email?: string;
       password?: string;
       name?: string;
@@ -23,6 +23,10 @@ export async function POST(req: NextRequest) {
       source?: 'invite' | 'find_a_driver' | 'manual';
       acceptedSetAmount?: number;
       driverId?: string;
+      zipCode?: string;
+      city?: string;
+      state?: string;
+      serviceAreas?: string[];
     };
 
     // Validate required fields
@@ -132,6 +136,10 @@ export async function POST(req: NextRequest) {
           code_initials: initials,
           code_digits: codeDigits,
           airport_code: driverAirportCode,
+          zip_code: zipCode || null,
+          city: city || null,
+          state: (state || '').toUpperCase() || null,
+          service_areas: serviceAreas || null,
           subscription_status: 'trial',
           is_active: false,
         });
@@ -161,7 +169,9 @@ export async function POST(req: NextRequest) {
           `Name: ${name}\n` +
           `Email: ${email}\n` +
           `Phone: ${phone || 'Not provided'}\n` +
-          `City: ${(body as Record<string, string>).city || 'Not provided'}\n` +
+          `City: ${city || 'Not provided'}\n` +
+          `State: ${state || 'Not provided'}\n` +
+          `Zip: ${zipCode || 'Not provided'}\n` +
           `Airport: ${driverAirportCode || 'Not set'}\n` +
           `Driver Code: ${fullCode}\n\n` +
           `Review and approve at: https://thyadmin.com/platforms/thyfreelancers/thybarbershop\n`
