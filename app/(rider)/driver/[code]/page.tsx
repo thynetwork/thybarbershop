@@ -9,10 +9,14 @@ const barber = {
   initials: 'MR',
   name: 'Marcus Rivera',
   location: 'The Studio · South Houston, TX',
+  shopAddress: '4521 Main St, South Houston, TX 77587',
   codeParts: ['South Houston', 'TX', 'MRC', '3341'],
   rating: 4.97,
   licensed: true,
   safetyProtocol: true,
+  // Set on DP2 Profile Edit → Business Info → Location Type
+  // 'shop' | 'mobile' | 'both'
+  barberLocationType: 'both' as 'shop' | 'mobile' | 'both',
 };
 
 const services = [
@@ -68,6 +72,10 @@ export default function DriverCardPage() {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [calMode, setCalMode] = useState<'calendar' | 'manual'>('calendar');
   const [selectedService, setSelectedService] = useState<number>(0);
+  const [selectedLocation, setSelectedLocation] = useState<'shop' | 'mobile'>(
+    barber.barberLocationType === 'mobile' ? 'mobile' : 'shop'
+  );
+  const [mobileAddress, setMobileAddress] = useState('');
 
   const daysInMonth = getDaysInMonth(YEAR, MONTH);
   const firstDow = getFirstDow(YEAR, MONTH);
@@ -93,7 +101,10 @@ export default function DriverCardPage() {
     setSelectedTime(slot);
   }
 
-  const canProceed = selectedDate !== null && selectedTime !== null;
+  const locationValid =
+    selectedLocation === 'shop' ||
+    (selectedLocation === 'mobile' && mobileAddress.trim().length >= 4);
+  const canProceed = selectedDate !== null && selectedTime !== null && locationValid;
 
   /* ── Styles ─────────────────────────────────────────────── */
   const navy = '#1B2A4A';
@@ -493,9 +504,89 @@ export default function DriverCardPage() {
             </div>
           )}
 
+          {/* Location selector — only after time slot selected */}
+          {selectedTime !== null && (() => {
+            const shopDisabled = barber.barberLocationType === 'mobile';
+            const mobileDisabled = barber.barberLocationType === 'shop';
+            const shopActive = selectedLocation === 'shop' && !shopDisabled;
+            const mobileActive = selectedLocation === 'mobile' && !mobileDisabled;
+            return (
+              <div style={{
+                background: '#fff', border: '1.5px solid #E5E7EB', borderRadius: 20,
+                padding: 20, boxShadow: '0 4px 16px rgba(0,0,0,0.07)', marginBottom: 24,
+              }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: navy, marginBottom: 12 }}>Location</div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: mobileActive ? 12 : 0 }}>
+                  <button
+                    type="button"
+                    data-disabled={shopDisabled}
+                    onClick={() => !shopDisabled && setSelectedLocation('shop')}
+                    style={{
+                      padding: '12px 10px', borderRadius: 10, fontSize: 13, fontWeight: 700,
+                      cursor: shopDisabled ? 'not-allowed' : 'pointer',
+                      opacity: shopDisabled ? 0.4 : 1,
+                      border: shopActive ? `2px solid ${navy}` : `1.5px solid ${borderColor}`,
+                      background: shopActive ? navy : '#fff',
+                      color: shopActive ? amber : navy,
+                      textAlign: 'left',
+                    }}
+                  >
+                    <div>Shop</div>
+                    <div style={{ fontSize: 11, fontWeight: 500, color: shopActive ? 'rgba(245,166,35,0.7)' : grayText, marginTop: 4 }}>
+                      {shopDisabled ? 'Shop not available' : barber.shopAddress}
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    data-disabled={mobileDisabled}
+                    onClick={() => !mobileDisabled && setSelectedLocation('mobile')}
+                    style={{
+                      padding: '12px 10px', borderRadius: 10, fontSize: 13, fontWeight: 700,
+                      cursor: mobileDisabled ? 'not-allowed' : 'pointer',
+                      opacity: mobileDisabled ? 0.4 : 1,
+                      border: mobileActive ? `2px solid ${navy}` : `1.5px solid ${borderColor}`,
+                      background: mobileActive ? navy : '#fff',
+                      color: mobileActive ? amber : navy,
+                      textAlign: 'left',
+                    }}
+                  >
+                    <div>Mobile</div>
+                    <div style={{ fontSize: 11, fontWeight: 500, color: mobileActive ? 'rgba(245,166,35,0.7)' : grayText, marginTop: 4 }}>
+                      {mobileDisabled ? 'Not available for this barber' : 'Barber comes to you'}
+                    </div>
+                  </button>
+                </div>
+                {mobileActive && (
+                  <input
+                    type="text"
+                    value={mobileAddress}
+                    onChange={(e) => setMobileAddress(e.target.value)}
+                    placeholder="Enter your address for the mobile visit"
+                    style={{
+                      width: '100%', padding: '12px 14px', borderRadius: 10,
+                      border: `1.5px solid ${borderColor}`, fontSize: 14, color: navy,
+                      outline: 'none', fontFamily: 'inherit',
+                    }}
+                  />
+                )}
+              </div>
+            );
+          })()}
+
           {/* Next button */}
           <button
-            onClick={() => canProceed && router.push('/book/confirm')}
+            onClick={() => {
+              if (!canProceed) return;
+              const locationValue = selectedLocation === 'shop' ? barber.shopAddress : mobileAddress.trim();
+              const params = new URLSearchParams({
+                service: services[selectedService].label,
+                date: selectedDate !== null ? `${YEAR}-${String(MONTH + 1).padStart(2, '0')}-${String(selectedDate).padStart(2, '0')}` : '',
+                time: selectedTime ?? '',
+                location: locationValue,
+                locationType: selectedLocation,
+              });
+              router.push(`/book/confirmed?${params.toString()}`);
+            }}
             disabled={!canProceed}
             style={{
               width: '100%', padding: '16px 0', borderRadius: 12, border: 'none',
