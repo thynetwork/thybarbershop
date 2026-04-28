@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import config, { splitServiceName } from '@/lib/config';
 
 const BANNER_GRADIENTS: { key: string; title: string; gradient: string }[] = [
@@ -37,16 +37,43 @@ const DAYS: { label: string; on: boolean }[] = [
   { label: 'Sa', on: true },
 ];
 
-export default function PublicProfilePage() {
+function PublicProfileContent() {
   const { prefix, highlight } = splitServiceName();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const barberId = searchParams.get('barber');
+  const isOwner = !barberId; // No ?barber= param ⇒ barber viewing their own profile
 
   const [bannerKey, setBannerKey] = useState('navy');
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [requestState, setRequestState] = useState<'idle' | 'sending' | 'sent'>('idle');
   const currentGradient = BANNER_GRADIENTS.find(g => g.key === bannerKey)?.gradient ?? BANNER_GRADIENTS[0].gradient;
 
   function goThyHair() {
     alert('Opening ThyHair portfolio page for Marcus Rivera in production.');
+  }
+
+  async function requestConnection() {
+    if (requestState !== 'idle') return;
+    setRequestState('sending');
+    try {
+      await fetch('/api/connections', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ barberId, source: 'pool' }),
+      });
+    } catch {
+      // Non-blocking: UI confirms intent even if API isn't wired yet.
+    }
+    setRequestState('sent');
+  }
+
+  function backToPool() {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/find-a-barber');
+    }
   }
 
   return (
@@ -90,6 +117,11 @@ export default function PublicProfilePage() {
         .pp-badge-amber{background:rgba(245,166,35,.15);color:#F5A623;border:1px solid rgba(245,166,35,.25);}
         .pp-badge-white{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);}
         .pp-hero-stats{text-align:right;flex-shrink:0;}
+        .pp-request-bar{max-width:60rem;margin:0 auto;padding:1rem 1.5rem 0;display:flex;justify-content:flex-end;}
+        .pp-request-cta{background:#F5A623;border:none;border-radius:1rem;padding:.75rem 1.5rem;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:800;color:#0a0a2e;cursor:pointer;box-shadow:0 .25rem 1rem rgba(245,166,35,.3);}
+        .pp-request-cta:hover{opacity:.9;}
+        .pp-request-cta.sent{background:#3B6D11;color:#fff;cursor:default;}
+        .pp-request-cta:disabled{opacity:.7;cursor:wait;}
         .pp-hero-rating{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#F5A623;line-height:1;}
         .pp-hero-rating-label{font-size:.6rem;color:rgba(255,255,255,.35);margin-top:.2rem;}
         .pp-hero-visits{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:rgba(255,255,255,.6);margin-top:.5rem;}
@@ -145,7 +177,7 @@ export default function PublicProfilePage() {
 
       <nav className="pp-topbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <button type="button" className="pp-back" onClick={() => router.back()}>
+          <button type="button" className="pp-back" onClick={backToPool}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"/></svg>
             Back
           </button>
@@ -216,6 +248,19 @@ export default function PublicProfilePage() {
           </div>
         </div>
       </div>
+
+      {!isOwner && (
+        <div className="pp-request-bar">
+          <button
+            type="button"
+            className={'pp-request-cta' + (requestState === 'sent' ? ' sent' : '')}
+            onClick={requestConnection}
+            disabled={requestState !== 'idle'}
+          >
+            {requestState === 'sent' ? '✓ Request Sent' : requestState === 'sending' ? 'Sending…' : 'Request Connection'}
+          </button>
+        </div>
+      )}
 
       <div className="pp-main-wrap">
         <div className="pp-grid">
@@ -369,5 +414,13 @@ export default function PublicProfilePage() {
         <a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/conditions">Conditions</a>
       </footer>
     </>
+  );
+}
+
+export default function PublicProfilePage() {
+  return (
+    <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading…</div>}>
+      <PublicProfileContent />
+    </Suspense>
   );
 }

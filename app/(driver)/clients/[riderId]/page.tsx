@@ -117,7 +117,7 @@ export default function ClientProfilePage() {
               { icon: '👥', label: 'Clients', href: '/clients', badge: 14 },
               { icon: '💰', label: 'Payment log', href: '/payments' },
               { icon: '🔗', label: 'Share code', href: '/share' },
-              { icon: '👤', label: 'Profile', href: '/edit-profile' },
+              { icon: '👤', label: 'Profile', href: '/public-profile'},
               { icon: '⚙', label: 'Settings', href: '/settings' },
             ].map((item) => {
               const active = item.label === 'Clients';

@@ -345,8 +345,8 @@ export default function BarberPoolPage() {
                   </div>
                   <div className="fp-hours">{b.hours}{b.afterHours ? ' · After hours by request' : ''}</div>
                   <div className="fp-footer-btns">
-                    <button type="button" className="fp-view-btn" onClick={() => router.push('/public-profile')}>View Profile</button>
-                    <button type="button" className="fp-request-btn" onClick={() => router.push(`/find-a-barber/${zip}/${b.id}/request`)}>Request</button>
+                    <button type="button" className="fp-view-btn" onClick={() => router.push(`/public-profile?barber=${b.id}`)}>View Profile</button>
+                    <button type="button" className="fp-request-btn" onClick={() => router.push(`/public-profile?barber=${b.id}`)}>Request</button>
                   </div>
                 </div>
               </div>

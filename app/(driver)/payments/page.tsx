@@ -26,7 +26,7 @@ const NAV_ITEMS = [
   { icon: '\ud83d\udc65', label: 'Clients', href: '/dashboard' },
   { icon: '\ud83d\udcb0', label: 'Payment log', href: '/payments', active: true },
   { icon: '\ud83d\udd17', label: 'Share code', href: '/share' },
-  { icon: '\ud83d\udc64', label: 'Profile', href: '/dashboard' },
+  { icon: '\ud83d\udc64', label: 'Profile', href: '/public-profile'},
   { icon: '\u2699', label: 'Settings', href: '/settings' },
 ];
 
