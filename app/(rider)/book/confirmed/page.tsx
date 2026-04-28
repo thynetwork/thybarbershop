@@ -204,8 +204,8 @@ export default function BookingConfirmedPage() {
             <div style={{ textAlign: 'center', width: 170 }}>
               <div
                 style={{
-                  width: '8rem',
-                  height: '8rem',
+                  width: '6rem',
+                  height: '6rem',
                   borderRadius: '50%',
                   background: amber,
                   color: navy,
@@ -214,9 +214,10 @@ export default function BookingConfirmedPage() {
                   justifyContent: 'center',
                   fontFamily: 'Syne, sans-serif',
                   fontWeight: 800,
-                  fontSize: '2rem',
-                  margin: '0 auto 10px',
-                  border: '4px solid rgba(255,255,255,.15)',
+                  fontSize: '1.6rem',
+                  margin: '0 auto 0.625rem',
+                  border: '0.25rem solid rgba(255,255,255,0.2)',
+                  boxShadow: '0 0.25rem 1rem rgba(0,0,0,0.3)',
                 }}
               >
                 {barber.initials}
@@ -267,8 +268,8 @@ export default function BookingConfirmedPage() {
             <div style={{ textAlign: 'center', width: 170 }}>
               <div
                 style={{
-                  width: '8rem',
-                  height: '8rem',
+                  width: '6rem',
+                  height: '6rem',
                   borderRadius: '50%',
                   background: navyLight,
                   color: amber,
@@ -277,9 +278,10 @@ export default function BookingConfirmedPage() {
                   justifyContent: 'center',
                   fontFamily: 'Syne, sans-serif',
                   fontWeight: 800,
-                  fontSize: '2rem',
-                  margin: '0 auto 10px',
-                  border: '4px solid rgba(255,255,255,.15)',
+                  fontSize: '1.6rem',
+                  margin: '0 auto 0.625rem',
+                  border: '0.25rem solid rgba(255,255,255,0.2)',
+                  boxShadow: '0 0.25rem 1rem rgba(0,0,0,0.3)',
                 }}
               >
                 {client.initials}

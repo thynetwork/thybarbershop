@@ -40,6 +40,15 @@ const INITIAL_SPECIALTIES: Specialty[] = [
 
 const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
+const BANNER_GRADIENTS: { key: string; title: string; gradient: string }[] = [
+  { key: 'navy', title: 'Navy', gradient: 'linear-gradient(135deg,#1a1a6e,#0a0a2e)' },
+  { key: 'green', title: 'Forest', gradient: 'linear-gradient(135deg,#0d2818,#1a4a2e)' },
+  { key: 'purple', title: 'Deep Purple', gradient: 'linear-gradient(135deg,#1a0a2e,#2d1b69)' },
+  { key: 'black', title: 'Charcoal', gradient: 'linear-gradient(135deg,#1a1a1a,#3a3a3a)' },
+  { key: 'brown', title: 'Walnut', gradient: 'linear-gradient(135deg,#2e1a0a,#6b3a1f)' },
+  { key: 'blue', title: 'Midnight Blue', gradient: 'linear-gradient(135deg,#0a1a2e,#1a3a5e)' },
+];
+
 export default function EditProfilePage() {
   const { prefix, highlight } = splitServiceName();
   const router = useRouter();
@@ -54,6 +63,8 @@ export default function EditProfilePage() {
     new Set(['Mo', 'Tu', 'We', 'Th', 'Sa'])
   );
   const [toast, setToast] = useState('');
+  const [bannerKey, setBannerKey] = useState('navy');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [payMethods, setPayMethods] = useState<PayMethod[]>([
     { id: 'zelle', name: 'Zelle', active: true, handle: '(713) 555-0182', placeholder: 'Phone number or email', bg: '#6d1ed4', letter: 'Z', letterFont: 'Arial Black,sans-serif', letterSize: 16 },
     { id: 'venmo', name: 'Venmo', active: true, handle: '@marcus-rivera-htx', placeholder: '@your-venmo-handle', bg: '#008cff', letter: 'venmo', letterFont: 'Arial,sans-serif', letterSize: 11 },
@@ -136,6 +147,26 @@ export default function EditProfilePage() {
         .ep-prompt-text{font-size:.72rem;color:#5A5A6A;line-height:1.5;}
         .ep-prompt-pct{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:#D4830A;margin-left:auto;text-align:center;flex-shrink:0;}
         .ep-prompt-pct span{display:block;font-size:.6rem;color:#9A9AAA;font-weight:400;}
+
+        .ep-banner{border-radius:1.25rem;margin-bottom:1.25rem;box-shadow:0 0.5rem 2rem rgba(0,0,0,0.12);overflow:hidden;position:relative;}
+        .ep-bg{min-height:11rem;position:relative;}
+        .ep-change-banner{position:absolute;top:0.75rem;right:0.75rem;background:rgba(0,0,0,0.4);border:0.0625rem solid rgba(255,255,255,0.2);border-radius:9999px;padding:0.3rem 0.85rem;font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.8);cursor:pointer;backdrop-filter:blur(0.25rem);display:flex;align-items:center;gap:0.4rem;}
+        .ep-change-banner:hover{background:rgba(0,0,0,0.6);color:#fff;}
+        .ep-banner-picker{position:absolute;top:2.8rem;right:0.75rem;background:#fff;border:0.0938rem solid rgba(0,0,0,0.09);border-radius:1rem;padding:0.85rem;box-shadow:0 0.5rem 2rem rgba(0,0,0,0.12);z-index:20;min-width:14rem;}
+        .ep-bp-label{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#9A9AAA;margin-bottom:0.5rem;}
+        .ep-bp-swatches{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.6rem;}
+        .ep-bp-swatch{width:1.75rem;height:1.75rem;border-radius:0.35rem;cursor:pointer;border:0.15rem solid transparent;}
+        .ep-bp-swatch:hover{transform:scale(1.1);}
+        .ep-bp-swatch.on{border-color:#0a0a2e;}
+        .ep-bp-upload{width:100%;border:0.0938rem dashed rgba(0,0,0,0.09);border-radius:0.75rem;padding:0.5rem;text-align:center;font-size:0.72rem;font-weight:600;color:#5A5A6A;cursor:pointer;background:none;font-family:inherit;}
+        .ep-bp-upload:hover{border-color:#F5A623;color:#D4830A;}
+        .ep-pb-content{position:absolute;bottom:0;left:0;right:0;padding:1.25rem 1.5rem;background:linear-gradient(to top,rgba(10,10,46,0.92) 0%,rgba(10,10,46,0.4) 70%,transparent 100%);display:flex;align-items:flex-end;gap:1.25rem;}
+        .ep-pb-avatar{width:6rem;height:6rem;border-radius:50%;background:#F5A623;color:#0a0a2e;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;border:0.25rem solid rgba(255,255,255,0.2);flex-shrink:0;cursor:pointer;position:relative;box-shadow:0 0.25rem 1rem rgba(0,0,0,0.3);}
+        .ep-pb-avatar-edit{position:absolute;bottom:0.1rem;right:0.1rem;width:1.6rem;height:1.6rem;border-radius:50%;background:#F5A623;border:0.15rem solid #0a0a2e;display:flex;align-items:center;justify-content:center;}
+        .ep-pb-info{flex:1;padding-bottom:0.25rem;}
+        .ep-pb-name{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:0.25rem;line-height:1;}
+        .ep-pb-id{font-family:'DM Mono',monospace;font-size:0.88rem;color:rgba(255,255,255,0.45);margin-bottom:0.6rem;}
+        .ep-pb-preview-label{position:absolute;top:0.75rem;left:0.75rem;background:rgba(0,0,0,0.4);border:0.0625rem solid rgba(255,255,255,0.2);border-radius:9999px;padding:0.3rem 0.85rem;font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.8);text-transform:uppercase;letter-spacing:0.08em;backdrop-filter:blur(0.25rem);}
 
         .ep-card{background:#fff;border:1.5px solid rgba(0,0,0,.09);border-radius:1.25rem;padding:1.25rem;box-shadow:0 4px 16px rgba(0,0,0,.07);margin-bottom:1.25rem;}
         .ep-card-title{font-family:'Syne',sans-serif;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9A9AAA;margin-bottom:1rem;display:flex;align-items:center;gap:.4rem;}
@@ -298,6 +329,46 @@ export default function EditProfilePage() {
 
         {/* Main */}
         <main className="ep-main">
+          {/* Live banner preview — barber's banner choice as clients will see it */}
+          <div className="ep-banner">
+            <div className="ep-bg" style={{ background: BANNER_GRADIENTS.find(g => g.key === bannerKey)?.gradient ?? BANNER_GRADIENTS[0].gradient }}>
+              <div className="ep-pb-preview-label">Banner Preview</div>
+              <div className="ep-change-banner" onClick={(e) => { e.stopPropagation(); setPickerOpen(p => !p); }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                Change Banner
+              </div>
+              {pickerOpen && (
+                <div className="ep-banner-picker" onClick={(e) => e.stopPropagation()}>
+                  <div className="ep-bp-label">Choose a color</div>
+                  <div className="ep-bp-swatches">
+                    {BANNER_GRADIENTS.map(g => (
+                      <div
+                        key={g.key}
+                        className={'ep-bp-swatch' + (bannerKey === g.key ? ' on' : '')}
+                        style={{ background: g.gradient }}
+                        title={g.title}
+                        onClick={() => { setBannerKey(g.key); setPickerOpen(false); }}
+                      />
+                    ))}
+                  </div>
+                  <button type="button" className="ep-bp-upload" onClick={() => { showToast('Opens file picker for banner photo'); setPickerOpen(false); }}>Upload your own photo</button>
+                </div>
+              )}
+            </div>
+            <div className="ep-pb-content">
+              <div className="ep-pb-avatar" onClick={() => showToast('Opens camera or file picker')}>
+                MR
+                <div className="ep-pb-avatar-edit">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0a0a2e" strokeWidth="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </div>
+              </div>
+              <div className="ep-pb-info">
+                <div className="ep-pb-name">Marcus Rivera</div>
+                <div className="ep-pb-id">South Houston &middot; TX &middot; MRC &middot; 3341</div>
+              </div>
+            </div>
+          </div>
+
           {/* Progress prompt */}
           <div className="ep-prompt">
             <div className="ep-prompt-icon">68%</div>

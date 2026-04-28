@@ -1,8 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import config, { splitServiceName } from '@/lib/config';
+
+const BANNER_GRADIENTS: { key: string; title: string; gradient: string }[] = [
+  { key: 'navy', title: 'Navy', gradient: 'linear-gradient(135deg,#1a1a6e,#0a0a2e)' },
+  { key: 'green', title: 'Forest', gradient: 'linear-gradient(135deg,#0d2818,#1a4a2e)' },
+  { key: 'purple', title: 'Deep Purple', gradient: 'linear-gradient(135deg,#1a0a2e,#2d1b69)' },
+  { key: 'black', title: 'Charcoal', gradient: 'linear-gradient(135deg,#1a1a1a,#3a3a3a)' },
+  { key: 'brown', title: 'Walnut', gradient: 'linear-gradient(135deg,#2e1a0a,#6b3a1f)' },
+  { key: 'blue', title: 'Midnight Blue', gradient: 'linear-gradient(135deg,#0a1a2e,#1a3a5e)' },
+];
 
 interface Service {
   name: string;
@@ -31,6 +41,10 @@ export default function PublicProfilePage() {
   const { prefix, highlight } = splitServiceName();
   const router = useRouter();
 
+  const [bannerKey, setBannerKey] = useState('navy');
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const currentGradient = BANNER_GRADIENTS.find(g => g.key === bannerKey)?.gradient ?? BANNER_GRADIENTS[0].gradient;
+
   function goThyHair() {
     alert('Opening ThyHair portfolio page for Marcus Rivera in production.');
   }
@@ -46,13 +60,25 @@ export default function PublicProfilePage() {
         .pp-tb-right{display:flex;align-items:center;gap:.75rem;}
         .pp-tb-avatar{width:2rem;height:2rem;border-radius:50%;background:#F5A623;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:.72rem;color:#0a0a2e;}
 
-        .pp-hero{background:linear-gradient(135deg,#0d2818 0%,#1a4a2e 50%,#0d3020 100%);padding:2rem 2rem 3.5rem;position:relative;overflow:hidden;}
-        .pp-hero-pattern{position:absolute;inset:0;opacity:.04;}
-        .pp-hero-content{position:relative;z-index:2;display:flex;align-items:flex-end;gap:1.5rem;max-width:960px;margin:0 auto;}
-        .pp-hero-avatar{width:6rem;height:6rem;border-radius:50%;background:#F5A623;color:#0a0a2e;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;border:4px solid rgba(255,255,255,.15);box-shadow:0 8px 32px rgba(0,0,0,.3);flex-shrink:0;}
-        .pp-hero-info{flex:1;}
-        .pp-hero-name{font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;color:#fff;margin-bottom:.25rem;}
-        .pp-hero-shop{font-size:.85rem;color:rgba(255,255,255,.5);margin-bottom:.6rem;}
+        .pp-hero-wrap{max-width:60rem;margin:0 auto;padding:1.5rem 1.5rem 0;}
+        .pp-banner{border-radius:1.25rem;box-shadow:0 0.5rem 2.5rem rgba(0,0,0,0.14);overflow:hidden;position:relative;}
+        .pp-bg{min-height:11rem;position:relative;}
+        .pp-change-banner{position:absolute;top:0.75rem;right:0.75rem;background:rgba(0,0,0,0.4);border:0.0625rem solid rgba(255,255,255,0.2);border-radius:9999px;padding:0.3rem 0.85rem;font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.8);cursor:pointer;backdrop-filter:blur(0.25rem);display:flex;align-items:center;gap:0.4rem;}
+        .pp-change-banner:hover{background:rgba(0,0,0,0.6);color:#fff;}
+        .pp-banner-picker{position:absolute;top:2.8rem;right:0.75rem;background:#fff;border:0.0938rem solid rgba(0,0,0,0.09);border-radius:1rem;padding:0.85rem;box-shadow:0 0.5rem 2rem rgba(0,0,0,0.12);z-index:20;min-width:14rem;}
+        .pp-bp-label{font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#9A9AAA;margin-bottom:0.5rem;}
+        .pp-bp-swatches{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.6rem;}
+        .pp-bp-swatch{width:1.75rem;height:1.75rem;border-radius:0.35rem;cursor:pointer;border:0.15rem solid transparent;}
+        .pp-bp-swatch:hover{transform:scale(1.1);}
+        .pp-bp-swatch.on{border-color:#0a0a2e;}
+        .pp-bp-upload{width:100%;border:0.0938rem dashed rgba(0,0,0,0.09);border-radius:0.75rem;padding:0.5rem;text-align:center;font-size:0.72rem;font-weight:600;color:#5A5A6A;cursor:pointer;background:none;font-family:inherit;}
+        .pp-bp-upload:hover{border-color:#F5A623;color:#D4830A;}
+        .pp-pb-content{position:absolute;bottom:0;left:0;right:0;padding:1.25rem 1.5rem;background:linear-gradient(to top,rgba(10,10,46,0.92) 0%,rgba(10,10,46,0.4) 70%,transparent 100%);display:flex;align-items:flex-end;gap:1.25rem;}
+        .pp-hero-avatar{width:6rem;height:6rem;border-radius:50%;background:#F5A623;color:#0a0a2e;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:1.6rem;border:0.25rem solid rgba(255,255,255,0.2);box-shadow:0 0.25rem 1rem rgba(0,0,0,0.3);flex-shrink:0;position:relative;}
+        .pp-hero-avatar-edit{position:absolute;bottom:0.1rem;right:0.1rem;width:1.6rem;height:1.6rem;border-radius:50%;background:#F5A623;border:0.15rem solid #0a0a2e;display:flex;align-items:center;justify-content:center;}
+        .pp-hero-info{flex:1;padding-bottom:0.25rem;}
+        .pp-hero-name{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#fff;margin-bottom:0.25rem;line-height:1;}
+        .pp-hero-shop{font-family:'DM Mono',monospace;font-size:0.88rem;color:rgba(255,255,255,0.45);margin-bottom:0.6rem;}
         .pp-hero-code{display:inline-flex;border-radius:.3rem;overflow:hidden;font-family:'Syne',sans-serif;font-weight:800;font-size:.68rem;margin-bottom:.75rem;}
         .pp-hc-city{background:#F5A623;color:#0a0a2e;padding:.22rem .6rem;flex:2.5;}
         .pp-hc-state{background:rgba(255,255,255,.12);color:#fff;padding:.22rem .45rem;flex:1;border-left:1px solid rgba(255,255,255,.2);border-right:1px solid rgba(255,255,255,.2);}
@@ -132,39 +158,61 @@ export default function PublicProfilePage() {
         </div>
       </nav>
 
-      <div className="pp-hero">
-        <svg className="pp-hero-pattern" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="p" width="10" height="10" patternUnits="userSpaceOnUse">
-              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="0.5"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#p)"/>
-        </svg>
-        <div className="pp-hero-content">
-          <div className="pp-hero-avatar">MR</div>
-          <div className="pp-hero-info">
-            <div className="pp-hero-name">Marcus Rivera</div>
-            <div className="pp-hero-shop">The Studio &middot; South Houston, TX</div>
-            <div className="pp-hero-code">
-              <div className="pp-hc-city">South Houston</div>
-              <div className="pp-hc-state">TX</div>
-              <div className="pp-hc-init">MRC</div>
-              <div className="pp-hc-digits">3341</div>
+      <div className="pp-hero-wrap">
+        <div className="pp-banner">
+          <div className="pp-bg" style={{ background: currentGradient }}>
+            <div className="pp-change-banner" onClick={(e) => { e.stopPropagation(); setPickerOpen(p => !p); }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Change Banner
             </div>
-            <div className="pp-hero-badges">
-              <span className="pp-badge pp-badge-green">Professional Standard</span>
-              <span className="pp-badge pp-badge-green">Safety Protocol</span>
-              <span className="pp-badge pp-badge-green">License Verified</span>
-              <span className="pp-badge pp-badge-amber">12 yrs licensed</span>
-              <span className="pp-badge pp-badge-white">Shop &middot; Mobile</span>
-            </div>
+            {pickerOpen && (
+              <div className="pp-banner-picker" onClick={(e) => e.stopPropagation()}>
+                <div className="pp-bp-label">Choose a color</div>
+                <div className="pp-bp-swatches">
+                  {BANNER_GRADIENTS.map(g => (
+                    <div
+                      key={g.key}
+                      className={'pp-bp-swatch' + (bannerKey === g.key ? ' on' : '')}
+                      style={{ background: g.gradient }}
+                      title={g.title}
+                      onClick={() => { setBannerKey(g.key); setPickerOpen(false); }}
+                    />
+                  ))}
+                </div>
+                <button type="button" className="pp-bp-upload" onClick={() => { setPickerOpen(false); }}>Upload your own photo</button>
+              </div>
+            )}
           </div>
-          <div className="pp-hero-stats">
-            <div className="pp-hero-rating">4.97</div>
-            <div className="pp-hero-rating-label">Rating</div>
-            <div className="pp-hero-visits">312</div>
-            <div className="pp-hero-visits-label">Visits</div>
+          <div className="pp-pb-content">
+            <div className="pp-hero-avatar">
+              MR
+              <div className="pp-hero-avatar-edit">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0a0a2e" strokeWidth="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              </div>
+            </div>
+            <div className="pp-hero-info">
+              <div className="pp-hero-name">Marcus Rivera</div>
+              <div className="pp-hero-shop">The Studio &middot; South Houston, TX</div>
+              <div className="pp-hero-code">
+                <div className="pp-hc-city">South Houston</div>
+                <div className="pp-hc-state">TX</div>
+                <div className="pp-hc-init">MRC</div>
+                <div className="pp-hc-digits">3341</div>
+              </div>
+              <div className="pp-hero-badges">
+                <span className="pp-badge pp-badge-green">Professional Standard</span>
+                <span className="pp-badge pp-badge-green">Safety Protocol</span>
+                <span className="pp-badge pp-badge-green">License Verified</span>
+                <span className="pp-badge pp-badge-amber">12 yrs licensed</span>
+                <span className="pp-badge pp-badge-white">Shop &middot; Mobile</span>
+              </div>
+            </div>
+            <div className="pp-hero-stats">
+              <div className="pp-hero-rating">4.97</div>
+              <div className="pp-hero-rating-label">Rating</div>
+              <div className="pp-hero-visits">312</div>
+              <div className="pp-hero-visits-label">Visits</div>
+            </div>
           </div>
         </div>
       </div>
