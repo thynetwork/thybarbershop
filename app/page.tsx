@@ -1,16 +1,18 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { config, splitServiceName, getLoginFeatures } from '@/lib/config';
+import config, { splitServiceName, getLoginFeatures } from '@/lib/config';
+
+type Role = 'client' | 'barber';
 
 export default function LoginPage() {
   const router = useRouter();
   const { prefix, highlight } = splitServiceName();
   const features = getLoginFeatures();
 
-  const [role, setRole] = useState<'client' | 'barber'>('client');
+  const [role, setRole] = useState<Role>('client');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [codeCity, setCodeCity] = useState('');
@@ -19,6 +21,14 @@ export default function LoginPage() {
   const [codeDigits, setCodeDigits] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const stateRef = useRef<HTMLInputElement>(null);
+  const initRef = useRef<HTMLInputElement>(null);
+  const digitsRef = useRef<HTMLInputElement>(null);
+
+  function autoTab(value: string, max: number, next?: HTMLInputElement | null) {
+    if (value.length >= max && next) next.focus();
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -49,7 +59,6 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-
       const data = await res.json();
 
       if (!res.ok) {
@@ -57,12 +66,8 @@ export default function LoginPage() {
         setLoading(false);
         return;
       }
-
-      if (data.redirect) {
-        router.push(data.redirect);
-      } else {
-        router.push(role === 'barber' ? '/dashboard' : '/home');
-      }
+      if (data.redirect) router.push(data.redirect);
+      else router.push(role === 'barber' ? '/dashboard' : '/home');
     } catch {
       setError('Something went wrong. Please try again.');
       setLoading(false);
@@ -70,309 +75,282 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: '100vh', minHeight: 600 }}>
+    <>
+      <style>{`
+        :root{
+          --navy:#0a0a2e;--navy-mid:#12124a;--navy-light:#1a1a6e;
+          --amber:#F5A623;--amber-dim:#D4830A;
+          --white:#fff;--off-white:#F7F7F8;
+          --text-dark:#111118;--text-mid:#5A5A6A;--text-light:#9A9AAA;
+          --border-light:rgba(255,255,255,0.07);
+          --r-md:.625rem;--r-lg:.875rem;--r-full:9999px;
+        }
+        html,body{height:100%;background:#0a0a2e;color:#fff;font-family:'DM Sans',sans-serif;overflow:hidden;}
 
-      {/* ── LEFT PANEL — BRAND ──────────────────────────────── */}
-      <div style={{
-        background: 'var(--navy)',
-        backgroundImage: 'radial-gradient(ellipse 80% 60% at 20% 10%, rgba(26,26,110,0.6) 0%, transparent 60%), radial-gradient(ellipse 60% 80% at 80% 90%, rgba(245,166,35,0.06) 0%, transparent 50%)',
-        padding: '48px 44px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        borderRight: '1px solid rgba(255,255,255,0.07)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        {/* Barberpole stripe accent */}
-        <div style={{
-          position: 'absolute', top: 0, right: 0, width: 3, height: '100%',
-          background: 'repeating-linear-gradient(180deg, var(--amber) 0px, var(--amber) 18px, transparent 18px, transparent 36px, #fff 36px, #fff 54px, transparent 54px, transparent 72px)',
-          opacity: 0.12,
-        }} />
+        .lg-shell{display:grid;grid-template-columns:1fr 1fr;height:100vh;min-height:37.5rem;}
 
-        <div>
-          {/* Logo */}
-          <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 30, fontWeight: 800, color: '#fff', lineHeight: 1, marginBottom: 6 }}>
-            {prefix}<span style={{ color: 'var(--amber)' }}>{highlight}</span>
-          </div>
-          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 28 }}>
-            {config.tagline}
-          </div>
+        /* LEFT */
+        .lg-left{
+          background:#0a0a2e;
+          background-image:
+            radial-gradient(ellipse 80% 60% at 20% 10%, rgba(26,26,110,.6) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 80% at 80% 90%, rgba(245,166,35,.06) 0%, transparent 50%);
+          padding:3rem 2.75rem;display:flex;flex-direction:column;justify-content:space-between;
+          border-right:1px solid var(--border-light);position:relative;overflow:hidden;
+        }
+        .lg-left::before{
+          content:'';position:absolute;top:0;right:0;width:.1875rem;height:100%;
+          background:repeating-linear-gradient(180deg,#F5A623 0,#F5A623 1.125rem,transparent 1.125rem,transparent 2.25rem,#fff 2.25rem,#fff 3.375rem,transparent 3.375rem,transparent 4.5rem);
+          opacity:.12;
+        }
+        .lg-brand-logo{font-family:'Syne',sans-serif;font-size:1.875rem;font-weight:800;color:#fff;line-height:1;margin-bottom:.375rem;animation:lgFadeUp .5s ease both;}
+        .lg-brand-logo span{color:#F5A623;}
+        .lg-brand-tagline{font-size:.625rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:1.75rem;animation:lgFadeUp .5s .08s ease both;}
 
-          {/* City pills */}
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 28 }}>
-            {config.locationPills.map((pill) => (
-              <div key={pill} style={{
-                background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: 'var(--r-full)', padding: '4px 12px',
-                fontSize: 10, fontWeight: 700, color: 'var(--amber)', letterSpacing: '0.06em',
-              }}>{pill}</div>
-            ))}
-            <div style={{
-              background: 'rgba(245,166,35,0.2)', border: '1px solid rgba(245,166,35,0.5)',
-              borderRadius: 'var(--r-full)', padding: '4px 12px',
-              fontSize: 10, fontWeight: 700, color: 'var(--amber)',
-            }}>+ every city</div>
-          </div>
+        .lg-city-row{display:flex;gap:.375rem;flex-wrap:wrap;margin-bottom:1.75rem;animation:lgFadeUp .5s .14s ease both;}
+        .lg-city-pill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:9999px;padding:.25rem .75rem;font-size:.625rem;font-weight:700;color:#F5A623;letter-spacing:.06em;}
+        .lg-city-pill.more{background:rgba(245,166,35,.2);border:1px solid rgba(245,166,35,.5);color:#F5A623;font-weight:700;}
 
-          {/* Feature bullets */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 32 }}>
-            {features.map((text, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 12, color: 'rgba(255,255,255,0.5)', lineHeight: 1.5 }}>
-                <div style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--amber)', marginTop: 5, flexShrink: 0, opacity: 0.7 }} />
-                <span dangerouslySetInnerHTML={{ __html: text.replace(/^([^.!]+[.!])/, '<strong style="color:rgba(255,255,255,0.85);font-weight:500;">$1</strong>') }} />
+        .lg-features{display:flex;flex-direction:column;gap:.625rem;margin-bottom:2rem;animation:lgFadeUp .5s .2s ease both;}
+        .lg-feat{display:flex;align-items:flex-start;gap:.625rem;font-size:.75rem;color:rgba(255,255,255,.5);line-height:1.5;}
+        .lg-feat-dot{width:.3125rem;height:.3125rem;border-radius:50%;background:#F5A623;margin-top:.3125rem;flex-shrink:0;opacity:.7;}
+        .lg-feat strong{color:rgba(255,255,255,.85);font-weight:500;}
+
+        .lg-find-card{background:rgba(245,166,35,.08);border:2px solid rgba(245,166,35,.55);border-radius:.875rem;padding:1.2rem;margin:1.2rem 0;animation:lgFadeUp .5s .26s ease both;cursor:pointer;box-shadow:0 0 0 1px rgba(245,166,35,.15),0 .25rem 1.25rem rgba(245,166,35,.08);}
+        .lg-find-card:hover{background:rgba(245,166,35,.13);border-color:rgba(245,166,35,.75);}
+        .lg-find-card-label{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:800;color:#F5A623;margin-bottom:.35rem;letter-spacing:.04em;}
+        .lg-find-card-sub{font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:.9rem;line-height:1.5;}
+        .lg-find-card-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;background:#F5A623;border:none;border-radius:.875rem;padding:.85rem 1rem;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:#0a0a2e;letter-spacing:.04em;cursor:pointer;font-family:inherit;width:100%;}
+        .lg-find-card-btn:hover{background:#e09910;}
+
+        .lg-left-foot{font-size:.65rem;color:rgba(255,255,255,.25);line-height:1.8;text-align:center;width:100%;padding-top:1rem;border-top:1px solid rgba(255,255,255,.07);animation:lgFadeUp .5s .32s ease both;}
+
+        /* RIGHT */
+        .lg-right{background:#F7F7F8;display:flex;align-items:center;justify-content:center;padding:3rem 2.75rem;position:relative;overflow:hidden;}
+        .lg-right::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 70% 20%,rgba(245,166,35,.04) 0%,transparent 50%);pointer-events:none;}
+        .lg-form-shell{width:100%;max-width:22.5rem;animation:lgFadeUp .45s .1s ease both;}
+
+        .lg-form-head{margin-bottom:1.5rem;}
+        .lg-form-title{font-family:'Syne',sans-serif;font-size:1.375rem;font-weight:800;color:#111118;margin-bottom:.25rem;}
+        .lg-form-sub{font-size:.75rem;color:#9A9AAA;}
+        .lg-form-blurb{font-size:.6875rem;color:#9A9AAA;margin-top:.375rem;line-height:1.6;}
+
+        .lg-toggle-wrap{background:#EBEBED;border-radius:.875rem;padding:.25rem;display:grid;grid-template-columns:1fr 1fr;gap:.1875rem;margin-bottom:1.375rem;}
+        .lg-toggle-btn{border:none;border-radius:.625rem;padding:.5625rem 0;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;background:transparent;color:#9A9AAA;}
+        .lg-toggle-btn.active{background:#fff;color:#111118;box-shadow:0 .125rem .5rem rgba(0,0,0,.1);}
+        .lg-toggle-btn.active.barber{background:#0a0a2e;color:#F5A623;}
+
+        .lg-field-group{display:flex;flex-direction:column;gap:.875rem;margin-bottom:1.125rem;}
+        .lg-field{display:flex;flex-direction:column;gap:.3125rem;}
+        .lg-field-label{font-size:.625rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#5A5A6A;}
+        .lg-field-input{background:#fff;border:1.5px solid rgba(0,0,0,.1);border-radius:.625rem;padding:.6875rem .875rem;font-family:'DM Sans',sans-serif;font-size:.8125rem;color:#111118;outline:none;width:100%;}
+        .lg-field-input::placeholder{color:#9A9AAA;}
+        .lg-field-input:focus{border-color:#F5A623;box-shadow:0 0 0 .1875rem rgba(245,166,35,.12);}
+
+        .lg-code-field{display:flex;border-radius:.625rem;overflow:hidden;border:2px solid rgba(0,0,0,.15);background:none;}
+        .lg-code-field:focus-within{border-color:#F5A623;box-shadow:0 0 0 .1875rem rgba(245,166,35,.12);}
+        .lg-code-seg{border:none;outline:none;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;padding:.7rem .5rem;text-align:center;text-transform:uppercase;min-width:0;}
+        .lg-code-seg::placeholder{font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;text-transform:uppercase;}
+        .lg-code-city{background:#F5A623;color:#0a0a2e;flex:4;border-right:.1875rem solid #fff;}
+        .lg-code-city::placeholder{color:rgba(10,10,46,.45);}
+        .lg-code-state{background:#0a0a2e;color:#fff;flex:1;border-right:.1875rem solid #fff;}
+        .lg-code-state::placeholder{color:rgba(255,255,255,.35);}
+        .lg-code-init{background:#0a0a2e;color:#F5A623;flex:1;border-right:.1875rem solid #fff;}
+        .lg-code-init::placeholder{color:rgba(245,166,35,.45);}
+        .lg-code-digits{background:#12124a;color:#fff;flex:1;}
+        .lg-code-digits::placeholder{color:rgba(255,255,255,.45);}
+        .lg-code-labels{display:flex;}
+        .lg-code-label{flex:1;text-align:center;font-size:.6rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9A9AAA;}
+        .lg-code-label.city{flex:4;}
+
+        .lg-forgot{display:block;text-align:right;font-size:.6875rem;color:#D4830A;cursor:pointer;margin-top:-.375rem;margin-bottom:.375rem;text-decoration:none;background:none;border:none;font-family:inherit;width:100%;}
+        .lg-forgot:hover{text-decoration:underline;}
+
+        .lg-barber-note{background:rgba(10,10,46,.05);border:1px solid rgba(10,10,46,.1);border-radius:.625rem;padding:.625rem .875rem;font-size:.6875rem;color:#5A5A6A;line-height:1.6;margin-bottom:.875rem;font-style:italic;}
+        .lg-barber-note strong{color:#0a0a2e;font-style:normal;}
+
+        .lg-error{background:rgba(180,40,40,.08);border:1px solid rgba(180,40,40,.25);border-radius:.625rem;padding:.5rem .75rem;color:#b42828;font-size:.75rem;margin-bottom:.875rem;}
+
+        .lg-submit-btn{width:100%;background:#0a0a2e;color:#F5A623;border:none;border-radius:.875rem;padding:.875rem;font-family:'Syne',sans-serif;font-size:.875rem;font-weight:800;cursor:pointer;letter-spacing:.04em;margin-bottom:1rem;}
+        .lg-submit-btn:hover{background:#14145c;}
+        .lg-submit-btn.barber{background:#F5A623;color:#0a0a2e;}
+        .lg-submit-btn.barber:hover{background:#e09910;}
+        .lg-submit-btn:disabled{opacity:.6;cursor:not-allowed;}
+
+        .lg-form-bottom{margin-top:1.125rem;display:flex;flex-direction:column;gap:.5rem;}
+        .lg-no-code{font-size:.6875rem;color:#9A9AAA;text-align:center;line-height:1.5;}
+        .lg-bottom-link{display:block;text-align:center;font-size:.75rem;color:#0a0a2e;font-weight:600;text-decoration:none;border-bottom:1px solid transparent;}
+        .lg-bottom-link:hover{border-color:#0a0a2e;}
+
+        .lg-form-legal{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;width:100%;margin-top:.8rem;padding-top:.8rem;border-top:1px solid rgba(0,0,0,.07);}
+        .lg-form-legal a{font-size:.65rem;color:#9A9AAA;text-decoration:none;flex:1;text-align:center;padding:.2rem 0;border-right:1px solid rgba(0,0,0,.12);}
+        .lg-form-legal a:last-of-type{border-right:none;}
+        .lg-form-legal a:hover{color:#111118;}
+        .lg-form-legal-copy{width:100%;text-align:center;font-size:.62rem;color:#9A9AAA;margin-top:.4rem;}
+
+        @keyframes lgFadeUp{from{opacity:0;transform:translateY(.625rem);}to{opacity:1;transform:translateY(0);}}
+
+        @media(max-width:43.75rem){
+          html,body{overflow:auto;}
+          .lg-shell{grid-template-columns:1fr;height:auto;}
+          .lg-left{padding:2rem 1.5rem;border-right:none;border-bottom:1px solid var(--border-light);}
+          .lg-right{padding:2rem 1.5rem;}
+          .lg-left::before{display:none;}
+        }
+      `}</style>
+
+      <div className="lg-shell">
+
+        {/* LEFT — Brand */}
+        <div className="lg-left">
+          <div>
+            <div className="lg-brand-logo">{prefix}<span>{highlight}</span></div>
+            <div className="lg-brand-tagline">{config.tagline}</div>
+
+            <div className="lg-city-row">
+              {config.locationPills.map(p => <div key={p} className="lg-city-pill">{p}</div>)}
+              <div className="lg-city-pill more">+ every city</div>
+            </div>
+
+            <div className="lg-features">
+              {features.map((f, i) => {
+                const m = f.match(/^(.+?\.)\s*(.*)$/);
+                return (
+                  <div key={i} className="lg-feat">
+                    <div className="lg-feat-dot"></div>
+                    <span>{m ? <><strong>{m[1]}</strong> {m[2]}</> : f}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <Link href="/find-a-barber" style={{ textDecoration: 'none' }}>
+              <div className="lg-find-card">
+                <div className="lg-find-card-label">Need a Regular {config.providerLabel}?</div>
+                <div className="lg-find-card-sub">Search the pool anytime.</div>
+                <div className="lg-find-card-btn">
+                  <span>Find a {config.providerLabel}</span>
+                  <span>&rarr;</span>
+                </div>
               </div>
-            ))}
+            </Link>
           </div>
 
-          {/* Find a Barber card */}
-          <div
-            onClick={() => router.push('/find-a-barber')}
-            style={{
-              background: 'rgba(245,166,35,0.08)', border: '2px solid rgba(245,166,35,0.55)',
-              borderRadius: 'var(--r-lg)', padding: '1.2rem', cursor: 'pointer',
-              boxShadow: '0 0 0 1px rgba(245,166,35,0.15), 0 4px 20px rgba(245,166,35,0.08)',
-              transition: 'background 0.2s',
-            }}
-          >
-            <div style={{ fontFamily: "'Syne', sans-serif", fontSize: '0.85rem', fontWeight: 800, color: 'var(--amber)', marginBottom: '0.35rem', letterSpacing: '0.04em' }}>
-              Need a Regular {config.providerLabel}?
-            </div>
-            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.9rem', lineHeight: 1.5 }}>
-              Search the pool anytime.
-            </div>
-            <button style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', width: '100%',
-              background: 'var(--amber)', border: 'none', borderRadius: 'var(--r-lg)',
-              padding: '0.85rem 1rem', fontFamily: "'Syne', sans-serif", fontSize: '0.9rem',
-              fontWeight: 800, color: 'var(--navy)', letterSpacing: '0.04em', cursor: 'pointer',
-            }}>
-              Find a {config.providerLabel} &rarr;
-            </button>
+          <div className="lg-left-foot">
+            {config.serviceName} is a private platform by {config.companyName}<br/>
+            Professionals own their client relationships here.<br/>
+            &copy; {config.copyrightYear} {config.companyName} All rights reserved.
           </div>
         </div>
 
-        {/* Bottom legal */}
-        <div style={{
-          fontSize: '0.65rem', color: 'rgba(255,255,255,0.25)', lineHeight: 1.8,
-          textAlign: 'center', width: '100%', paddingTop: '1rem',
-          borderTop: '1px solid rgba(255,255,255,0.07)',
-        }}>
-          {config.serviceName} is a private platform by {config.companyName}<br />
-          Professionals own their client relationships here.<br />
-          &copy; {config.copyrightYear} {config.companyName} All rights reserved.
-        </div>
-      </div>
-
-      {/* ── RIGHT PANEL — FORM ──────────────────────────────── */}
-      <div style={{
-        background: 'var(--surface)', display: 'flex', alignItems: 'center',
-        justifyContent: 'center', padding: '48px 44px', position: 'relative',
-      }}>
-        <div style={{ width: '100%', maxWidth: 360 }}>
-          <form onSubmit={handleSubmit} autoComplete="off">
-            {/* Header */}
-            <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 22, fontWeight: 800, color: 'var(--text-1)', marginBottom: 4 }}>
-              Welcome back
-            </div>
-            <div style={{ fontSize: 12, color: 'var(--text-3)', marginBottom: 6 }}>
-              {role === 'client' ? `Sign in to book your ${config.providerLabel.toLowerCase()}` : 'Sign in to manage your clients'}
-            </div>
-            <div style={{ fontSize: 11, color: 'var(--text-3)', marginBottom: 22, lineHeight: 1.6 }}>
-              Private booking between you and your {config.providerLabel.toLowerCase()}.<br />
-              No app store. No algorithm. No strangers.
+        {/* RIGHT — Form */}
+        <div className="lg-right">
+          <div className="lg-form-shell">
+            <div className="lg-form-head">
+              <div className="lg-form-title">Welcome back</div>
+              <div className="lg-form-sub">{role === 'client' ? `Sign in to book your ${config.providerLabel.toLowerCase()}` : 'Sign in to manage your clients'}</div>
+              <div className="lg-form-blurb">Private booking between you and your {config.providerLabel.toLowerCase()}.<br/>No app store. No algorithm. No strangers.</div>
             </div>
 
-            {/* Toggle */}
-            <div style={{
-              background: '#EBEBED', borderRadius: 'var(--r-lg)', padding: 4,
-              display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, marginBottom: 22,
-            }}>
-              <button
-                type="button"
-                onClick={() => setRole('client')}
-                style={{
-                  border: 'none', borderRadius: 'var(--r-md)', padding: '9px 0',
-                  fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                  background: role === 'client' ? '#fff' : 'transparent',
-                  color: role === 'client' ? 'var(--text-1)' : 'var(--text-3)',
-                  boxShadow: role === 'client' ? '0 2px 8px rgba(0,0,0,0.10)' : 'none',
-                }}
-              >{config.clientLabel}</button>
-              <button
-                type="button"
-                onClick={() => setRole('barber')}
-                style={{
-                  border: 'none', borderRadius: 'var(--r-md)', padding: '9px 0',
-                  fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                  background: role === 'barber' ? 'var(--navy)' : 'transparent',
-                  color: role === 'barber' ? 'var(--amber)' : 'var(--text-3)',
-                  boxShadow: role === 'barber' ? '0 2px 8px rgba(0,0,0,0.10)' : 'none',
-                }}
-              >{config.providerLabel}</button>
+            <div className="lg-toggle-wrap">
+              <button type="button" className={'lg-toggle-btn' + (role === 'client' ? ' active' : '')} onClick={() => setRole('client')}>Client</button>
+              <button type="button" className={'lg-toggle-btn' + (role === 'barber' ? ' active barber' : '')} onClick={() => setRole('barber')}>{config.providerLabel}</button>
             </div>
 
-            {error && <div className="form-error">{error}</div>}
-
-            {/* Email */}
-            <div className="form-group">
-              <label className="form-label">Email</label>
-              <input className="form-input" type="email" placeholder="your@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            </div>
-
-            {/* Barber Code — client only, 4-part: City · State · Initials · Digits */}
-            {role === 'client' && (
-              <div className="form-group">
-                <label className="form-label">{config.providerLabel} Code</label>
-                <div style={{
-                  display: 'flex', borderRadius: 'var(--r-md)', overflow: 'hidden',
-                  border: '2px solid rgba(0,0,0,0.15)',
-                }}>
-                  {/* City/Town — wider, full name */}
-                  <input
-                    type="text" maxLength={15} placeholder="Huntsville" value={codeCity}
-                    onChange={(e) => {
-                      const v = e.target.value.replace(/[^a-zA-Z\s]/g, '').slice(0, 15);
-                      setCodeCity(v);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === ' ' || e.key === 'Tab') {
-                        if (codeCity.length >= 2) document.getElementById('seg-state')?.focus();
-                        if (e.key === ' ') e.preventDefault();
-                      }
-                    }}
-                    style={{
-                      border: 'none', outline: 'none', fontFamily: "'Syne', sans-serif",
-                      fontWeight: 700, fontSize: '0.8rem', padding: '0.7rem 0.4rem',
-                      textAlign: 'center', textTransform: 'uppercase', flex: 3,
-                      background: '#F5A623', color: '#0a0a2e', borderRight: '3px solid #fff',
-                      minWidth: 0,
-                    }}
-                  />
-                  {/* State — 2 char */}
-                  <input
-                    id="seg-state" type="text" maxLength={2} placeholder="TX" value={codeState}
-                    onChange={(e) => {
-                      const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 2);
-                      setCodeState(v);
-                      if (v.length === 2) document.getElementById('seg-init')?.focus();
-                    }}
-                    style={{
-                      border: 'none', outline: 'none', fontFamily: "'Syne', sans-serif",
-                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.3rem',
-                      textAlign: 'center', textTransform: 'uppercase', flex: 0.8,
-                      background: '#0a0a2e', color: '#F5A623', borderRight: '3px solid #fff',
-                      minWidth: 0,
-                    }}
-                  />
-                  {/* Initials — 2-3 char */}
-                  <input
-                    id="seg-init" type="text" maxLength={3} placeholder="MJW" value={codeInitials}
-                    onChange={(e) => {
-                      const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
-                      setCodeInitials(v);
-                      if (v.length >= 2) document.getElementById('seg-digits')?.focus();
-                    }}
-                    style={{
-                      border: 'none', outline: 'none', fontFamily: "'Syne', sans-serif",
-                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.3rem',
-                      textAlign: 'center', textTransform: 'uppercase', flex: 0.8,
-                      background: '#0a0a2e', color: 'rgba(255,255,255,0.85)', borderRight: '3px solid #fff',
-                      minWidth: 0,
-                    }}
-                  />
-                  {/* Digits — 4-5 */}
-                  <input
-                    id="seg-digits" type="text" maxLength={5} placeholder="8096" value={codeDigits}
-                    inputMode="numeric"
-                    onChange={(e) => setCodeDigits(e.target.value.replace(/\D/g, '').slice(0, 5))}
-                    style={{
-                      border: 'none', outline: 'none', fontFamily: "'Syne', sans-serif",
-                      fontWeight: 700, fontSize: '0.85rem', padding: '0.7rem 0.3rem',
-                      textAlign: 'center', flex: 1,
-                      background: '#12124a', color: '#fff',
-                      minWidth: 0,
-                    }}
-                  />
+            <form onSubmit={handleSubmit}>
+              <div className="lg-field-group">
+                <div className="lg-field">
+                  <div className="lg-field-label">Email</div>
+                  <input className="lg-field-input" type="email" placeholder="your@email.com" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
                 </div>
-                {/* Labels */}
-                <div style={{ display: 'flex', marginTop: 4 }}>
-                  <div style={{ flex: 3, textAlign: 'center', fontSize: '0.55rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--amber-dim)' }}>City / Town</div>
-                  <div style={{ flex: 0.8, textAlign: 'center', fontSize: '0.55rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>State</div>
-                  <div style={{ flex: 0.8, textAlign: 'center', fontSize: '0.55rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>Initials</div>
-                  <div style={{ flex: 1, textAlign: 'center', fontSize: '0.55rem', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>Digits</div>
-                </div>
-                {/* Example */}
-                <div style={{ marginTop: 8, fontSize: 10, color: 'var(--text-3)', lineHeight: 1.6 }}>
-                  Example: <strong style={{ color: 'var(--text-2)' }}>Huntsville &middot; TX &middot; MJW &middot; 8096</strong>
+
+                {role === 'client' && (
+                  <div className="lg-field">
+                    <div className="lg-field-label">{config.providerLabel} Code</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '.3125rem' }}>
+                      <div className="lg-code-field">
+                        <input
+                          className="lg-code-seg lg-code-city"
+                          maxLength={15}
+                          placeholder="South Houston"
+                          value={codeCity}
+                          onChange={(e) => { const v = e.target.value.toUpperCase(); setCodeCity(v); autoTab(v, 15, stateRef.current); }}
+                        />
+                        <input
+                          ref={stateRef}
+                          className="lg-code-seg lg-code-state"
+                          maxLength={2}
+                          placeholder="TX"
+                          value={codeState}
+                          onChange={(e) => { const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, ''); setCodeState(v); autoTab(v, 2, initRef.current); }}
+                        />
+                        <input
+                          ref={initRef}
+                          className="lg-code-seg lg-code-init"
+                          maxLength={3}
+                          placeholder="MRC"
+                          value={codeInitials}
+                          onChange={(e) => { const v = e.target.value.toUpperCase().replace(/[^A-Z]/g, ''); setCodeInitials(v); autoTab(v, 3, digitsRef.current); }}
+                        />
+                        <input
+                          ref={digitsRef}
+                          className="lg-code-seg lg-code-digits"
+                          maxLength={5}
+                          placeholder="3341"
+                          value={codeDigits}
+                          onChange={(e) => setCodeDigits(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                        />
+                      </div>
+                      <div className="lg-code-labels">
+                        <div className="lg-code-label city">City/Town</div>
+                        <div className="lg-code-label">State</div>
+                        <div className="lg-code-label">Initials</div>
+                        <div className="lg-code-label">Digits</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="lg-field">
+                  <div className="lg-field-label">Password</div>
+                  <input className="lg-field-input" type="password" placeholder="••••••••" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required/>
                 </div>
               </div>
-            )}
 
-            {/* Password */}
-            <div className="form-group">
-              <label className="form-label">Password</label>
-              <input className="form-input" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
-            </div>
+              <Link href="/forgot-code" className="lg-forgot">Forgot password?</Link>
 
-            <div style={{ textAlign: 'right', marginTop: -6, marginBottom: 6 }}>
-              <Link href="#" style={{ fontSize: 11, color: 'var(--amber-dim)', textDecoration: 'none' }}>Forgot password?</Link>
-            </div>
+              {role === 'barber' && (
+                <div className="lg-barber-note">
+                  <strong>{config.providerLabel}s:</strong> These aren&rsquo;t customers. They&rsquo;re your clients. Your list. Your rates. Your relationship — protected.
+                </div>
+              )}
 
-            {/* Barber note — barber mode only */}
-            {role === 'barber' && (
-              <div style={{
-                background: 'rgba(10,10,46,0.05)', border: '1px solid rgba(10,10,46,0.1)',
-                borderRadius: 'var(--r-md)', padding: '10px 14px',
-                fontSize: 11, color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 14, fontStyle: 'italic',
-              }}>
-                <strong style={{ color: 'var(--navy)', fontStyle: 'normal' }}>Barbers:</strong> These aren&apos;t customers. They&apos;re your clients. Your list. Your rates. Your relationship &mdash; protected.
-              </div>
-            )}
+              {error && <div className="lg-error">{error}</div>}
 
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                width: '100%', border: 'none', borderRadius: 'var(--r-lg)', padding: 14,
-                fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 800,
-                cursor: 'pointer', letterSpacing: '0.04em', marginBottom: 16,
-                background: role === 'barber' ? 'var(--amber)' : 'var(--navy)',
-                color: role === 'barber' ? 'var(--navy)' : 'var(--amber)',
-              }}
-            >
-              {loading ? 'Signing in...' : role === 'client' ? `Book My ${config.providerLabel}` : 'Enter My Dashboard'}
-            </button>
+              <button type="submit" className={'lg-submit-btn' + (role === 'barber' ? ' barber' : '')} disabled={loading}>
+                {loading ? 'Signing in…' : (role === 'client' ? `Book My ${config.providerLabel}` : 'Enter My Dashboard')}
+              </button>
+            </form>
 
-            {/* Bottom links */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 18 }}>
-              <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-3)', lineHeight: 1.5 }}>
-                Don&apos;t have a code? Request one from your {config.providerLabel.toLowerCase()}.
-              </div>
-              <Link href="/register/rider" style={{ display: 'block', textAlign: 'center', fontSize: 12, color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
-                First time here? Create your {config.clientLabel.toLowerCase()} account &rarr;
-              </Link>
+            <div className="lg-form-bottom">
               {role === 'client' && (
-                <Link href="/register/driver" style={{ display: 'block', textAlign: 'center', fontSize: 12, color: 'var(--navy)', fontWeight: 600, textDecoration: 'none' }}>
-                  Are you a {config.providerLabel.toLowerCase()}? Create your account &rarr;
-                </Link>
+                <div className="lg-no-code">Don&rsquo;t have a code? Request one from your {config.providerLabel.toLowerCase()}.</div>
+              )}
+              <Link href="/register/rider" className="lg-bottom-link">First time here? Create your client account &rarr;</Link>
+              {role === 'client' && (
+                <Link href="/register/driver" className="lg-bottom-link">Are you a {config.providerLabel.toLowerCase()}? Create your account &rarr;</Link>
               )}
             </div>
 
-            {/* Legal footer */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', width: '100%', marginTop: '0.8rem', paddingTop: '0.8rem', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
-              <Link href="/privacy" style={{ flex: 1, textAlign: 'center', fontSize: '0.65rem', color: 'var(--text-3)', textDecoration: 'none', padding: '0.2rem 0', borderRight: '1px solid rgba(0,0,0,0.12)' }}>Privacy</Link>
-              <Link href="/terms" style={{ flex: 1, textAlign: 'center', fontSize: '0.65rem', color: 'var(--text-3)', textDecoration: 'none', padding: '0.2rem 0', borderRight: '1px solid rgba(0,0,0,0.12)' }}>Terms</Link>
-              <Link href="/conditions" style={{ flex: 1, textAlign: 'center', fontSize: '0.65rem', color: 'var(--text-3)', textDecoration: 'none', padding: '0.2rem 0' }}>Conditions</Link>
-              <div style={{ width: '100%', textAlign: 'center', fontSize: '0.62rem', color: 'var(--text-3)', marginTop: '0.4rem' }}>
-                &copy; {config.copyrightYear} {config.companyName} All rights reserved.
-              </div>
+            <div className="lg-form-legal">
+              <a href="/privacy">Privacy</a>
+              <a href="/terms">Terms</a>
+              <a href="/conditions">Conditions</a>
+              <div className="lg-form-legal-copy">&copy; {config.copyrightYear} {config.companyName} All rights reserved.</div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
