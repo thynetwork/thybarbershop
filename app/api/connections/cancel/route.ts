@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     // - Find a Driver: $9.99 one-time fee — waived only if driver never responded
     //   (cancellation after no response = fee waived)
     // - Manual: same as invite — no fee
-    // Rider ID kept permanently regardless of outcome
+    // Client ID kept permanently regardless of outcome
 
     return NextResponse.json({
       success: true,

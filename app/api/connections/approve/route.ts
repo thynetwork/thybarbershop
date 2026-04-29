@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
         .eq('id', connectionId);
     }
 
-    // Get driver and rider info for notifications
+    // Get driver and client info for notifications
     const { data: driverUser } = await supabase
       .from('users')
       .select('name, email, phone')
@@ -78,14 +78,14 @@ export async function POST(request: NextRequest) {
       .eq('id', session.userId)
       .single();
 
-    const { data: riderUser } = await supabase
+    const { data: clientUser } = await supabase
       .from('users')
       .select('id, name, email, phone, rider_id, preferred_name')
       .eq('id', connection.rider_id)
       .single();
 
     // Send approval notifications
-    if (driverUser && riderUser && driverInfo) {
+    if (driverUser && clientUser && driverInfo) {
       const driverCode = `${driverInfo.airport_code}\u00B7${driverInfo.code_initials}\u00B7${driverInfo.code_digits}`;
 
       await sendConnectionApprovedNotification(
@@ -96,12 +96,12 @@ export async function POST(request: NextRequest) {
           email: driverUser.email,
         },
         {
-          id: riderUser.id,
-          name: riderUser.name,
-          riderId: riderUser.rider_id,
-          preferredName: riderUser.preferred_name,
-          phone: riderUser.phone,
-          email: riderUser.email,
+          id: clientUser.id,
+          name: clientUser.name,
+          clientId: clientUser.rider_id,
+          preferredName: clientUser.preferred_name,
+          phone: clientUser.phone,
+          email: clientUser.email,
         },
         driverCode,
         {

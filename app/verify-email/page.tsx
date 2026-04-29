@@ -126,7 +126,7 @@ function VerifyEmailContent() {
             )}
           </div>
 
-          <button type="button" className="ev-change" onClick={() => router.push('/register/rider')}>
+          <button type="button" className="ev-change" onClick={() => router.push('/register/client')}>
             Wrong email address? Change it →
           </button>
 

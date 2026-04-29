@@ -65,16 +65,16 @@ export async function POST(request: NextRequest) {
       .eq('id', connection.driver_id)
       .single();
 
-    const { data: riderUser } = await supabase
+    const { data: clientUser } = await supabase
       .from('users')
       .select('id, name, rider_id, preferred_name')
       .eq('id', session.userId)
       .single();
 
-    if (driverUser && riderUser) {
+    if (driverUser && clientUser) {
       await sendExtensionNotification(
         { id: driverUser.id, name: driverUser.name, phone: driverUser.phone, email: driverUser.email },
-        { id: riderUser.id, name: riderUser.name, riderId: riderUser.rider_id, preferredName: riderUser.preferred_name },
+        { id: clientUser.id, name: clientUser.name, clientId: clientUser.rider_id, preferredName: clientUser.preferred_name },
         extendHours
       );
     }

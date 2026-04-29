@@ -2,18 +2,18 @@ import { NextResponse } from 'next/server';
 import { getSupabaseServer } from '@/lib/supabase';
 
 /**
- * GET /api/rider/home
- * Returns rider data, connected driver, and recent booking.
+ * GET /api/client/home
+ * Returns client data, connected driver, and recent booking.
  * For now returns demo data; will integrate Supabase auth + queries.
  */
 export async function GET(request: Request) {
   const supabase = getSupabaseServer();
 
-  // TODO: Extract rider ID from JWT session cookie
+  // TODO: Extract client ID from JWT session cookie
   // const session = await verifySession(cookieToken);
 
   // Demo response matching the UI requirements
-  const rider = {
+  const client = {
     id: 'r1',
     name: 'Sarah Chen',
     initials: 'SC',
@@ -45,7 +45,7 @@ export async function GET(request: Request) {
   const connection = {
     id: 'c1',
     driverId: 'd1',
-    riderId: 'r1',
+    clientId: 'r1',
     status: 'approved',
     setAmount: 120,
     savedRoute: 'Airport to Home',
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
   const recentBooking = {
     id: 'b1',
     driverId: 'd1',
-    riderId: 'r1',
+    clientId: 'r1',
     date: '2026-07-17',
     timeSlot: '9:00 am',
     pickupAddress: '456 Westheimer Rd, Houston TX',
@@ -66,7 +66,7 @@ export async function GET(request: Request) {
   };
 
   return NextResponse.json({
-    rider,
+    client,
     connectedDriver,
     connection,
     recentBooking,

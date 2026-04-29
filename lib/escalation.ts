@@ -35,7 +35,7 @@ async function isBookingStillPending(bookingId: string): Promise<boolean> {
 }
 
 /**
- * Get the driver and rider info for a booking.
+ * Get the driver and client info for a booking.
  */
 async function getBookingParties(bookingId: string) {
   const supabase = getSupabaseServer();
@@ -54,17 +54,17 @@ async function getBookingParties(bookingId: string) {
     .eq('id', booking.driver_id)
     .single();
 
-  const { data: rider } = await supabase
+  const { data: client } = await supabase
     .from('users')
     .select('id, name, phone, rider_id, preferred_name')
     .eq('id', booking.rider_id)
     .single();
 
-  return { booking, driver, rider };
+  return { booking, driver, client };
 }
 
 /**
- * Auto-expire a booking and notify the rider.
+ * Auto-expire a booking and notify the client.
  */
 async function expireBooking(bookingId: string): Promise<void> {
   const supabase = getSupabaseServer();
@@ -81,20 +81,20 @@ async function expireBooking(bookingId: string): Promise<void> {
   const parties = await getBookingParties(bookingId);
   if (!parties) return;
 
-  const { driver, rider, booking } = parties;
+  const { driver, client, booking } = parties;
 
-  // Notify rider that booking expired
-  if (rider) {
-    await saveInAppNotification(rider.id, {
+  // Notify client that booking expired
+  if (client) {
+    await saveInAppNotification(client.id, {
       type: 'booking_expired',
       title: 'Booking expired',
       body: `Your booking for ${booking.date} at ${booking.time_slot} was not confirmed by ${driver?.name || 'the driver'} within 2 hours and has expired. Please try booking again or contact your driver directly.`,
       data: { booking_id: bookingId },
     });
 
-    if (rider.phone) {
+    if (client.phone) {
       await sendSMS(
-        rider.phone,
+        client.phone,
         `${config.serviceName}: Your booking for ${booking.date} at ${booking.time_slot} has expired. ${driver?.name || 'Your driver'} did not respond within 2 hours. Please rebook or contact your driver.`
       );
     }
@@ -105,7 +105,7 @@ async function expireBooking(bookingId: string): Promise<void> {
     await saveInAppNotification(driver.id, {
       type: 'booking_expired',
       title: 'Booking auto-expired',
-      body: `The booking from ${rider?.preferred_name || rider?.name || 'a rider'} for ${booking.date} at ${booking.time_slot} has expired because it was not confirmed within 2 hours.`,
+      body: `The booking from ${client?.preferred_name || client?.name || 'a client'} for ${booking.date} at ${booking.time_slot} has expired because it was not confirmed within 2 hours.`,
       data: { booking_id: bookingId },
     });
   }
@@ -132,20 +132,20 @@ export function scheduleEscalation(bookingId: string): void {
       const parties = await getBookingParties(bookingId);
       if (!parties?.driver) return;
 
-      const { driver, rider, booking } = parties;
-      const riderName = rider?.preferred_name || rider?.name || 'A rider';
+      const { driver, client, booking } = parties;
+      const clientName = client?.preferred_name || client?.name || 'A client';
 
       if (driver.phone) {
         await sendSMS(
           driver.phone,
-          `${config.serviceName} Reminder: ${riderName} is waiting for your response on the ${booking.date} ${booking.time_slot} booking. Reply CONFIRM or DENY.`
+          `${config.serviceName} Reminder: ${clientName} is waiting for your response on the ${booking.date} ${booking.time_slot} booking. Reply CONFIRM or DENY.`
         );
       }
 
       await saveInAppNotification(driver.id, {
         type: 'reminder',
         title: 'Booking awaiting your response',
-        body: `${riderName} is still waiting for your response on the ${booking.date} booking. Please confirm or deny.`,
+        body: `${clientName} is still waiting for your response on the ${booking.date} booking. Please confirm or deny.`,
         data: { booking_id: bookingId },
       });
 
@@ -162,13 +162,13 @@ export function scheduleEscalation(bookingId: string): void {
       const parties = await getBookingParties(bookingId);
       if (!parties?.driver) return;
 
-      const { driver, rider, booking } = parties;
-      const riderName = rider?.preferred_name || rider?.name || 'A rider';
+      const { driver, client, booking } = parties;
+      const clientName = client?.preferred_name || client?.name || 'A client';
 
       if (driver.phone) {
         await sendSMS(
           driver.phone,
-          `${config.serviceName} URGENT: ${riderName}'s booking for ${booking.date} ${booking.time_slot} needs your response. 1 hour without reply. Reply CONFIRM or DENY now.`
+          `${config.serviceName} URGENT: ${clientName}'s booking for ${booking.date} ${booking.time_slot} needs your response. 1 hour without reply. Reply CONFIRM or DENY now.`
         );
       }
 
@@ -176,13 +176,13 @@ export function scheduleEscalation(bookingId: string): void {
       await sendPushNotification(
         '', // No push token stored yet in this version
         'Urgent: Booking needs response',
-        `${riderName}'s booking for ${booking.date} at ${booking.time_slot} has been waiting 1 hour.`
+        `${clientName}'s booking for ${booking.date} at ${booking.time_slot} has been waiting 1 hour.`
       );
 
       await saveInAppNotification(driver.id, {
         type: 'reminder',
         title: 'Urgent: Booking needs response',
-        body: `${riderName}'s booking for ${booking.date} at ${booking.time_slot} has been waiting 1 hour. Please respond soon or it will auto-expire.`,
+        body: `${clientName}'s booking for ${booking.date} at ${booking.time_slot} has been waiting 1 hour. Please respond soon or it will auto-expire.`,
         data: { booking_id: bookingId },
       });
 
@@ -199,20 +199,20 @@ export function scheduleEscalation(bookingId: string): void {
       const parties = await getBookingParties(bookingId);
       if (!parties?.driver) return;
 
-      const { driver, rider, booking } = parties;
-      const riderName = rider?.preferred_name || rider?.name || 'A rider';
+      const { driver, client, booking } = parties;
+      const clientName = client?.preferred_name || client?.name || 'A client';
 
       if (driver.phone) {
         await sendSMS(
           driver.phone,
-          `${config.serviceName} FINAL NOTICE: ${riderName}'s booking for ${booking.date} ${booking.time_slot} will auto-expire in 30 minutes if not confirmed. Reply CONFIRM or DENY.`
+          `${config.serviceName} FINAL NOTICE: ${clientName}'s booking for ${booking.date} ${booking.time_slot} will auto-expire in 30 minutes if not confirmed. Reply CONFIRM or DENY.`
         );
       }
 
       await saveInAppNotification(driver.id, {
         type: 'reminder',
         title: 'Final notice: Booking expiring soon',
-        body: `${riderName}'s booking for ${booking.date} at ${booking.time_slot} will auto-expire in 30 minutes. This is your last chance to respond.`,
+        body: `${clientName}'s booking for ${booking.date} at ${booking.time_slot} will auto-expire in 30 minutes. This is your last chance to respond.`,
         data: { booking_id: bookingId },
       });
 

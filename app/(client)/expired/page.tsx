@@ -13,7 +13,7 @@ export default function ExpiredWindowPage() {
   // source comes from connection record: 'invite' | 'find_a_driver' | 'manual'
   const source: 'invite' | 'find_a_driver' | 'manual' = 'invite';
   const barberName = 'Marcus';
-  const riderId = 'TODD·4401';
+  const clientId = 'TODD·4401';
 
   const [extraHours, setExtraHours] = useState('');
   const [view, setView] = useState<'options' | 'cancelled' | 'no_response_invite' | 'no_response_fa'>('options');
@@ -61,9 +61,9 @@ export default function ExpiredWindowPage() {
               {barberName} wasn&rsquo;t able to connect at this time.
             </div>
 
-            <div className="rider-id-card mb-20">
-              <div className="ric-label">Your Rider ID is saved</div>
-              <div className="ric-id">{riderId}</div>
+            <div className="client-id-card mb-20">
+              <div className="ric-label">Your Client ID is saved</div>
+              <div className="ric-id">{clientId}</div>
               <div className="ric-note">You never need to register again. This ID stays with you across all drivers and airports.</div>
             </div>
 
@@ -111,9 +111,9 @@ export default function ExpiredWindowPage() {
               {barberName} wasn&rsquo;t able to connect at this time.
             </div>
 
-            <div className="rider-id-card mb-20">
-              <div className="ric-label">Your Rider ID is saved</div>
-              <div className="ric-id">{riderId}</div>
+            <div className="client-id-card mb-20">
+              <div className="ric-label">Your Client ID is saved</div>
+              <div className="ric-id">{clientId}</div>
               <div className="ric-note">You never need to register again. This ID stays with you across all drivers and airports.</div>
             </div>
 
@@ -201,10 +201,10 @@ export default function ExpiredWindowPage() {
             Cancel request
           </button>
 
-          {/* Rider ID reminder */}
+          {/* Client ID reminder */}
           <div className="card-amber" style={{ textAlign: 'left' }}>
             <div style={{ fontSize: 12, color: 'var(--amber-dim)', lineHeight: 1.6 }}>
-              If you cancel your request &mdash; your Rider ID <strong>{riderId}</strong> is saved. You never need to register again. You can find another professional driver at your airport at no cost.
+              If you cancel your request &mdash; your Client ID <strong>{clientId}</strong> is saved. You never need to register again. You can find another professional driver at your airport at no cost.
             </div>
           </div>
         </div>

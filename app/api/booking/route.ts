@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     {
       id: 'b1',
       driverId: 'd1',
-      riderId: 'r1',
+      clientId: 'r1',
       driverName: 'Marcus Rivera',
       driverCode: 'MRC\u00B73341',
       date: '2026-07-17',
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     {
       id: 'b2',
       driverId: 'd1',
-      riderId: 'r1',
+      clientId: 'r1',
       driverName: 'Marcus Rivera',
       driverCode: 'MRC\u00B73341',
       date: '2026-07-19',
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
 
     const {
       driverId,
-      riderId,
+      clientId,
       date,
       timeSlot,
       pickupAddress,
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     } = body;
 
     // Validate required fields
-    if (!driverId || !riderId || !date || !timeSlot || !pickupAddress || !dropoffAddress) {
+    if (!driverId || !clientId || !date || !timeSlot || !pickupAddress || !dropoffAddress) {
       return NextResponse.json(
         { error: 'Missing required booking fields' },
         { status: 400 }
@@ -99,7 +99,7 @@ export async function POST(request: Request) {
     const newBooking = {
       id: `b_${Date.now()}`,
       driverId,
-      riderId,
+      clientId,
       date,
       timeSlot,
       pickupAddress,
@@ -113,29 +113,29 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
     };
 
-    // Fetch driver and rider details for notifications
+    // Fetch driver and client details for notifications
     const { data: driverUser } = await supabase
       .from('users')
       .select('id, name, phone, email')
       .eq('id', driverId)
       .single();
 
-    const { data: riderUser } = await supabase
+    const { data: clientUser } = await supabase
       .from('users')
       .select('id, name, phone, email, rider_id, preferred_name')
-      .eq('id', riderId)
+      .eq('id', clientId)
       .single();
 
-    // Count previous bookings between this rider and driver
+    // Count previous bookings between this client and driver
     const { count: previousBookingCount } = await supabase
       .from('bookings')
       .select('id', { count: 'exact', head: true })
       .eq('driver_id', driverId)
-      .eq('rider_id', riderId)
+      .eq('rider_id', clientId)
       .eq('status', 'completed');
 
     // Send notifications to the driver (all channels)
-    if (driverUser && riderUser) {
+    if (driverUser && clientUser) {
       await sendBookingNotification(
         {
           id: newBooking.id,
@@ -154,12 +154,12 @@ export async function POST(request: Request) {
           email: driverUser.email || undefined,
         },
         {
-          id: riderUser.id,
-          name: riderUser.name,
-          riderId: riderUser.rider_id || undefined,
-          preferredName: riderUser.preferred_name || undefined,
-          phone: riderUser.phone || undefined,
-          email: riderUser.email || undefined,
+          id: clientUser.id,
+          name: clientUser.name,
+          clientId: clientUser.rider_id || undefined,
+          preferredName: clientUser.preferred_name || undefined,
+          phone: clientUser.phone || undefined,
+          email: clientUser.email || undefined,
           previousBookingCount: previousBookingCount || 0,
         }
       );

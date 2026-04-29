@@ -28,10 +28,10 @@ export interface DriverInfo {
   pushToken?: string;
 }
 
-export interface RiderInfo {
+export interface ClientInfo {
   id: string;
   name: string;
-  riderId?: string;
+  clientId?: string;
   preferredName?: string;
   phone?: string;
   email?: string;
@@ -232,15 +232,15 @@ async function getDriverPreferences(driverId: string) {
 
 /* ── Build notification message ─────────────────────────────── */
 
-function buildBookingMessage(booking: BookingInfo, rider: RiderInfo): string {
-  const displayName = rider.preferredName || rider.name;
-  const isRegular = (rider.previousBookingCount || 0) > 5;
+function buildBookingMessage(booking: BookingInfo, client: ClientInfo): string {
+  const displayName = client.preferredName || client.name;
+  const isRegular = (client.previousBookingCount || 0) > 5;
   const regularPrefix = isRegular ? 'Your regular ' : '';
-  const riderLabel = rider.riderId ? ` (${rider.riderId})` : '';
+  const clientLabel = client.clientId ? ` (${client.clientId})` : '';
   const amount = booking.rateAmount ? ` - $${booking.rateAmount}` : '';
 
   return (
-    `${config.serviceName}: New booking request from ${regularPrefix}${displayName}${riderLabel}\n` +
+    `${config.serviceName}: New booking request from ${regularPrefix}${displayName}${clientLabel}\n` +
     `Date: ${booking.date} at ${booking.timeSlot}\n` +
     `Pickup: ${booking.pickupAddress}\n` +
     `Dropoff: ${booking.dropoffAddress}${amount}\n` +
@@ -332,15 +332,15 @@ export async function sendClientTransferNotification(
 
 export async function sendConnectionRequestNotification(
   driver: DriverInfo,
-  rider: RiderInfo,
+  client: ClientInfo,
   source: 'invite' | 'find_a_driver' | 'manual',
   noteToDriver?: string
 ): Promise<void> {
-  const displayName = rider.preferredName || rider.name;
-  const riderId = rider.riderId || '';
+  const displayName = client.preferredName || client.name;
+  const clientId = client.clientId || '';
 
   // SMS
-  let smsBody = `${config.serviceName}: New connection request\n${riderId} ${displayName} wants to connect`;
+  let smsBody = `${config.serviceName}: New connection request\n${clientId} ${displayName} wants to connect`;
   if (noteToDriver && source !== 'find_a_driver') {
     smsBody += `\nNote: ${noteToDriver}`;
   }
@@ -351,16 +351,16 @@ export async function sendConnectionRequestNotification(
   }
 
   // Email
-  let emailBody = `${riderId} ${displayName} has requested to connect with you on ${config.serviceName}.\n`;
+  let emailBody = `${clientId} ${displayName} has requested to connect with you on ${config.serviceName}.\n`;
   if (noteToDriver && source !== 'find_a_driver') {
-    emailBody += `\nNote from ${rider.preferredName || rider.name.split(' ')[0]}:\n"${noteToDriver}"\n`;
+    emailBody += `\nNote from ${client.preferredName || client.name.split(' ')[0]}:\n"${noteToDriver}"\n`;
   }
   emailBody += `\nApprove or deny from your dashboard:\n${config.domain}/dashboard`;
 
   if (driver.email) {
     await sendEmail(
       driver.email,
-      `New connection request — ${riderId} ${displayName}`,
+      `New connection request — ${clientId} ${displayName}`,
       emailBody
     );
   }
@@ -370,18 +370,18 @@ export async function sendConnectionRequestNotification(
     await sendPushNotification(
       driver.pushToken,
       `${config.serviceName}: New connection request`,
-      `${riderId} ${displayName} wants to connect. Tap to approve or deny.`
+      `${clientId} ${displayName} wants to connect. Tap to approve or deny.`
     );
   }
 
   // In-app
   await saveInAppNotification(driver.id, {
     type: 'connection_request',
-    title: `New connection request — ${riderId}`,
+    title: `New connection request — ${clientId}`,
     body: `${displayName} wants to connect`,
     data: {
-      rider_id: rider.id,
-      rider_display_id: riderId,
+      rider_id: client.id,
+      rider_display_id: clientId,
       rider_name: displayName,
       source,
       note: noteToDriver || null,
@@ -389,11 +389,11 @@ export async function sendConnectionRequestNotification(
   });
 }
 
-/* ── Connection Approved — notify rider (all 4 channels) ───── */
+/* ── Connection Approved — notify client (all 4 channels) ───── */
 
 export async function sendConnectionApprovedNotification(
   driver: DriverInfo,
-  rider: RiderInfo,
+  client: ClientInfo,
   driverCode: string,
   driverDetails?: {
     airport?: string;
@@ -403,22 +403,22 @@ export async function sendConnectionApprovedNotification(
     insurance?: string;
   }
 ): Promise<void> {
-  const riderId = rider.riderId || '';
-  const riderFirstName = (rider.preferredName || rider.name).split(' ')[0];
+  const clientId = client.clientId || '';
+  const clientFirstName = (client.preferredName || client.name).split(' ')[0];
 
   // SMS
-  const smsBody = `${config.serviceName}: You're connected with ${driver.name}\n\nPlease write down:\nDRIVER CODE: ${driverCode}\nRIDER ID: ${riderId}\n\nYour driver uses your Rider ID to identify you on every booking request.\n\nBook your first ride: ${config.domain}/home`;
+  const smsBody = `${config.serviceName}: You're connected with ${driver.name}\n\nPlease write down:\nDRIVER CODE: ${driverCode}\nCLIENT ID: ${clientId}\n\nYour driver uses your Client ID to identify you on every booking request.\n\nBook your first ride: ${config.domain}/home`;
 
-  if (rider.phone) {
-    await sendSMS(rider.phone, smsBody);
+  if (client.phone) {
+    await sendSMS(client.phone, smsBody);
   }
 
   // Email
-  let emailBody = `Welcome ${riderFirstName},\n\n${driver.name} has approved your connection.\n\n`;
+  let emailBody = `Welcome ${clientFirstName},\n\n${driver.name} has approved your connection.\n\n`;
   emailBody += `⚠ IMPORTANT — Please write these down:\n\n`;
-  emailBody += `DRIVER CODE:  ${driverCode}\nRIDER ID:     ${riderId}\n\n`;
+  emailBody += `DRIVER CODE:  ${driverCode}\nCLIENT ID:     ${clientId}\n\n`;
   emailBody += `Your Driver Code is how you log in and book rides with ${driver.name}.\n`;
-  emailBody += `Your Rider ID is how ${driver.name} identifies you on every booking notification.\nKeep both somewhere safe.\n\n`;
+  emailBody += `Your Client ID is how ${driver.name} identifies you on every booking notification.\nKeep both somewhere safe.\n\n`;
   if (driverDetails) {
     emailBody += `YOUR DRIVER:\n`;
     emailBody += `Name:     ${driver.name}\n`;
@@ -431,92 +431,92 @@ export async function sendConnectionApprovedNotification(
   }
   emailBody += `Book your first ride:\n${config.domain}/home\n\n© ${config.copyrightYear} ${config.serviceName} · ${config.companyName}`;
 
-  if (rider.email) {
+  if (client.email) {
     await sendEmail(
-      rider.email,
+      client.email,
       `You're connected with ${driver.name} on ${config.serviceName}`,
       emailBody
     );
   }
 
   // Push
-  if (rider.phone) {
-    // Push token would come from rider record — using placeholder
+  if (client.phone) {
+    // Push token would come from client record — using placeholder
     await sendPushNotification(
-      '', // rider push token not stored yet
+      '', // client push token not stored yet
       `${config.serviceName}: ${driver.name} approved your connection.`,
       `You can now book rides. ${config.domain}/home`
     );
   }
 
   // In-app
-  await saveInAppNotification(rider.id, {
+  await saveInAppNotification(client.id, {
     type: 'connection_approved',
     title: `${driver.name} approved your connection`,
-    body: `You can now book rides. Your Rider ID: ${riderId}`,
+    body: `You can now book rides. Your Client ID: ${clientId}`,
     data: {
       driver_id: driver.id,
       driver_name: driver.name,
       driver_code: driverCode,
-      rider_display_id: riderId,
+      rider_display_id: clientId,
     },
   });
 }
 
-/* ── Connection Denied — notify rider (push + SMS) ─────────── */
+/* ── Connection Denied — notify client (push + SMS) ─────────── */
 
 export async function sendConnectionDeniedNotification(
   driver: DriverInfo,
-  rider: RiderInfo
+  client: ClientInfo
 ): Promise<void> {
   const driverFirstName = driver.name.split(' ')[0];
   // Language rule: "unable to accept at this time" — never "rejected" or "denied"
   const message = `${config.serviceName}: ${driverFirstName} was unable to accept your connection request at this time.`;
 
-  if (rider.phone) {
-    await sendSMS(rider.phone, message);
+  if (client.phone) {
+    await sendSMS(client.phone, message);
   }
 
-  await saveInAppNotification(rider.id, {
+  await saveInAppNotification(client.id, {
     type: 'connection_denied',
     title: `${driverFirstName} was unable to accept`,
-    body: `Your connection request was not accepted at this time. Your Rider ID is saved.`,
+    body: `Your connection request was not accepted at this time. Your Client ID is saved.`,
     data: { driver_id: driver.id, driver_name: driver.name },
   });
 }
 
-/* ── Expiry — notify rider that window expired ─────────────── */
+/* ── Expiry — notify client that window expired ─────────────── */
 
 export async function sendExpiryNotification(
   driver: DriverInfo,
-  rider: RiderInfo
+  client: ClientInfo
 ): Promise<void> {
   const driverFirstName = driver.name.split(' ')[0];
   const message = `${config.serviceName}: ${driverFirstName} hasn't responded to your connection request yet.\n\nWould you like to give them more time?\n\n${config.domain}/pending`;
 
-  if (rider.phone) {
-    await sendSMS(rider.phone, message);
+  if (client.phone) {
+    await sendSMS(client.phone, message);
   }
 
-  if (rider.email) {
+  if (client.email) {
     await sendEmail(
-      rider.email,
+      client.email,
       `${config.serviceName}: ${driverFirstName} hasn't responded yet`,
       message
     );
   }
 }
 
-/* ── Extension — notify driver that rider gave more time ───── */
+/* ── Extension — notify driver that client gave more time ───── */
 
 export async function sendExtensionNotification(
   driver: DriverInfo,
-  rider: RiderInfo,
+  client: ClientInfo,
   hours: number
 ): Promise<void> {
-  const riderId = rider.riderId || '';
-  const displayName = rider.preferredName || rider.name;
-  const message = `${config.serviceName}: ${riderId} ${displayName} has given you ${hours} more hours to respond.\n${config.domain}/dashboard\nReply CONFIRM or DENY`;
+  const clientId = client.clientId || '';
+  const displayName = client.preferredName || client.name;
+  const message = `${config.serviceName}: ${clientId} ${displayName} has given you ${hours} more hours to respond.\n${config.domain}/dashboard\nReply CONFIRM or DENY`;
 
   if (driver.phone) {
     await sendSMS(driver.phone, message);
@@ -525,16 +525,16 @@ export async function sendExtensionNotification(
   if (driver.email) {
     await sendEmail(
       driver.email,
-      `${config.serviceName}: ${riderId} gave you ${hours} more hours`,
+      `${config.serviceName}: ${clientId} gave you ${hours} more hours`,
       message
     );
   }
 
   await saveInAppNotification(driver.id, {
     type: 'connection_extended',
-    title: `${riderId} gave you more time`,
+    title: `${clientId} gave you more time`,
     body: `${displayName} has given you ${hours} more hours to respond.`,
-    data: { rider_id: rider.id, rider_display_id: riderId, hours },
+    data: { rider_id: client.id, rider_display_id: clientId, hours },
   });
 }
 
@@ -543,12 +543,12 @@ export async function sendExtensionNotification(
 export async function sendBookingNotification(
   booking: BookingInfo,
   driver: DriverInfo,
-  rider: RiderInfo
+  client: ClientInfo
 ): Promise<void> {
   const prefs = await getDriverPreferences(driver.id);
-  const message = buildBookingMessage(booking, rider);
-  const displayName = rider.preferredName || rider.name;
-  const isRegular = (rider.previousBookingCount || 0) > 5;
+  const message = buildBookingMessage(booking, client);
+  const displayName = client.preferredName || client.name;
+  const isRegular = (client.previousBookingCount || 0) > 5;
   const regularPrefix = isRegular ? 'Your regular ' : '';
 
   const notificationTitle = `New booking from ${regularPrefix}${displayName}`;
@@ -561,7 +561,7 @@ export async function sendBookingNotification(
     body: notificationBody,
     data: {
       booking_id: booking.id,
-      rider_id: rider.riderId || null,
+      rider_id: client.clientId || null,
       rider_name: displayName,
       is_regular: isRegular,
     },
@@ -606,8 +606,8 @@ export async function sendBookingNotification(
     );
   }
 
-  // Notify the rider that their booking was submitted
-  await saveInAppNotification(rider.id, {
+  // Notify the client that their booking was submitted
+  await saveInAppNotification(client.id, {
     type: 'booking_confirmed',
     title: 'Booking submitted',
     body: `Your booking for ${booking.date} at ${booking.timeSlot} has been sent to ${driver.name}. You'll be notified when they respond.`,

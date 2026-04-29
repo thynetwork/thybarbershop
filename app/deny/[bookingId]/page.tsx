@@ -63,7 +63,7 @@ export default function DenyBookingPage({ params }: { params: Promise<{ bookingI
             <div className="card-surface" style={{ padding: '24px 20px' }}>
               <div style={{ fontSize: 28, marginBottom: 8 }}>&#10007;</div>
               <div className="t-subtitle mb-8">Booking Denied</div>
-              <div className="t-small">{message}<br />The rider has been notified and can rebook at a different time.</div>
+              <div className="t-small">{message}<br />The client has been notified and can rebook at a different time.</div>
             </div>
           )}
 

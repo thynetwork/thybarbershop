@@ -51,14 +51,14 @@ export async function POST(request: NextRequest) {
       return twimlResponse(`${config.serviceName}: You have no pending booking requests right now.`);
     }
 
-    // Get rider info
-    const { data: riderUser } = await supabase
+    // Get client info
+    const { data: clientUser } = await supabase
       .from('users')
       .select('id, name, phone, rider_id, preferred_name')
       .eq('id', pendingBooking.rider_id)
       .single();
 
-    const riderName = riderUser?.preferred_name || riderUser?.name || 'the rider';
+    const clientName = clientUser?.preferred_name || clientUser?.name || 'the client';
 
     if (body === 'CONFIRM' || body === 'YES' || body === 'Y') {
       // Confirm the booking
@@ -73,25 +73,25 @@ export async function POST(request: NextRequest) {
       // Cancel escalation timers
       cancelEscalation(pendingBooking.id);
 
-      // Notify rider
-      if (riderUser) {
-        await saveInAppNotification(riderUser.id, {
+      // Notify client
+      if (clientUser) {
+        await saveInAppNotification(clientUser.id, {
           type: 'booking_confirmed',
           title: 'Booking confirmed!',
           body: `${driverUser.name} confirmed your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Pickup: ${pendingBooking.pickup_address}`,
           data: { booking_id: pendingBooking.id },
         });
 
-        if (riderUser.phone) {
+        if (clientUser.phone) {
           await sendSMS(
-            riderUser.phone,
+            clientUser.phone,
             `${config.serviceName}: Great news! ${driverUser.name} confirmed your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Pickup: ${pendingBooking.pickup_address}`
           );
         }
       }
 
       return twimlResponse(
-        `${config.serviceName}: Booking CONFIRMED for ${riderName} on ${pendingBooking.date} at ${pendingBooking.time_slot}. ${riderName} has been notified.`
+        `${config.serviceName}: Booking CONFIRMED for ${clientName} on ${pendingBooking.date} at ${pendingBooking.time_slot}. ${clientName} has been notified.`
       );
     }
 
@@ -108,31 +108,31 @@ export async function POST(request: NextRequest) {
       // Cancel escalation timers
       cancelEscalation(pendingBooking.id);
 
-      // Notify rider
-      if (riderUser) {
-        await saveInAppNotification(riderUser.id, {
+      // Notify client
+      if (clientUser) {
+        await saveInAppNotification(clientUser.id, {
           type: 'booking_denied',
           title: 'Booking not confirmed',
           body: `${driverUser.name} was unable to accept your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Please try a different time or contact your driver.`,
           data: { booking_id: pendingBooking.id },
         });
 
-        if (riderUser.phone) {
+        if (clientUser.phone) {
           await sendSMS(
-            riderUser.phone,
+            clientUser.phone,
             `${config.serviceName}: ${driverUser.name} was unable to accept your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Please try a different time or contact your driver directly.`
           );
         }
       }
 
       return twimlResponse(
-        `${config.serviceName}: Booking DENIED for ${riderName} on ${pendingBooking.date}. ${riderName} has been notified.`
+        `${config.serviceName}: Booking DENIED for ${clientName} on ${pendingBooking.date}. ${clientName} has been notified.`
       );
     }
 
     // Unrecognized command
     return twimlResponse(
-      `${config.serviceName}: Reply CONFIRM to accept or DENY to decline the pending booking from ${riderName} on ${pendingBooking.date} at ${pendingBooking.time_slot}.`
+      `${config.serviceName}: Reply CONFIRM to accept or DENY to decline the pending booking from ${clientName} on ${pendingBooking.date} at ${pendingBooking.time_slot}.`
     );
   } catch (error) {
     console.error('Twilio webhook error:', error);

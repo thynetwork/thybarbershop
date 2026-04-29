@@ -336,7 +336,7 @@ export default function LoginPage() {
               {role === 'client' && (
                 <div className="lg-no-code">Don&rsquo;t have a code? Request one from your {config.providerLabel.toLowerCase()}.</div>
               )}
-              <Link href="/register/rider" className="lg-bottom-link">First time here? Create your client account &rarr;</Link>
+              <Link href="/register/client" className="lg-bottom-link">First time here? Create your client account &rarr;</Link>
               {role === 'client' && (
                 <Link href="/register/driver" className="lg-bottom-link">Are you a {config.providerLabel.toLowerCase()}? Create your account &rarr;</Link>
               )}

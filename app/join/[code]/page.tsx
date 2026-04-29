@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import config, { splitServiceName } from '@/lib/config';
-import RiderRegistrationForm, { type DriverInfo, type PreSetAmount } from '@/components/RiderRegistrationForm';
+import ClientRegistrationForm, { type DriverInfo, type PreSetAmount } from '@/components/ClientRegistrationForm';
 
 export default function JoinPage() {
   const params = useParams();
@@ -122,7 +122,7 @@ export default function JoinPage() {
       </div>
       <div className="layout-center" style={{ background: 'var(--white)', alignItems: 'center' }}>
         <div style={{ maxWidth: 520, width: '100%' }}>
-          <RiderRegistrationForm
+          <ClientRegistrationForm
             mode="invite"
             driver={driver!}
             preSetAmount={preSetAmount}

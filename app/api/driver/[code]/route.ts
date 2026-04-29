@@ -73,7 +73,7 @@ export async function GET(
     airportPermitNumber: 'AP-12345',
     safetyProtocolComplete: true,
     insuranceProvider: 'Allstate',
-    insurancePolicyNumber: null, // never exposed to riders
+    insurancePolicyNumber: null, // never exposed to clients
     insuranceType: 'Rideshare',
     isActive: true,
     rating: 4.97,

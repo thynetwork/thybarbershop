@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Rider: validate driver code + connection ───────────
+    // ── Client: validate driver code + connection ─────────
 
     if (role === 'rider') {
       // Support both 3-part (airport+initials+digits) and legacy 2-part (initials+digits) codes
@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
         digits = codeMatch[2];
       } else {
         return NextResponse.json(
-          { error: 'Driver Code is required for rider login.' },
+          { error: 'Driver Code is required for client login.' },
           { status: 400 }
         );
       }

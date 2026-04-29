@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import config, { splitServiceName } from '@/lib/config';
 
-const demoUser = { name: 'New Rider', initials: 'NR' };
+const demoUser = { name: 'New Client', initials: 'NC' };
 
 const WHY_CARDS = [
   {
@@ -210,7 +210,7 @@ export default function SafetyProtocolPage() {
           <hr className="divider" />
           <div className="card-green">
             <div style={{ fontSize: 12, color: 'var(--green)', lineHeight: 1.6 }}>
-              Your driver has been notified that you connected. Once you complete Safety Protocol your rider home screen unlocks and you can book your first ride.
+              Your driver has been notified that you connected. Once you complete Safety Protocol your client home screen unlocks and you can book your first ride.
             </div>
           </div>
         </div>

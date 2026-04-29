@@ -71,7 +71,7 @@ export default function PendingApprovalPage() {
           </div>
 
           {/* Client ID card */}
-          <div className="rider-id-card">
+          <div className="client-id-card">
             <div className="ric-label">Your Client ID</div>
             <div className="ric-id">{clientId}</div>
             <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-1)', marginBottom: 12 }}>

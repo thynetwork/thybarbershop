@@ -63,7 +63,7 @@ export default function ConfirmBookingPage({ params }: { params: Promise<{ booki
             <div className="safety-complete">
               <div className="sc-icon">&#10003;</div>
               <div className="sc-title">Booking Confirmed</div>
-              <div className="sc-sub">{message}<br />The rider has been notified.</div>
+              <div className="sc-sub">{message}<br />The client has been notified.</div>
             </div>
           )}
 

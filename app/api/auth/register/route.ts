@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseServer } from '@/lib/supabase';
 import { hashPassword, generateCodeDigits } from '@/lib/auth';
-import { generateRiderId } from '@/lib/rider-id';
+import { generateClientId } from '@/lib/client-id';
 
 /**
  * Parse JSON or multipart/form-data into a plain record + file map.
@@ -93,11 +93,13 @@ export async function POST(req: NextRequest) {
     // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Generate rider_id for riders
-    let riderId: string | null = null;
+    // Generate client identifier for client-role users.
+    // The DB column stays `rider_id` (unchanged schema); the application
+    // surface refers to it as Client ID.
+    let clientId: string | null = null;
     if (role === 'rider') {
       const firstName = name.trim().split(/\s+/)[0];
-      riderId = await generateRiderId(firstName);
+      clientId = await generateClientId(firstName);
     }
 
     // Create user
@@ -109,7 +111,7 @@ export async function POST(req: NextRequest) {
         name,
         phone: phone || null,
         role,
-        rider_id: riderId,
+        rider_id: clientId,
         preferred_name: preferredName || null,
       })
       .select('id, email, name, role, rider_id, preferred_name')
@@ -301,19 +303,19 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // ── Rider registration ─────────────────────────────────
+    // ── Client registration ────────────────────────────────
 
     if (role === 'rider') {
       // Support both 3-part (airport+initials+digits) and legacy 2-part codes
       let initials: string;
       let digits: string;
-      let riderAirportCode: string | undefined;
+      let clientAirportCode: string | undefined;
 
       if (bodyCodeInitials && bodyCodeDigits) {
         // 3-part code from v3.0 registration
         initials = bodyCodeInitials.toUpperCase();
         digits = bodyCodeDigits;
-        riderAirportCode = (codeAirport || '').toUpperCase() || undefined;
+        clientAirportCode = (codeAirport || '').toUpperCase() || undefined;
       } else if (driverCode) {
         // Legacy 2-part code format
         const codeMatch = driverCode.match(/^([A-Z]{2,3})(\d{4})$/i);
@@ -327,20 +329,20 @@ export async function POST(req: NextRequest) {
         digits = codeMatch[2];
       } else {
         return NextResponse.json(
-          { error: 'A Driver Code is required for rider registration.' },
+          { error: 'A Barber Code is required for client registration.' },
           { status: 400 }
         );
       }
 
-      // Look up driver
+      // Look up barber
       let driverQuery = supabase
         .from('drivers')
         .select('id')
         .eq('code_initials', initials)
         .eq('code_digits', digits);
 
-      if (riderAirportCode) {
-        driverQuery = driverQuery.eq('airport_code', riderAirportCode);
+      if (clientAirportCode) {
+        driverQuery = driverQuery.eq('airport_code', clientAirportCode);
       }
 
       const { data: driver } = await driverQuery.single();
@@ -349,12 +351,13 @@ export async function POST(req: NextRequest) {
         // Clean up user record
         await supabase.from('users').delete().eq('id', newUser.id);
         return NextResponse.json(
-          { error: 'Driver Code not found. Check with your driver and try again.' },
+          { error: 'Barber Code not found. Check with your barber and try again.' },
           { status: 404 }
         );
       }
 
-      // Create connection request (pending driver approval)
+      // Create connection request (pending barber approval).
+      // DB columns are unchanged: connections.rider_id stores the client.
       const connectionData: Record<string, unknown> = {
         driver_id: driver.id,
         rider_id: newUser.id,
@@ -377,7 +380,7 @@ export async function POST(req: NextRequest) {
         console.error('Connection error:', connError);
       }
 
-      // Send 4-channel notification to driver
+      // Send 4-channel notification to barber
       try {
         const { sendConnectionRequestNotification } = await import('@/lib/notifications');
         const { data: driverUser } = await supabase
@@ -389,7 +392,7 @@ export async function POST(req: NextRequest) {
         if (driverUser) {
           await sendConnectionRequestNotification(
             { id: driver.id, name: driverUser.name, phone: driverUser.phone, email: driverUser.email },
-            { id: newUser.id, name: newUser.name, riderId: riderId || undefined, preferredName: preferredName || undefined },
+            { id: newUser.id, name: newUser.name, clientId: clientId || undefined, preferredName: preferredName || undefined },
             source || 'manual',
             noteToDriver || undefined
           );
@@ -400,9 +403,9 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({
         user: newUser,
-        riderId: riderId,
+        clientId: clientId,
         connectionStatus: 'pending',
-        message: 'Account created. Connection request sent to your driver.',
+        message: 'Account created. Connection request sent to your barber.',
       });
     }
 

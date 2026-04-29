@@ -1,7 +1,10 @@
 /* ============================================================
-   RIDER ID GENERATION
+   CLIENT ID GENERATION
    Format: first 4 chars of name (uppercase) + middle dot + 4 random digits
    Example: KIM·2121, SARA·4807, ALEX·9031
+   Note: the underlying users.rider_id column is left untouched —
+   that's a database identifier and changing it would break the
+   live schema. Only the application surface uses "client".
    ============================================================ */
 
 import { getSupabaseServer } from '@/lib/supabase';
@@ -18,38 +21,38 @@ function randomDigits(): string {
  */
 function extractPrefix(firstName: string): string {
   const cleaned = firstName.replace(/[^a-zA-Z]/g, '').toUpperCase();
-  return cleaned.slice(0, 4) || 'RIDE';
+  return cleaned.slice(0, 4) || 'CLNT';
 }
 
 /**
- * Format a rider ID from prefix and digits.
+ * Format a client ID from prefix and digits.
  */
-function formatRiderId(prefix: string, digits: string): string {
-  return `${prefix}\u00B7${digits}`;
+function formatClientId(prefix: string, digits: string): string {
+  return `${prefix}·${digits}`;
 }
 
 /**
- * Generate a unique Rider ID.
+ * Generate a unique Client ID.
  * Checks against the database to ensure uniqueness.
  * Returns a formatted string like "KIM·2121".
  */
-export async function generateRiderId(firstName: string): Promise<string> {
+export async function generateClientId(firstName: string): Promise<string> {
   const supabase = getSupabaseServer();
   const prefix = extractPrefix(firstName);
 
   let attempts = 0;
   while (attempts < 20) {
     const digits = randomDigits();
-    const riderId = formatRiderId(prefix, digits);
+    const clientId = formatClientId(prefix, digits);
 
     const { data: existing } = await supabase
       .from('users')
       .select('id')
-      .eq('rider_id', riderId)
+      .eq('rider_id', clientId)
       .single();
 
     if (!existing) {
-      return riderId;
+      return clientId;
     }
 
     attempts++;
@@ -57,14 +60,14 @@ export async function generateRiderId(firstName: string): Promise<string> {
 
   // Fallback: use full random suffix if too many collisions
   const fallbackDigits = Math.floor(10000 + Math.random() * 90000).toString().slice(0, 4);
-  return formatRiderId(prefix, fallbackDigits);
+  return formatClientId(prefix, fallbackDigits);
 }
 
 /**
- * Parse a rider ID string into its components.
+ * Parse a client ID string into its components.
  */
-export function parseRiderId(riderId: string): { prefix: string; digits: string } | null {
-  const match = riderId.match(/^([A-Z]{1,4})\u00B7(\d{4})$/);
+export function parseClientId(clientId: string): { prefix: string; digits: string } | null {
+  const match = clientId.match(/^([A-Z]{1,4})·(\d{4})$/);
   if (!match) return null;
   return { prefix: match[1], digits: match[2] };
 }

@@ -88,12 +88,12 @@ export default function ConditionsPage() {
           The following conditions apply to all bookings made through the ThyBarberShop platform:
         </p>
         <ul className="legal-list">
-          <li><strong>Direct Arrangement:</strong> All bookings represent a direct arrangement between the rider and driver. ThyBarberShop facilitates the connection and provides the scheduling tools, but is not a party to the transportation agreement.</li>
+          <li><strong>Direct Arrangement:</strong> All bookings represent a direct arrangement between the client and driver. ThyBarberShop facilitates the connection and provides the scheduling tools, but is not a party to the transportation agreement.</li>
           <li><strong>Platform Facilitator:</strong> ThyBarberShop is a technology platform, not a transportation provider. We do not dispatch drivers, set fares, or guarantee ride availability.</li>
-          <li><strong>Safety Protocol Required:</strong> Riders must complete the ThyBarberShop Safety Protocol before their first ride with any driver. This includes submitting emergency contact information and identity verification. Bookings cannot be confirmed until both parties have completed the protocol.</li>
+          <li><strong>Safety Protocol Required:</strong> Clients must complete the ThyBarberShop Safety Protocol before their first ride with any driver. This includes submitting emergency contact information and identity verification. Bookings cannot be confirmed until both parties have completed the protocol.</li>
           <li><strong>Driver Approval:</strong> All booking requests are subject to driver acceptance. Drivers may decline booking requests at their discretion based on availability, location, or other factors.</li>
           <li><strong>Driver Credentials:</strong> Drivers must maintain valid credentials and active insurance coverage at all times. Drivers whose credentials expire or are revoked will have their accounts suspended until credentials are renewed.</li>
-          <li><strong>Booking Accuracy:</strong> Riders are responsible for providing accurate pickup and dropoff locations, dates, and times. Significant changes to booking details after confirmation may require a new booking request.</li>
+          <li><strong>Booking Accuracy:</strong> Clients are responsible for providing accurate pickup and dropoff locations, dates, and times. Significant changes to booking details after confirmation may require a new booking request.</li>
         </ul>
 
         {/* ── 3. Payment Conditions ────────────────────── */}
@@ -104,10 +104,10 @@ export default function ConditionsPage() {
 
         <h3 className="legal-subheading">Ride Payments</h3>
         <ul className="legal-list">
-          <li>All ride payments go directly from the rider to the driver using the driver&rsquo;s preferred payment method(s).</li>
+          <li>All ride payments go directly from the client to the driver using the driver&rsquo;s preferred payment method(s).</li>
           <li>ThyBarberShop does not process, hold, collect, escrow, or transfer any ride fare payments.</li>
           <li>Payment methods displayed on a driver&rsquo;s profile (Zelle, Venmo, Cash App, etc.) are the driver&rsquo;s own personal accounts. ThyBarberShop is not responsible for the accuracy of payment information provided by drivers.</li>
-          <li>Riders and drivers are responsible for resolving any payment disputes directly between themselves.</li>
+          <li>Clients and drivers are responsible for resolving any payment disputes directly between themselves.</li>
           <li>ThyBarberShop may assist in mediation upon request but is not obligated to do so and bears no liability for payment disputes.</li>
         </ul>
 
@@ -121,10 +121,10 @@ export default function ConditionsPage() {
 
         <h3 className="legal-subheading">Find a Driver Matching Fee</h3>
         <ul className="legal-list">
-          <li>Riders who use the Find a Driver feature to be matched with a new driver are charged a one-time matching fee of <strong>$9.99</strong>.</li>
+          <li>Clients who use the Find a Driver feature to be matched with a new driver are charged a one-time matching fee of <strong>$9.99</strong>.</li>
           <li>This fee is billed via Stripe at the time of match confirmation.</li>
           <li>The matching fee is non-refundable once a driver has been matched and a driver code issued.</li>
-          <li>Riders who already have a driver code from an existing ThyBarberShop driver do not pay a matching fee.</li>
+          <li>Clients who already have a driver code from an existing ThyBarberShop driver do not pay a matching fee.</li>
         </ul>
 
         {/* ── 4. Vehicle Standards ─────────────────────── */}
@@ -165,7 +165,7 @@ export default function ConditionsPage() {
 
         <h3 className="legal-subheading">Contact Information Protection</h3>
         <p className="legal-body">
-          Riders browsing the driver pool may not solicit or share a driver&rsquo;s personal contact information (phone number, email, social media) outside of the ThyBarberShop platform. Once a rider and driver are connected via a driver code, contact information is shared through the platform for booking purposes only.
+          Clients browsing the driver pool may not solicit or share a driver&rsquo;s personal contact information (phone number, email, social media) outside of the ThyBarberShop platform. Once a client and driver are connected via a driver code, contact information is shared through the platform for booking purposes only.
         </p>
 
         <h3 className="legal-subheading">Credential Integrity</h3>

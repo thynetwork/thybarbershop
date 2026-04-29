@@ -218,7 +218,7 @@ function VerifyPhoneContent() {
           )}
 
           {!success && (
-            <button type="button" className="vp-change" onClick={() => router.push('/register/rider')}>
+            <button type="button" className="vp-change" onClick={() => router.push('/register/client')}>
               Wrong number? Change it →
             </button>
           )}

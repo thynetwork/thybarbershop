@@ -35,7 +35,7 @@ interface Props {
 
 /* ── Component ─────────────────────────────────────────────── */
 
-export default function RiderRegistrationForm({ mode, driver, preSetAmount }: Props) {
+export default function ClientRegistrationForm({ mode, driver, preSetAmount }: Props) {
   const router = useRouter();
   const { prefix, highlight } = splitServiceName();
 
@@ -132,10 +132,10 @@ export default function RiderRegistrationForm({ mode, driver, preSetAmount }: Pr
       // Route based on mode
       if (mode === 'find_a_driver') {
         // FA4 → FA5 payment
-        // Store rider info in sessionStorage for FA5
-        sessionStorage.setItem('fa_rider_id', data.user?.id || '');
-        sessionStorage.setItem('fa_rider_name', `${firstName} ${lastName}`);
-        sessionStorage.setItem('fa_rider_display_id', data.riderId || '');
+        // Store client info in sessionStorage for FA5
+        sessionStorage.setItem('fa_client_id', data.user?.id || '');
+        sessionStorage.setItem('fa_client_name', `${firstName} ${lastName}`);
+        sessionStorage.setItem('fa_client_display_id', data.clientId || '');
         const airport = driver?.airportCode || '';
         const driverId = driver?.id || '';
         router.push(`/find-a-driver/${airport}/${driverId}/request`);
@@ -390,7 +390,7 @@ export default function RiderRegistrationForm({ mode, driver, preSetAmount }: Pr
       {mode === 'find_a_driver' && (
         <div className="card-info mb-16">
           <div style={{ fontSize: 12, color: 'var(--blue)', lineHeight: 1.6 }}>
-            &#8505; &nbsp;Your $9.99 is a one-time access fee that covers all future searches. If this driver does not respond or is unable to accept &mdash; you can keep searching at no additional cost. Your Rider ID stays the same &mdash; you never register again.
+            &#8505; &nbsp;Your $9.99 is a one-time access fee that covers all future searches. If this driver does not respond or is unable to accept &mdash; you can keep searching at no additional cost. Your Client ID stays the same &mdash; you never register again.
           </div>
         </div>
       )}
