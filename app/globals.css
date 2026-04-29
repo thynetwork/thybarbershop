@@ -1326,3 +1326,215 @@ body {
   .legal-heading { font-size: 16px; }
   .legal-footer { flex-direction: column; gap: 10px; text-align: center; }
 }
+
+/* ============================================================
+   PWA · MOBILE RESPONSIVE LAYER
+   Single global stylesheet that targets the per-page shell
+   classes (which all share the *-shell / *-sidebar suffix).
+   Breakpoint: 48rem (= 768px). All units rem/em.
+   ============================================================ */
+
+/* Hamburger toggle (rendered globally by PWAClient).
+   Hidden by default on desktop; shown only at <= 48rem. */
+.tbs-nav-toggle {
+  display: none;
+  position: fixed;
+  top: 0.625rem;
+  left: 0.625rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background: rgba(245, 166, 35, 0.95);
+  border: none;
+  z-index: 1000;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.25);
+}
+.tbs-nav-toggle span {
+  display: block;
+  width: 1.1rem;
+  height: 0.15rem;
+  background: #0a0a2e;
+  border-radius: 0.1rem;
+}
+.tbs-nav-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 998;
+  border: none;
+  padding: 0;
+}
+
+/* Install banner. */
+.tbs-install-banner {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: #0a0a2e;
+  border: 1px solid rgba(245, 166, 35, 0.3);
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.35);
+  z-index: 1100;
+  max-width: 36rem;
+  width: calc(100% - 2rem);
+  flex-wrap: wrap;
+}
+.tbs-install-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background: #F5A623;
+  color: #0a0a2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+.tbs-install-icon span { color: #0a0a2e; }
+.tbs-install-body { flex: 1; min-width: 12rem; }
+.tbs-install-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #F5A623;
+  margin-bottom: 0.15rem;
+}
+.tbs-install-sub {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+.tbs-install-add {
+  background: #F5A623;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.55rem 1rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 0.78rem;
+  color: #0a0a2e;
+  cursor: pointer;
+}
+.tbs-install-dismiss {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+.tbs-install-never {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.65rem;
+  cursor: pointer;
+  text-decoration: underline;
+  flex-basis: 100%;
+  text-align: right;
+}
+
+@media (max-width: 48rem) {
+  /* Show the global hamburger and backdrop. */
+  .tbs-nav-toggle { display: flex; }
+  body.tbs-nav-open .tbs-nav-backdrop { display: block; }
+
+  /* Collapse every per-page shell to a single column.
+     Most pages use display:grid with grid-template-columns:13.75rem 1fr
+     inside an inline <style> tag — bump them to a single column. */
+  [class$="-shell"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Hide every per-page sidebar by default; slide it in when the
+     body class flips on. Width chosen to fit thumb + content. */
+  [class$="-sidebar"] {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 16rem;
+    z-index: 999;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+  }
+  body.tbs-nav-open [class$="-sidebar"] {
+    transform: translateX(0);
+  }
+
+  /* Topbar — keep height, drop the 4-part code badge if it overflows. */
+  [class*="-topbar"] {
+    padding-left: 3.5rem !important; /* leave room for hamburger */
+  }
+  [class*="-code"]:not([class*="zip-code"]):not([class*="qr-code"]) {
+    display: none !important;
+  }
+
+  /* Stats rows: 4-col → 2-col. */
+  .ah-stats, .pl-stats, .sh-stats, .wh-stats, .stats-row {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Member tile + barber pool grids. */
+  .hh-member-grid { grid-template-columns: 1fr 1fr !important; }
+  .fp-pool-grid { grid-template-columns: 1fr !important; }
+
+  /* Form rows: 2-col → 1-col. */
+  .ep-row, .form-row, .cr-form-row, .br-g2, .br-g3 {
+    grid-template-columns: 1fr !important;
+  }
+  .pp-grid, .h2p-cols, .sp-two-col, .et-main, .rp-two-col, .ah-two-col {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Filter tabs scroll horizontally instead of wrapping. */
+  .ah-filter-tabs, .pl-filter-tabs, .nc-filter-tabs, .wh-filter-tabs, .filter-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.25rem;
+  }
+  .ah-filter-tabs::-webkit-scrollbar,
+  .pl-filter-tabs::-webkit-scrollbar,
+  .nc-filter-tabs::-webkit-scrollbar,
+  .wh-filter-tabs::-webkit-scrollbar,
+  .filter-tabs::-webkit-scrollbar { display: none; }
+
+  /* Touch targets. */
+  button, a[role="button"], .nav-item, [class$="-nav"] {
+    min-height: 2.75rem;
+  }
+  .et-star { font-size: 2.75rem !important; }
+
+  /* SC1 share-buttons row stays 2x2 but tightens padding;
+     QR centers naturally because hero has text-align:center. */
+  .sh-share-btns { gap: 0.4rem; }
+
+  /* DC1 calendar — reduce cell padding, truncate appointment tags. */
+  .cal-cell { min-height: 3.5rem !important; padding: 0.2rem !important; }
+  .cal-appt { font-size: 0.5rem !important; }
+
+  /* ET1 stacks the two columns; left first, right below. */
+  .et-left { flex: 0 0 auto !important; width: 100% !important; }
+
+  /* Footer clean line on narrow screens. */
+  .site-footer { padding: 14px 1rem; line-height: 1.8; }
+}
+
