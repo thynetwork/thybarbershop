@@ -93,40 +93,68 @@ export async function POST(req: NextRequest) {
     // ── Role-specific setup ────────────────────────────────
 
     if (role === 'driver') {
-      // Generate driver code: first 2-3 letters from name + 4 random digits
-      const nameParts = name.trim().split(/\s+/);
+      // Barber code initials — always 3 letters per spec.
+      //   3+ name parts (John Q Public)   → first + middle + last initials  (JQP)
+      //   2 parts with internal capital   → first + internal cap + last     (DeShawn Jackson → DSJ)
+      //   2 parts no internal cap         → first + last[0] + first cons.  (John Merrick   → JMR)
+      const nameParts = name.trim().split(/\s+/).filter(Boolean);
       let initials = '';
       if (nameParts.length >= 3) {
         initials = (nameParts[0][0] + nameParts[1][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
-      } else if (nameParts.length >= 2) {
-        initials = (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+      } else if (nameParts.length === 2) {
+        const first = nameParts[0];
+        const last = nameParts[1];
+        let internalCap = '';
+        for (let i = 1; i < first.length; i++) {
+          if (first[i] >= 'A' && first[i] <= 'Z') { internalCap = first[i]; break; }
+        }
+        if (internalCap) {
+          initials = (first[0] + internalCap + last[0]).toUpperCase();
+        } else {
+          let third = last.length > 1 ? last[1] : 'X';
+          for (let i = 1; i < last.length; i++) {
+            const ch = last[i].toLowerCase();
+            if (!'aeiou'.includes(ch)) { third = last[i]; break; }
+          }
+          initials = (first[0] + last[0] + third).toUpperCase();
+        }
       } else {
-        initials = name.slice(0, 2).toUpperCase();
+        initials = (name.slice(0, 3).toUpperCase() + 'XX').slice(0, 3);
       }
 
       // Use first airport from airportCodes array, fall back to airportCode field
       const firstAirport = (airportCodes && airportCodes.length > 0 ? airportCodes[0] : airportCode) || '';
       const driverAirportCode = firstAirport.toUpperCase() || null;
 
-      // Ensure unique code (unique across airport_code + initials + digits)
+      // Uniqueness key per spec: (city, state, initials, digits) — falls back
+      // to airport_code if city/state aren't set on the row (legacy ThyDriver).
+      // If 10 digit retries collide on the same initials, append a letter A→Z
+      // to the initials and keep going (JMR → JMRA → JMRB …).
       let codeDigits = generateCodeDigits();
+      const baseInitials = initials;
+      let suffixIdx = -1; // -1 = no suffix; 0..25 = A..Z
       let attempts = 0;
-      while (attempts < 10) {
+      const MAX_DIGIT_RETRIES = 10;
+      while (attempts < 26 * (MAX_DIGIT_RETRIES + 1)) {
         let existQuery = supabase
           .from('drivers')
           .select('id')
           .eq('code_initials', initials)
           .eq('code_digits', codeDigits);
-
-        if (driverAirportCode) {
-          existQuery = existQuery.eq('airport_code', driverAirportCode);
-        }
+        if (city) existQuery = existQuery.eq('city', city);
+        if (state) existQuery = existQuery.eq('state', (state || '').toUpperCase());
+        if (!city && driverAirportCode) existQuery = existQuery.eq('airport_code', driverAirportCode);
 
         const { data: existing } = await existQuery.single();
-
         if (!existing) break;
-        codeDigits = generateCodeDigits();
+
         attempts++;
+        if (attempts % MAX_DIGIT_RETRIES === 0 && suffixIdx < 25) {
+          // Bump initials suffix and reset digits.
+          suffixIdx++;
+          initials = baseInitials + String.fromCharCode(65 + suffixIdx);
+        }
+        codeDigits = generateCodeDigits();
       }
 
       const { error: driverError } = await supabase
