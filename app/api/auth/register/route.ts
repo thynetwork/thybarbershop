@@ -3,10 +3,39 @@ import { getSupabaseServer } from '@/lib/supabase';
 import { hashPassword, generateCodeDigits } from '@/lib/auth';
 import { generateRiderId } from '@/lib/rider-id';
 
+/**
+ * Parse JSON or multipart/form-data into a plain record + file map.
+ * Multipart is used by the barber registration wizard so document
+ * files can be uploaded in the same request.
+ */
+async function parseRequest(req: NextRequest): Promise<{ body: Record<string, unknown>; files: Map<string, File> }> {
+  const ct = (req.headers.get('content-type') || '').toLowerCase();
+  if (ct.includes('multipart/form-data')) {
+    const fd = await req.formData();
+    const body: Record<string, unknown> = {};
+    const files = new Map<string, File>();
+    fd.forEach((value, key) => {
+      if (typeof value === 'string') {
+        if (key === 'airportCodes' || key === 'serviceAreas') {
+          // Comma-separated list serialized over the wire.
+          body[key] = value.split(',').map(s => s.trim()).filter(Boolean);
+        } else {
+          body[key] = value;
+        }
+      } else if (value instanceof File && value.size > 0) {
+        files.set(key, value);
+      }
+    });
+    return { body, files };
+  }
+  const body = (await req.json()) as Record<string, unknown>;
+  return { body, files: new Map() };
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { email, password, name, phone, role, driverCode, airportCode, airportCodes, codeAirport, codeInitials: bodyCodeInitials, codeDigits: bodyCodeDigits, preferredName, noteToDriver, source, acceptedSetAmount, driverId, zipCode, city, state, serviceAreas } = body as {
+    const { body, files } = await parseRequest(req);
+    const { email, password, name, phone, role, driverCode, airportCode, airportCodes, codeAirport, codeInitials: bodyCodeInitials, codeDigits: bodyCodeDigits, preferredName, noteToDriver, source, acceptedSetAmount, driverId, zipCode, city, state, serviceAreas, barberLicenseNumber, barberLicenseExpiry, dlNumber, yearsExperience } = body as {
       email?: string;
       password?: string;
       name?: string;
@@ -27,6 +56,10 @@ export async function POST(req: NextRequest) {
       city?: string;
       state?: string;
       serviceAreas?: string[];
+      barberLicenseNumber?: string;
+      barberLicenseExpiry?: string;
+      dlNumber?: string;
+      yearsExperience?: string;
     };
 
     // Validate required fields
@@ -168,6 +201,10 @@ export async function POST(req: NextRequest) {
           city: city || null,
           state: (state || '').toUpperCase() || null,
           service_areas: serviceAreas || null,
+          dl_number: dlNumber || null,
+          barber_license_number: barberLicenseNumber || null,
+          barber_license_expiry: barberLicenseExpiry || null,
+          years_experience: yearsExperience || null,
           subscription_status: 'trial',
           is_active: false,
         });
@@ -192,6 +229,42 @@ export async function POST(req: NextRequest) {
         }
       } catch (qrErr) {
         console.error('QR generation failed:', qrErr);
+      }
+
+      // Upload registration documents (DL front/back, barber & shop licenses,
+      // profile photo, logo) to the private barber-documents bucket and write
+      // the resulting URLs back onto the drivers row. Each upload is best-
+      // effort: a missing or failed file does not abort registration —
+      // ThyAdmin can request a re-upload during manual review.
+      if (files.size > 0) {
+        try {
+          const { uploadBarberDocument } = await import('@/lib/uploads');
+          const slotToColumn: Record<string, string> = {
+            'profile':         'profile_photo_url',
+            'logo':            'logo_url',
+            'dl-front':        'dl_front_url',
+            'dl-back':         'dl_back_url',
+            'barber-license':  'barber_license_url',
+            'shop-license':    'shop_license_url',
+          };
+          const barberCode = `${initials}${codeDigits}`;
+          const updates: Record<string, string> = {};
+          for (const [slot, file] of files) {
+            const column = slotToColumn[slot];
+            if (!column) continue;
+            const url = await uploadBarberDocument({
+              file,
+              barberCode,
+              slot: slot as 'dl-front' | 'dl-back' | 'barber-license' | 'shop-license' | 'profile' | 'logo',
+            });
+            if (url) updates[column] = url;
+          }
+          if (Object.keys(updates).length > 0) {
+            await supabase.from('drivers').update(updates).eq('id', newUser.id);
+          }
+        } catch (uploadErr) {
+          console.error('Document upload step failed:', uploadErr);
+        }
       }
 
       const fullCode = driverAirportCode

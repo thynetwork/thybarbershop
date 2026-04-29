@@ -78,8 +78,12 @@ export default function BarberRegistrationPage() {
   const [dlBack, setDlBack] = useState<File | null>(null);
   const [barberLicOn, setBarberLicOn] = useState(true);
   const [barberLicNumber, setBarberLicNumber] = useState('');
+  const [barberLicExpiry, setBarberLicExpiry] = useState('');
   const [barberLicFile, setBarberLicFile] = useState<File | null>(null);
+  const [shopLicense, setShopLicense] = useState<File | null>(null);
   const [experience, setExperience] = useState<Experience>('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Step 4
   const [services, setServices] = useState<Service[]>(INITIAL_SERVICES);
@@ -127,9 +131,55 @@ export default function BarberRegistrationPage() {
     setServices(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
   }
 
-  function submitApplication() {
-    setSubmitted(true);
-    if (typeof window !== 'undefined') window.scrollTo(0, 0);
+  async function submitApplication() {
+    if (submitting) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const useShopLoc = locType === 'shop' || locType === 'both';
+      const fd = new FormData();
+      fd.set('email', email);
+      fd.set('password', password);
+      fd.set('name', fullName);
+      fd.set('phone', phone);
+      fd.set('role', 'driver');
+
+      // Location — primary city/state/zip per location type.
+      fd.set('city', useShopLoc ? shopCity : mobileCity);
+      fd.set('state', useShopLoc ? shopState : mobileState);
+      fd.set('zipCode', useShopLoc ? shopZip : mobileZip);
+      if (zones.size > 0) fd.set('serviceAreas', Array.from(zones).join(','));
+
+      // Credentials.
+      if (dlNumber) fd.set('dlNumber', dlNumber);
+      if (barberLicOn && barberLicNumber) fd.set('barberLicenseNumber', barberLicNumber);
+      if (barberLicOn && barberLicExpiry) fd.set('barberLicenseExpiry', barberLicExpiry);
+      if (experience) fd.set('yearsExperience', experience);
+
+      // Documents — keys must match DocumentSlot values in lib/uploads.ts so
+      // the API can map each File straight to its drivers column.
+      if (profilePhoto) fd.set('profile', profilePhoto);
+      if (logo) fd.set('logo', logo);
+      if (dlFront) fd.set('dl-front', dlFront);
+      if (dlBack) fd.set('dl-back', dlBack);
+      if (barberLicOn && barberLicFile) fd.set('barber-license', barberLicFile);
+      if (useShopLoc && shopLicense) fd.set('shop-license', shopLicense);
+
+      const res = await fetch('/api/auth/register', { method: 'POST', body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setSubmitError(data?.error || 'Registration failed. Please try again.');
+        setSubmitting(false);
+        return;
+      }
+      setSubmitted(true);
+      if (typeof window !== 'undefined') window.scrollTo(0, 0);
+    } catch (err) {
+      console.error('Submit error:', err);
+      setSubmitError('Something went wrong. Please check your connection and try again.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const progressPct = (step / 7) * 100;
@@ -590,9 +640,15 @@ export default function BarberRegistrationPage() {
                   </div>
                   {barberLicOn && (
                     <div>
-                      <div className="br-field" style={{ marginBottom: '1rem' }}>
-                        <div className="br-field-label">Barber License Number</div>
-                        <input className="br-field-input" placeholder="e.g. TX-BBR-0042871" value={barberLicNumber} onChange={(e) => setBarberLicNumber(e.target.value)} style={{ fontFamily: "'DM Mono', monospace", letterSpacing: '.05em' }}/>
+                      <div className="br-form-grid br-g2" style={{ marginBottom: '1rem' }}>
+                        <div className="br-field">
+                          <div className="br-field-label">Barber License Number</div>
+                          <input className="br-field-input" placeholder="e.g. TX-BBR-0042871" value={barberLicNumber} onChange={(e) => setBarberLicNumber(e.target.value)} style={{ fontFamily: "'DM Mono', monospace", letterSpacing: '.05em' }}/>
+                        </div>
+                        <div className="br-field">
+                          <div className="br-field-label">License Expiry Date</div>
+                          <input className="br-field-input" type="date" value={barberLicExpiry} onChange={(e) => setBarberLicExpiry(e.target.value)}/>
+                        </div>
                       </div>
                       <div className="br-upload-row">
                         <label className={'br-upload-box' + (barberLicFile ? ' uploaded' : '')} style={{ gridColumn: '1 / -1' }}>
@@ -606,6 +662,24 @@ export default function BarberRegistrationPage() {
                     </div>
                   )}
                 </div>
+
+                {(locType === 'shop' || locType === 'both') && (
+                  <div className="br-cred-section">
+                    <div className="br-cred-section-title">Shop License <span className="br-cred-optional">Optional</span></div>
+                    <div className="br-info-note" style={{ marginBottom: '.8rem' }}>
+                      Shop owners only. Upload your shop&rsquo;s business license to verify the location. Helps unlock the <strong>Shop Verified</strong> badge after ThyAdmin review.
+                    </div>
+                    <div className="br-upload-row">
+                      <label className={'br-upload-box' + (shopLicense ? ' uploaded' : '')} style={{ gridColumn: '1 / -1' }}>
+                        <input type="file" accept="image/*,.pdf" onChange={(e) => setShopLicense(e.target.files?.[0] ?? null)}/>
+                        <div className="br-upload-icon">🏠</div>
+                        <div className="br-upload-label">Shop Business License</div>
+                        <div className="br-upload-sub">Photo or PDF · current and valid</div>
+                        <div className={'br-upload-badge ' + (shopLicense ? 'ok' : '')}>{shopLicense ? '✓ Uploaded' : 'Optional'}</div>
+                      </label>
+                    </div>
+                  </div>
+                )}
 
                 <div className="br-form-grid br-g2">
                   <div className="br-field">
@@ -802,6 +876,8 @@ export default function BarberRegistrationPage() {
                 <div className="br-review-section-title">Credentials <button type="button" className="br-review-edit" onClick={() => goTo(3)}>Edit</button></div>
                 <div className="br-review-row"><span className="br-review-key">Driver license</span><span className="br-review-val" style={{ fontFamily: "'DM Mono', monospace" }}>{dlNumber || '—'}</span></div>
                 {barberLicOn && <div className="br-review-row"><span className="br-review-key">Barber license</span><span className="br-review-val" style={{ fontFamily: "'DM Mono', monospace" }}>{barberLicNumber || '—'}</span></div>}
+                {barberLicOn && barberLicExpiry && <div className="br-review-row"><span className="br-review-key">License expires</span><span className="br-review-val">{barberLicExpiry}</span></div>}
+                {(locType === 'shop' || locType === 'both') && <div className="br-review-row"><span className="br-review-key">Shop license</span><span className="br-review-val" style={{ color: shopLicense ? '#3B6D11' : '#9A9AAA' }}>{shopLicense ? '✓ Uploaded' : 'Not uploaded'}</span></div>}
                 <div className="br-review-row"><span className="br-review-key">Experience</span><span className="br-review-val">{experience || '—'}</span></div>
               </div>
 
@@ -827,10 +903,16 @@ export default function BarberRegistrationPage() {
                 <div className="br-review-row"><span className="br-review-key">Professional Standard</span><span className="br-review-val" style={{ color: pledged ? '#3B6D11' : '#b42828' }}>{pledged ? '✓ Agreed' : 'Not agreed'}</span></div>
               </div>
 
+              {submitError && (
+                <div className="br-info-note" style={{ background: 'rgba(180,40,40,.07)', borderColor: 'rgba(180,40,40,.25)', color: '#b42828', marginTop: '1rem' }}>
+                  <strong>Submission failed:</strong> {submitError}
+                </div>
+              )}
+
               <div className="br-nav-row">
-                <button type="button" className="br-btn-back" onClick={() => goTo(6)}>&larr; Back</button>
+                <button type="button" className="br-btn-back" onClick={() => goTo(6)} disabled={submitting}>&larr; Back</button>
                 <div className="br-step-count">Step <strong>7</strong> of 7</div>
-                <button type="button" className="br-btn-submit" onClick={submitApplication}>Submit Application &rarr;</button>
+                <button type="button" className="br-btn-submit" onClick={submitApplication} disabled={submitting}>{submitting ? 'Submitting…' : 'Submit Application →'}</button>
               </div>
             </div>
           )}

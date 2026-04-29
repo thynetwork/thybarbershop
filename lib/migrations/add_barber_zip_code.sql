@@ -27,8 +27,13 @@ ALTER TABLE drivers ADD COLUMN IF NOT EXISTS barber_license_number  text;
 ALTER TABLE drivers ADD COLUMN IF NOT EXISTS barber_license_url     text;
 ALTER TABLE drivers ADD COLUMN IF NOT EXISTS barber_license_expiry  date;
 ALTER TABLE drivers ADD COLUMN IF NOT EXISTS shop_license_url       text;
-ALTER TABLE drivers ADD COLUMN IF NOT EXISTS liability_ins_url      text;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS profile_photo_url      text;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS logo_url               text;
 ALTER TABLE drivers ADD COLUMN IF NOT EXISTS years_experience       text;
+
+-- liability_ins_url is ThyDriver-only (commercial driver insurance);
+-- not applicable to barbers. Drop if a prior migration added it.
+ALTER TABLE drivers DROP COLUMN IF EXISTS liability_ins_url;
 
 -- Per-step verification flags. Used by ThyAdmin's 5-step approval workflow.
 ALTER TABLE drivers ADD COLUMN IF NOT EXISTS id_verified            boolean DEFAULT false;
