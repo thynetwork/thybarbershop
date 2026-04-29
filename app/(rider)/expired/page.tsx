@@ -12,7 +12,7 @@ export default function ExpiredWindowPage() {
   // TODO: Replace with real data from API/session
   // source comes from connection record: 'invite' | 'find_a_driver' | 'manual'
   const source: 'invite' | 'find_a_driver' | 'manual' = 'invite';
-  const driverName = 'Marcus';
+  const barberName = 'Marcus';
   const riderId = 'TODD·4401';
 
   const [extraHours, setExtraHours] = useState('');
@@ -56,9 +56,9 @@ export default function ExpiredWindowPage() {
         <div className="layout-center" style={{ background: 'var(--white)', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ maxWidth: 480, width: '100%', textAlign: 'center' }}>
             <div style={{ fontSize: 36, marginBottom: 14 }}>&#128336;</div>
-            <div className="t-display mb-8">Driver Didn&rsquo;t Respond in Time</div>
+            <div className="t-display mb-8">Barber Didn&rsquo;t Respond in Time</div>
             <div style={{ fontSize: 14, color: 'var(--text-2)', marginBottom: 28, lineHeight: 1.6 }}>
-              {driverName} wasn&rsquo;t able to connect at this time.
+              {barberName} wasn&rsquo;t able to connect at this time.
             </div>
 
             <div className="rider-id-card mb-20">
@@ -106,9 +106,9 @@ export default function ExpiredWindowPage() {
         <div className="layout-center" style={{ background: 'var(--white)', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ maxWidth: 480, width: '100%', textAlign: 'center' }}>
             <div style={{ fontSize: 36, marginBottom: 14 }}>&#128336;</div>
-            <div className="t-display mb-8">Driver Didn&rsquo;t Respond in Time</div>
+            <div className="t-display mb-8">Barber Didn&rsquo;t Respond in Time</div>
             <div style={{ fontSize: 14, color: 'var(--text-2)', marginBottom: 28, lineHeight: 1.6 }}>
-              {driverName} wasn&rsquo;t able to connect at this time.
+              {barberName} wasn&rsquo;t able to connect at this time.
             </div>
 
             <div className="rider-id-card mb-20">
@@ -157,9 +157,9 @@ export default function ExpiredWindowPage() {
         <div style={{ maxWidth: 500, width: '100%', textAlign: 'center' }}>
 
           <div style={{ fontSize: 36, marginBottom: 12 }}>&#9201;</div>
-          <div className="t-title mb-4">{driverName} hasn&rsquo;t responded yet</div>
+          <div className="t-title mb-4">{barberName} hasn&rsquo;t responded yet</div>
           <div className="t-small mb-20">
-            The 2-hour window has passed. Would you like to give {driverName} more time?
+            The 2-hour window has passed. Would you like to give {barberName} more time?
           </div>
 
           {/* Give more time card */}
