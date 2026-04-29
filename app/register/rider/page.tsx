@@ -53,6 +53,16 @@ function ClientRegContent() {
   const [preferredName, setPreferredName] = useState('');
   const [contactPref, setContactPref] = useState<ContactPref>('Text only');
 
+  // Direct signup (no invite link) gates registration on a $9.99 platform fee.
+  // Invite-link signup (?barber= or ?invite=) skips that gate entirely.
+  const hasInvite = !!(searchParams.get('barber') || searchParams.get('invite'));
+  const requirePaymentGate = !hasInvite;
+  const [paymentDone, setPaymentDone] = useState(!requirePaymentGate);
+  const [showPayStep, setShowPayStep] = useState(false);
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCvv, setCardCvv] = useState('');
+
   const [toast, setToast] = useState('');
 
   function showToast(msg: string) {
@@ -71,10 +81,32 @@ function ClientRegContent() {
   const photoInitials = ((firstName || 'R')[0] + (lastName || 'G')[0]).toUpperCase();
 
   function goStep(next: Step) {
+    // Direct signups must clear the $9.99 platform-fee gate between Step 1 and Step 2.
+    if (next === 2 && step === 1 && requirePaymentGate && !paymentDone) {
+      setCompleted(prev => new Set(prev).add(1));
+      setShowPayStep(true);
+      if (typeof window !== 'undefined') window.scrollTo(0, 0);
+      return;
+    }
     if (next > step) {
       setCompleted(prev => new Set(prev).add(step));
     }
+    setShowPayStep(false);
     setStep(next);
+    if (typeof window !== 'undefined') window.scrollTo(0, 0);
+  }
+
+  function payAndContinue() {
+    setPaymentDone(true);
+    setShowPayStep(false);
+    setCompleted(prev => new Set(prev).add(1));
+    setStep(2);
+    if (typeof window !== 'undefined') window.scrollTo(0, 0);
+  }
+
+  function backFromPay() {
+    setShowPayStep(false);
+    setStep(1);
     if (typeof window !== 'undefined') window.scrollTo(0, 0);
   }
 
@@ -178,6 +210,15 @@ function ClientRegContent() {
         .cr-btn-secondary:hover{border-color:#F5A623;color:#D4830A;}
 
         .cr-toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#0a0a2e;color:#fff;padding:.7rem 1.4rem;border-radius:2rem;font-size:.82rem;font-weight:600;z-index:400;box-shadow:0 .25rem 1rem rgba(0,0,0,.2);white-space:nowrap;}
+
+        .cr-pay-gate{background:#fff;border:1.5px solid rgba(0,0,0,.09);border-radius:1.25rem;padding:1.5rem;box-shadow:0 4px 16px rgba(0,0,0,.07);margin-bottom:1.25rem;}
+        .cr-pg-amount{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:#0a0a2e;text-align:center;margin-bottom:.25rem;}
+        .cr-pg-label{font-size:.8rem;color:#5A5A6A;text-align:center;margin-bottom:1.5rem;}
+        .cr-pg-features{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.5rem;}
+        .cr-pg-feature{display:flex;align-items:center;gap:.65rem;font-size:.82rem;color:#5A5A6A;}
+        .cr-pg-feature-dot{width:.5rem;height:.5rem;border-radius:50%;background:#3B6D11;flex-shrink:0;}
+        .cr-pg-nonrefund{background:rgba(180,40,40,.05);border:1px solid rgba(180,40,40,.15);border-radius:.75rem;padding:.75rem 1rem;font-size:.72rem;color:#b42828;line-height:1.6;margin-bottom:1.25rem;}
+        .cr-pg-nonrefund strong{font-weight:700;}
       `}</style>
 
       <nav className="cr-topbar">
@@ -223,7 +264,44 @@ function ClientRegContent() {
           </div>
         </div>
 
-        {step === 1 && (
+        {showPayStep && (
+          <div>
+            <div className="cr-step-title">One-time access</div>
+            <div className="cr-step-sub">Create your account and get full access to {config.serviceName}.</div>
+
+            <div className="cr-pay-gate">
+              <div className="cr-pg-amount">$9.99</div>
+              <div className="cr-pg-label">One-time &middot; non-refundable &middot; permanent access</div>
+              <div className="cr-pg-features">
+                <div className="cr-pg-feature"><div className="cr-pg-feature-dot"></div>Full access to {config.serviceName} &middot; for life</div>
+                <div className="cr-pg-feature"><div className="cr-pg-feature-dot"></div>Browse the {config.providerLabel.toLowerCase()} pool in any zip code</div>
+                <div className="cr-pg-feature"><div className="cr-pg-feature-dot"></div>Connect with as many {config.providerLabel.toLowerCase()}s as you want</div>
+                <div className="cr-pg-feature"><div className="cr-pg-feature-dot"></div>No recurring charges &middot; ever</div>
+                <div className="cr-pg-feature"><div className="cr-pg-feature-dot"></div>Upgrade to Household Pass anytime for $19.99/yr</div>
+              </div>
+              <div className="cr-pg-nonrefund"><strong>Non-refundable.</strong> This is a one-time platform access fee. Once your account is created this charge cannot be reversed. No exceptions.</div>
+              <div className="cr-form-field">
+                <label className="cr-form-label">Card Number</label>
+                <input className="cr-form-input" placeholder="1234 5678 9012 3456" maxLength={19} value={cardNumber} onChange={(e) => setCardNumber(e.target.value)}/>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div className="cr-form-field">
+                  <label className="cr-form-label">Expiry</label>
+                  <input className="cr-form-input" placeholder="MM / YY" maxLength={7} value={cardExpiry} onChange={(e) => setCardExpiry(e.target.value)}/>
+                </div>
+                <div className="cr-form-field">
+                  <label className="cr-form-label">CVV</label>
+                  <input className="cr-form-input" type="password" placeholder="···" maxLength={4} value={cardCvv} onChange={(e) => setCardCvv(e.target.value)}/>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" className="cr-btn-primary" onClick={payAndContinue}>Pay $9.99 and Continue &rarr;</button>
+            <button type="button" className="cr-btn-secondary" onClick={backFromPay}>&larr; Back</button>
+          </div>
+        )}
+
+        {step === 1 && !showPayStep && (
           <div>
             <div className="cr-step-title">Create your account</div>
             <div className="cr-step-sub">Your information is private and encrypted. {config.serviceName} never sells your data.</div>

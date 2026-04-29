@@ -81,8 +81,8 @@ export default function ClientHomePage() {
       {/* ── Page ────────────────────────────────────────────── */}
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '1.25rem 1.25rem 4rem' }}>
 
-        {/* ── Household Member Selector (household plan only) ── */}
-        {ACCOUNT_PLAN === 'household' && (
+        {/* ── Household Member Selector ─ household plan + 2+ members ── */}
+        {ACCOUNT_PLAN === 'household' && HOUSEHOLD_MEMBERS.length > 1 && (
           <div style={{
             background: '#fff', border: '1.5px solid rgba(0,0,0,0.09)', borderRadius: 'var(--r-xl, 1.25rem)',
             padding: '1rem 1.1rem', marginBottom: '1rem', boxShadow: '0 4px 16px rgba(0,0,0,0.07)',
