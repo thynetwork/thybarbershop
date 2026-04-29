@@ -97,7 +97,7 @@ const NAV_BUSINESS = [
 ];
 const NAV_ACCOUNT = [
   { icon: '\uD83D\uDC64', label: 'Profile', href: '/public-profile'},
-  { icon: '\uD83D\uDCCB', label: 'Work History', href: '/history', badge: '312', badgeColor: 'amber' as const },
+  { icon: '\uD83D\uDCCB', label: 'Work History', href: '/work-history', badge: '312', badgeColor: 'amber' as const },
   { icon: '\u2699\uFE0F', label: 'Settings', href: '/settings' },
   { icon: '\uD83D\uDCDE', label: 'Support', href: '/support' },
 ];
