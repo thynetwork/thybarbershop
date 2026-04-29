@@ -16,6 +16,33 @@ ALTER TABLE drivers
 -- Public URL for the barber's pre-generated invite QR (Supabase storage).
 ALTER TABLE drivers ADD COLUMN IF NOT EXISTS qr_code_url text;
 
+-- ── Verification document tracking (private bucket: barber-documents) ──
+-- ID + license documents uploaded at registration; ThyAdmin reviews these
+-- before flipping the barber to active. URLs point at private storage paths
+-- that only ThyAdmin staff can read.
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS dl_number              text;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS dl_front_url           text;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS dl_back_url            text;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS barber_license_number  text;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS barber_license_url     text;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS barber_license_expiry  date;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS shop_license_url       text;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS liability_ins_url      text;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS years_experience       text;
+
+-- Per-step verification flags. Used by ThyAdmin's 5-step approval workflow.
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS id_verified            boolean DEFAULT false;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS license_verified       boolean DEFAULT false;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS shop_license_verified  boolean DEFAULT false;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS address_verified       boolean DEFAULT false;
+
+-- Review queue + rejection trail.
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS flagged_for_review     boolean DEFAULT false;
+ALTER TABLE drivers ADD COLUMN IF NOT EXISTS disapproval_reason     text;
+
+-- License-expiry watcher hits at 30-day window before this date.
+CREATE INDEX IF NOT EXISTS drivers_license_expiry_idx ON drivers (barber_license_expiry);
+
 -- Indexes that power the FA1 pool query:
 --   barber.zip_code = $1
 --   OR $1 = ANY(barber.service_areas)
