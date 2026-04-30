@@ -1,87 +1,45 @@
-import { NextRequest, NextResponse } from 'next/server';
+/* GET /api/find-a-barber/[airport]
+ *
+ * Pool search for clients. The [airport] param is treated as either
+ * an airport code (legacy) or a 5-digit zip — pool rule matches if
+ * barber.zip_code === zip OR barber.service_areas @> [zip].
+ *
+ * Query params:
+ *   class:  'all' | 'comfort' | 'xl' | 'xl_mid' | 'xl_large' | 'black'
+ *   sort:   'rating' | 'rate-low' | 'rate-high' | 'rides' | 'distance' (default rating)
+ *
+ * Returns a list of approved (is_active=true) barbers with masked codes.
+ */
 
-interface Barber {
+import { NextRequest, NextResponse } from 'next/server';
+import { getSupabaseServer } from '@/lib/supabase';
+
+interface DriverRow {
   id: string;
-  firstName: string;
-  lastInitial: string;
-  initials: string;
-  vehicleClass: string;
-  rating: number;
-  rides: number;
-  zipCode: string;
-  serviceAreas: string[];
-  city: string;
-  state: string;
-  distanceMiles: number;
-  airports: string[];
-  maskedCode: { airport: string; initials: string; digits: string };
-  vehicle: {
-    year: number; make: string; model: string; trim: string;
-    color: string; passengers: number; seatbelts: boolean;
-    insuranceType: string;
-  };
-  rates: { hourly: number; flatLocal: number };
-  availability: { days: boolean[]; hours: string };
-  verified: boolean;
+  code_initials: string;
+  code_digits: string;
+  airport_code: string | null;
+  city: string | null;
+  state: string | null;
+  zip_code: string | null;
+  service_areas: string[] | null;
+  vehicle_class: string | null;
+  rate_hourly: number | null;
+  flat_fee_local: number | null;
+  available_24hrs: boolean | null;
+  license_verified: boolean | null;
+  is_active: boolean | null;
 }
 
-const DEMO_BARBERS: Barber[] = [
-  {
-    id: 'marcus-r', firstName: 'Marcus', lastInitial: 'R', initials: 'MR',
-    vehicleClass: 'comfort', rating: 4.97, rides: 312,
-    zipCode: '77587', serviceAreas: ['77587', '77502', '77584'], city: 'South Houston', state: 'TX', distanceMiles: 0.4,
-    airports: ['IAH'],
-    maskedCode: { airport: 'South Houston', initials: 'M**', digits: '****' },
-    vehicle: { year: 2021, make: 'Toyota', model: 'Camry', trim: 'SE', color: 'Silver', passengers: 3, seatbelts: true, insuranceType: 'Licensed barber' },
-    rates: { hourly: 45, flatLocal: 25 },
-    availability: { days: [false, true, true, true, true, false, true], hours: '8:00 am – 6:00 pm' },
-    verified: true,
-  },
-  {
-    id: 'deshawn-j', firstName: 'DeShawn', lastInitial: 'J', initials: 'DJ',
-    vehicleClass: 'xl', rating: 4.98, rides: 243,
-    zipCode: '77002', serviceAreas: ['77002', '77003', '77006'], city: 'Houston', state: 'TX', distanceMiles: 1.2,
-    airports: ['HOU'],
-    maskedCode: { airport: 'Houston', initials: 'D**', digits: '****' },
-    vehicle: { year: 2022, make: 'Toyota', model: 'Highlander', trim: 'XLE', color: 'Black', passengers: 6, seatbelts: true, insuranceType: 'Licensed barber' },
-    rates: { hourly: 50, flatLocal: 35 },
-    availability: { days: [true, true, true, true, true, false, false], hours: '9:00 am – 7:00 pm' },
-    verified: true,
-  },
-  {
-    id: 'tony-v', firstName: 'Tony', lastInitial: 'V', initials: 'TV',
-    vehicleClass: 'comfort', rating: 4.91, rides: 156,
-    zipCode: '77502', serviceAreas: ['77502', '77587'], city: 'Pasadena', state: 'TX', distanceMiles: 2.8,
-    airports: ['IAH'],
-    maskedCode: { airport: 'Pasadena', initials: 'T**', digits: '****' },
-    vehicle: { year: 2023, make: 'Chevrolet', model: 'Suburban', trim: 'LT', color: 'White', passengers: 7, seatbelts: true, insuranceType: 'Licensed barber' },
-    rates: { hourly: 55, flatLocal: 45 },
-    availability: { days: [true, true, true, true, true, true, false], hours: '7:00 am – 9:00 pm' },
-    verified: true,
-  },
-  {
-    id: 'sarah-k', firstName: 'Sarah', lastInitial: 'K', initials: 'SK',
-    vehicleClass: 'comfort', rating: 4.87, rides: 312,
-    zipCode: '90002', serviceAreas: ['90002', '90001', '90003'], city: 'Watts', state: 'CA', distanceMiles: 0.7,
-    airports: ['LAX'],
-    maskedCode: { airport: 'Watts', initials: 'S**', digits: '****' },
-    vehicle: { year: 2022, make: 'Honda', model: 'Accord', trim: 'EX', color: 'Blue', passengers: 3, seatbelts: true, insuranceType: 'Licensed barber' },
-    rates: { hourly: 30, flatLocal: 20 },
-    availability: { days: [true, true, true, true, true, false, false], hours: '7:00 am – 8:00 pm' },
-    verified: true,
-  },
-  {
-    id: 'james-w', firstName: 'James', lastInitial: 'W', initials: 'JW',
-    vehicleClass: 'xl', rating: 4.96, rides: 198,
-    zipCode: '90001', serviceAreas: ['90001', '90002'], city: 'Los Angeles', state: 'CA', distanceMiles: 1.4,
-    airports: ['LAX'],
-    maskedCode: { airport: 'Los Angeles', initials: 'J**', digits: '****' },
-    vehicle: { year: 2023, make: 'Ford', model: 'Explorer', trim: 'XLT', color: 'Gray', passengers: 5, seatbelts: true, insuranceType: 'Licensed barber' },
-    rates: { hourly: 42, flatLocal: 32 },
-    availability: { days: [true, true, true, true, true, true, false], hours: '6:00 am – 10:00 pm' },
-    verified: true,
-  },
-];
+interface UserRow { id: string; name: string | null; }
+
+interface VehicleRow {
+  driver_id: string;
+  make: string | null; model: string | null; year: number | null;
+  color: string | null; seats: number | null; seatbelt_confirmed: boolean | null;
+}
+
+interface RatingRow { driver_id: string; stars: number; }
 
 export async function GET(
   request: NextRequest,
@@ -89,37 +47,130 @@ export async function GET(
 ) {
   const { airport: routeParam } = await params;
   const isZip = /^\d{5}$/.test(routeParam);
-  const zipQuery = isZip ? routeParam : null;
+  const zip = isZip ? routeParam : null;
+  const airportUpper = !isZip ? routeParam.toUpperCase() : null;
+
   const { searchParams } = new URL(request.url);
   const classFilter = searchParams.get('class') || 'all';
-  const sort = searchParams.get('sort') || 'distance';
+  const sort = searchParams.get('sort') || 'rating';
 
-  // Pool search rule:
-  //   barber.zip_code matches OR barber.service_areas includes the zip
-  let barbers = zipQuery
-    ? DEMO_BARBERS.filter(b => b.zipCode === zipQuery || b.serviceAreas.includes(zipQuery))
-    : DEMO_BARBERS;
+  const supabase = getSupabaseServer();
 
-  if (classFilter !== 'all') {
-    barbers = barbers.filter((b) => b.vehicleClass === classFilter);
+  // Base query: active barbers only.
+  let query = supabase
+    .from('drivers')
+    .select('id, code_initials, code_digits, airport_code, city, state, zip_code, service_areas, vehicle_class, rate_hourly, flat_fee_local, available_24hrs, license_verified, is_active')
+    .eq('is_active', true);
+
+  if (zip) {
+    // Match either zip_code OR service_areas array contains zip.
+    // Supabase OR + contains: use `.or()` with PostgREST syntax.
+    query = query.or(`zip_code.eq.${zip},service_areas.cs.{${zip}}`);
+  } else if (airportUpper) {
+    query = query.eq('airport_code', airportUpper);
   }
 
+  if (classFilter !== 'all') {
+    query = query.eq('vehicle_class', classFilter);
+  }
+
+  const { data: driverRows, error: driversErr } = await query.limit(50);
+  if (driversErr) {
+    console.error('Pool query failed:', driversErr);
+    return NextResponse.json({ success: false, error: 'Pool query failed.' }, { status: 500 });
+  }
+
+  const drivers = (driverRows as DriverRow[] | null) || [];
+  if (drivers.length === 0) {
+    return NextResponse.json({ success: true, zip, airport: airportUpper, total: 0, barbers: [] });
+  }
+
+  const ids = drivers.map(d => d.id);
+
+  // Hydrate names, vehicles, ratings in parallel.
+  const [usersR, vehiclesR, ratingsR] = await Promise.all([
+    supabase.from('users').select('id, name').in('id', ids),
+    supabase.from('vehicles').select('driver_id, make, model, year, color, seats, seatbelt_confirmed').in('driver_id', ids),
+    supabase.from('ratings').select('driver_id, stars').in('driver_id', ids),
+  ]);
+
+  const userById = new Map<string, UserRow>((usersR.data as UserRow[] | null || []).map(u => [u.id, u]));
+  const vehicleByDriver = new Map<string, VehicleRow>((vehiclesR.data as VehicleRow[] | null || []).map(v => [v.driver_id, v]));
+  const ratingsByDriver = new Map<string, number[]>();
+  for (const r of (ratingsR.data as RatingRow[] | null || [])) {
+    if (!ratingsByDriver.has(r.driver_id)) ratingsByDriver.set(r.driver_id, []);
+    ratingsByDriver.get(r.driver_id)!.push(r.stars);
+  }
+
+  const barbers = drivers.map(d => {
+    const user = userById.get(d.id);
+    const v = vehicleByDriver.get(d.id);
+    const stars = ratingsByDriver.get(d.id) || [];
+    const avgRating = stars.length ? Number((stars.reduce((s, n) => s + n, 0) / stars.length).toFixed(2)) : 0;
+
+    const fullName = user?.name || 'Barber';
+    const parts = fullName.split(/\s+/).filter(Boolean);
+    const firstName = parts[0] || 'Barber';
+    const lastInitial = parts[1]?.[0] || '';
+    const initials = (firstName[0] || '?') + (lastInitial || '');
+
+    return {
+      id: d.id,
+      firstName,
+      lastInitial,
+      initials,
+      vehicleClass: d.vehicle_class || 'comfort',
+      rating: avgRating,
+      rides: stars.length,
+      zipCode: d.zip_code || '',
+      serviceAreas: d.service_areas || [],
+      city: d.city || '',
+      state: d.state || '',
+      distanceMiles: 0, // No lat/lng yet — distance computed client-side once geocoding lands
+      airports: d.airport_code ? [d.airport_code] : [],
+      maskedCode: {
+        airport: d.city || d.airport_code || '',
+        initials: (d.code_initials?.[0] || '') + '**',
+        digits: '****',
+      },
+      vehicle: v ? {
+        year: v.year || 0,
+        make: v.make || '',
+        model: v.model || '',
+        trim: '',
+        color: v.color || '',
+        passengers: v.seats || 0,
+        seatbelts: !!v.seatbelt_confirmed,
+        insuranceType: 'Licensed barber',
+      } : null,
+      rates: {
+        hourly: Number(d.rate_hourly ?? 0),
+        flatLocal: Number(d.flat_fee_local ?? 0),
+      },
+      availability: {
+        days: [true, true, true, true, true, true, false], // availability_json TBD
+        hours: d.available_24hrs ? '24 hours' : '',
+      },
+      verified: !!d.license_verified,
+    };
+  });
+
+  // Sorts.
   barbers.sort((a, b) => {
     switch (sort) {
-      case 'distance': return a.distanceMiles - b.distanceMiles;
       case 'rating': return b.rating - a.rating;
       case 'rate-low': return a.rates.hourly - b.rates.hourly;
       case 'rate-high': return b.rates.hourly - a.rates.hourly;
-      case 'availability': return b.rides - a.rides;
-      default: return a.distanceMiles - b.distanceMiles;
+      case 'rides': return b.rides - a.rides;
+      default: return b.rating - a.rating;
     }
   });
 
   return NextResponse.json({
     success: true,
-    zip: zipQuery,
-    airport: routeParam.toUpperCase(),
+    zip,
+    airport: airportUpper,
     total: barbers.length,
-    barbers: barbers,
+    barbers,
   });
 }
