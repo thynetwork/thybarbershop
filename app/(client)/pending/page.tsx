@@ -91,7 +91,7 @@ export default function PendingApprovalPage() {
               <span className="row-label">{config.providerLabel}</span>
               <span className="row-value" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {barberName}
-                <div className="driver-code">
+                <div className="barber-code">
                   <div className="dc-airport" style={{ fontSize: 10, padding: '3px 6px' }}>{barberCity}</div>
                   <div className="dc-initials" style={{ fontSize: 10, padding: '3px 6px' }}>{barberInitials}</div>
                   <div className="dc-digits" style={{ fontSize: 10, padding: '3px 6px' }}>{barberDigits}</div>

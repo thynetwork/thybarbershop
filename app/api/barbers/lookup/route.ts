@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
   const supabase = getSupabaseServer();
 
-  const { data: driver, error } = await supabase
+  const { data: barber, error } = await supabase
     .from('drivers')
     .select('id, code_initials, code_digits, airport_code, is_active, insurance_provider, insurance_type, airport_permitted, users!inner(name)')
     .eq('airport_code', airport)
@@ -21,15 +21,15 @@ export async function GET(request: NextRequest) {
     .eq('code_digits', digits)
     .single();
 
-  if (error || !driver) {
-    return NextResponse.json({ error: 'Driver not found' }, { status: 404 });
+  if (error || !barber) {
+    return NextResponse.json({ error: 'Barber not found' }, { status: 404 });
   }
 
-  if (!driver.is_active) {
-    return NextResponse.json({ error: 'This driver is not currently active' }, { status: 404 });
+  if (!barber.is_active) {
+    return NextResponse.json({ error: 'This barber is not currently active' }, { status: 404 });
   }
 
-  const user = driver.users as unknown as Record<string, string>;
+  const user = barber.users as unknown as Record<string, string>;
   const name = user?.name || 'Unknown';
   const nameParts = name.split(' ');
   const initials2 = nameParts.length >= 2
@@ -37,13 +37,13 @@ export async function GET(request: NextRequest) {
     : name.slice(0, 2).toUpperCase();
 
   return NextResponse.json({
-    id: driver.id,
+    id: barber.id,
     name,
     initials: initials2,
-    airportCode: driver.airport_code,
-    codeInitials: driver.code_initials,
-    codeDigits: driver.code_digits,
-    airportPermitted: driver.airport_permitted || false,
-    insuranceVerified: !!(driver.insurance_provider),
+    airportCode: barber.airport_code,
+    codeInitials: barber.code_initials,
+    codeDigits: barber.code_digits,
+    airportPermitted: barber.airport_permitted || false,
+    insuranceVerified: !!(barber.insurance_provider),
   });
 }

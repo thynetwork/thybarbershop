@@ -46,8 +46,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to deny connection' }, { status: 500 });
     }
 
-    // Get driver and client info for notifications
-    const { data: driverUser } = await supabase
+    // Get barber and client info for notifications
+    const { data: barberUser } = await supabase
       .from('users')
       .select('name')
       .eq('id', session.userId)
@@ -60,9 +60,9 @@ export async function POST(request: NextRequest) {
       .single();
 
     // Send denial notification — "unable to accept at this time"
-    if (driverUser && clientUser) {
+    if (barberUser && clientUser) {
       await sendConnectionDeniedNotification(
-        { id: session.userId, name: driverUser.name },
+        { id: session.userId, name: barberUser.name },
         {
           id: clientUser.id,
           name: clientUser.name,

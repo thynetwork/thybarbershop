@@ -62,7 +62,7 @@ function getFirstDow(year: number, month: number): number {
   return new Date(year, month, 1).getDay();
 }
 
-export default function DriverCardPage() {
+export default function BarberCardPage() {
   const router = useRouter();
   const params = useParams();
   const _code = params?.code as string | undefined;

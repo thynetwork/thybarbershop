@@ -18,7 +18,7 @@ const NAV_ITEMS = [
   { icon: '\u2699', label: 'Settings', href: '/settings' },
 ];
 
-export default function DriverSidebar({ activeItem = 'Dashboard', pendingCount = 0 }: Props) {
+export default function BarberSidebar({ activeItem = 'Dashboard', pendingCount = 0 }: Props) {
   return (
     <div className="sidebar" style={{ display: 'flex', flexDirection: 'column' }}>
       <nav className="side-nav">

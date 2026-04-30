@@ -63,7 +63,7 @@ const DEMO_PROFILES: Record<string, object> = {
     },
     reviews: [
       'David is fantastic. Spacious SUV, always clean, very professional.',
-      'Best XL driver at MCO. Highly recommend for families.',
+      'Best XL barber at MCO. Highly recommend for families.',
       'Reliable and friendly. Will keep using David for all my Orlando trips.',
     ],
     verified: true,
@@ -98,7 +98,7 @@ const DEMO_PROFILES: Record<string, object> = {
     reviews: [
       'Top-tier service. Marcus treats every ride like a VIP experience.',
       'The Cadillac is stunning. Worth every penny for airport transfers.',
-      'Most professional driver I have ever used. Period.',
+      'Most professional barber I have ever used. Period.',
     ],
     verified: true,
     safetyProtocol: true,
@@ -107,14 +107,14 @@ const DEMO_PROFILES: Record<string, object> = {
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: Promise<{ airport: string; driverId: string }> }
+  { params }: { params: Promise<{ airport: string; barberId: string }> }
 ) {
-  const { airport, driverId } = await params;
-  const profile = DEMO_PROFILES[driverId];
+  const { airport, barberId } = await params;
+  const profile = DEMO_PROFILES[barberId];
 
   if (!profile) {
     return NextResponse.json(
-      { success: false, error: 'Driver not found' },
+      { success: false, error: 'Barber not found' },
       { status: 404 }
     );
   }
@@ -122,6 +122,6 @@ export async function GET(
   return NextResponse.json({
     success: true,
     airport: airport.toUpperCase(),
-    driver: profile,
+    barber: profile,
   });
 }

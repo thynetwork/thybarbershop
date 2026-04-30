@@ -4,14 +4,14 @@ import { getSession } from '@/lib/auth';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ airport: string; driverId: string }> }
+  { params }: { params: Promise<{ airport: string; barberId: string }> }
 ) {
-  const { airport, driverId } = await params;
+  const { airport, barberId } = await params;
 
   // Get authenticated user
   const session = await getSession();
   if (!session) {
-    return NextResponse.json({ success: false, error: 'Sign in to request a driver.' }, { status: 401 });
+    return NextResponse.json({ success: false, error: 'Sign in to request a barber.' }, { status: 401 });
   }
 
   const sb = getSupabaseServer();
@@ -41,20 +41,20 @@ export async function POST(
       .eq('id', user.id);
   }
 
-  // Check if connection request already exists for this driver
+  // Check if connection request already exists for this barber
   const { data: existing } = await sb
     .from('connections')
     .select('id, status')
     .eq('rider_id', user.id)
-    .eq('driver_id', driverId)
+    .eq('driver_id', barberId)
     .single();
 
   if (existing) {
     if (existing.status === 'approved') {
-      return NextResponse.json({ success: false, error: 'You are already connected to this driver.' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'You are already connected to this barber.' }, { status: 400 });
     }
     if (existing.status === 'pending') {
-      return NextResponse.json({ success: false, error: 'You already have a pending request to this driver.' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'You already have a pending request to this barber.' }, { status: 400 });
     }
     // If denied or revoked, allow re-request
     await sb
@@ -66,11 +66,11 @@ export async function POST(
       success: true,
       requestId: existing.id,
       airport: airport.toUpperCase(),
-      driverId,
+      barberId,
       feePaid: !requiresPayment,
       feeCharged: requiresPayment ? 9.99 : 0,
-      status: 'pending_driver_approval',
-      message: 'Connection request re-sent. The driver has 24 hours to respond.',
+      status: 'pending_barber_approval',
+      message: 'Connection request re-sent. The barber has 24 hours to respond.',
     });
   }
 
@@ -78,7 +78,7 @@ export async function POST(
   const { data: connection, error } = await sb
     .from('connections')
     .insert({
-      driver_id: driverId,
+      driver_id: barberId,
       rider_id: user.id,
       status: 'pending',
     })
@@ -94,10 +94,10 @@ export async function POST(
     success: true,
     requestId: connection?.id,
     airport: airport.toUpperCase(),
-    driverId,
+    barberId,
     feePaid: !requiresPayment,
     feeCharged: requiresPayment ? 9.99 : 0,
-    status: 'pending_driver_approval',
-    message: 'Connection request sent. The driver has 24 hours to respond.',
+    status: 'pending_barber_approval',
+    message: 'Connection request sent. The barber has 24 hours to respond.',
   });
 }

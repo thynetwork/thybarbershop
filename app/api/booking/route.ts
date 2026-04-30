@@ -16,10 +16,10 @@ export async function GET(request: Request) {
   const bookings = [
     {
       id: 'b1',
-      driverId: 'd1',
+      barberId: 'd1',
       clientId: 'r1',
-      driverName: 'Marcus Rivera',
-      driverCode: 'MRC\u00B73341',
+      barberName: 'Marcus Rivera',
+      barberCode: 'MRC·3341',
       date: '2026-07-17',
       timeSlot: '9:00 am',
       pickupAddress: '456 Westheimer Rd, Houston TX',
@@ -34,10 +34,10 @@ export async function GET(request: Request) {
     },
     {
       id: 'b2',
-      driverId: 'd1',
+      barberId: 'd1',
       clientId: 'r1',
-      driverName: 'Marcus Rivera',
-      driverCode: 'MRC\u00B73341',
+      barberName: 'Marcus Rivera',
+      barberCode: 'MRC·3341',
       date: '2026-07-19',
       timeSlot: '6:00 am',
       pickupAddress: '456 Westheimer Rd, Houston TX',
@@ -47,10 +47,10 @@ export async function GET(request: Request) {
       status: 'pending',
       rateType: 'hourly',
       rateAmount: 210,
-      driverEstimate: 187.5,
-      driverFinalPrice: 210,
-      driverAdjustmentReason: 'hours',
-      driverAdjustmentNote: 'Early morning rate applies before 7am.',
+      barberEstimate: 187.5,
+      barberFinalPrice: 210,
+      barberAdjustmentReason: 'hours',
+      barberAdjustmentNote: 'Early morning rate applies before 7am.',
       paymentTiming: 'on_pickup',
       createdAt: '2026-07-12T09:00:00Z',
     },
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     const {
-      driverId,
+      barberId,
       clientId,
       date,
       timeSlot,
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     } = body;
 
     // Validate required fields
-    if (!driverId || !clientId || !date || !timeSlot || !pickupAddress || !dropoffAddress) {
+    if (!barberId || !clientId || !date || !timeSlot || !pickupAddress || !dropoffAddress) {
       return NextResponse.json(
         { error: 'Missing required booking fields' },
         { status: 400 }
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
 
     const newBooking = {
       id: `b_${Date.now()}`,
-      driverId,
+      barberId,
       clientId,
       date,
       timeSlot,
@@ -113,11 +113,11 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
     };
 
-    // Fetch driver and client details for notifications
-    const { data: driverUser } = await supabase
+    // Fetch barber and client details for notifications
+    const { data: barberUser } = await supabase
       .from('users')
       .select('id, name, phone, email')
-      .eq('id', driverId)
+      .eq('id', barberId)
       .single();
 
     const { data: clientUser } = await supabase
@@ -126,16 +126,16 @@ export async function POST(request: Request) {
       .eq('id', clientId)
       .single();
 
-    // Count previous bookings between this client and driver
+    // Count previous bookings between this client and barber
     const { count: previousBookingCount } = await supabase
       .from('bookings')
       .select('id', { count: 'exact', head: true })
-      .eq('driver_id', driverId)
+      .eq('driver_id', barberId)
       .eq('rider_id', clientId)
       .eq('status', 'completed');
 
-    // Send notifications to the driver (all channels)
-    if (driverUser && clientUser) {
+    // Send notifications to the barber (all channels)
+    if (barberUser && clientUser) {
       await sendBookingNotification(
         {
           id: newBooking.id,
@@ -148,10 +148,10 @@ export async function POST(request: Request) {
           routeType: newBooking.routeType,
         },
         {
-          id: driverUser.id,
-          name: driverUser.name,
-          phone: driverUser.phone || undefined,
-          email: driverUser.email || undefined,
+          id: barberUser.id,
+          name: barberUser.name,
+          phone: barberUser.phone || undefined,
+          email: barberUser.email || undefined,
         },
         {
           id: clientUser.id,

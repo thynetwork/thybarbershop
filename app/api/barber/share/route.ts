@@ -1,4 +1,4 @@
-/* GET /api/driver/share
+/* GET /api/barber/share
  *
  * Returns the share-code payload SC1 needs:
  *   { codeInitials, codeDigits, inviteUrl, qrCodeUrl }

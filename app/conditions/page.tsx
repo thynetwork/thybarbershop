@@ -44,7 +44,7 @@ export default function ConditionsPage() {
         <p className="legal-body">You may receive the following types of SMS messages:</p>
         <ul className="legal-list">
           <li>Booking confirmations and booking request alerts</li>
-          <li>Driver acceptance and decline notifications</li>
+          <li>Barber acceptance and decline notifications</li>
           <li>Ride reminders (e.g., upcoming ride in 24 hours, 1 hour)</li>
           <li>Schedule changes and cancellation notices</li>
           <li>Account security notifications (login alerts, password resets)</li>
@@ -88,11 +88,11 @@ export default function ConditionsPage() {
           The following conditions apply to all bookings made through the ThyBarberShop platform:
         </p>
         <ul className="legal-list">
-          <li><strong>Direct Arrangement:</strong> All bookings represent a direct arrangement between the client and driver. ThyBarberShop facilitates the connection and provides the scheduling tools, but is not a party to the transportation agreement.</li>
-          <li><strong>Platform Facilitator:</strong> ThyBarberShop is a technology platform, not a transportation provider. We do not dispatch drivers, set fares, or guarantee ride availability.</li>
-          <li><strong>Safety Protocol Required:</strong> Clients must complete the ThyBarberShop Safety Protocol before their first ride with any driver. This includes submitting emergency contact information and identity verification. Bookings cannot be confirmed until both parties have completed the protocol.</li>
-          <li><strong>Driver Approval:</strong> All booking requests are subject to driver acceptance. Drivers may decline booking requests at their discretion based on availability, location, or other factors.</li>
-          <li><strong>Driver Credentials:</strong> Drivers must maintain valid credentials and active insurance coverage at all times. Drivers whose credentials expire or are revoked will have their accounts suspended until credentials are renewed.</li>
+          <li><strong>Direct Arrangement:</strong> All bookings represent a direct arrangement between the client and barber. ThyBarberShop facilitates the connection and provides the scheduling tools, but is not a party to the transportation agreement.</li>
+          <li><strong>Platform Facilitator:</strong> ThyBarberShop is a technology platform, not a transportation provider. We do not dispatch barbers, set fares, or guarantee ride availability.</li>
+          <li><strong>Safety Protocol Required:</strong> Clients must complete the ThyBarberShop Safety Protocol before their first ride with any barber. This includes submitting emergency contact information and identity verification. Bookings cannot be confirmed until both parties have completed the protocol.</li>
+          <li><strong>Barber Approval:</strong> All booking requests are subject to barber acceptance. Barbers may decline booking requests at their discretion based on availability, location, or other factors.</li>
+          <li><strong>Barber Credentials:</strong> Barbers must maintain valid credentials and active insurance coverage at all times. Barbers whose credentials expire or are revoked will have their accounts suspended until credentials are renewed.</li>
           <li><strong>Booking Accuracy:</strong> Clients are responsible for providing accurate pickup and dropoff locations, dates, and times. Significant changes to booking details after confirmation may require a new booking request.</li>
         </ul>
 
@@ -104,27 +104,27 @@ export default function ConditionsPage() {
 
         <h3 className="legal-subheading">Ride Payments</h3>
         <ul className="legal-list">
-          <li>All ride payments go directly from the client to the driver using the driver&rsquo;s preferred payment method(s).</li>
+          <li>All ride payments go directly from the client to the barber using the barber&rsquo;s preferred payment method(s).</li>
           <li>ThyBarberShop does not process, hold, collect, escrow, or transfer any ride fare payments.</li>
-          <li>Payment methods displayed on a driver&rsquo;s profile (Zelle, Venmo, Cash App, etc.) are the driver&rsquo;s own personal accounts. ThyBarberShop is not responsible for the accuracy of payment information provided by drivers.</li>
-          <li>Clients and drivers are responsible for resolving any payment disputes directly between themselves.</li>
+          <li>Payment methods displayed on a barber&rsquo;s profile (Zelle, Venmo, Cash App, etc.) are the barber&rsquo;s own personal accounts. ThyBarberShop is not responsible for the accuracy of payment information provided by barbers.</li>
+          <li>Clients and barbers are responsible for resolving any payment disputes directly between themselves.</li>
           <li>ThyBarberShop may assist in mediation upon request but is not obligated to do so and bears no liability for payment disputes.</li>
         </ul>
 
-        <h3 className="legal-subheading">Driver Subscription</h3>
+        <h3 className="legal-subheading">Barber Subscription</h3>
         <ul className="legal-list">
-          <li>Active driver accounts require a weekly subscription of <strong>$9.99 per week</strong>.</li>
+          <li>Active barber accounts require a weekly subscription of <strong>$9.99 per week</strong>.</li>
           <li>Subscriptions are billed automatically via Stripe on a recurring weekly basis.</li>
-          <li>Drivers may cancel their subscription at any time. Cancellation takes effect at the end of the current billing period.</li>
-          <li>Failed payments result in an account hold. Drivers have a 7-day grace period to resolve payment issues before their account is suspended.</li>
+          <li>Barbers may cancel their subscription at any time. Cancellation takes effect at the end of the current billing period.</li>
+          <li>Failed payments result in an account hold. Barbers have a 7-day grace period to resolve payment issues before their account is suspended.</li>
         </ul>
 
-        <h3 className="legal-subheading">Find a Driver Matching Fee</h3>
+        <h3 className="legal-subheading">Find a Barber Matching Fee</h3>
         <ul className="legal-list">
-          <li>Clients who use the Find a Driver feature to be matched with a new driver are charged a one-time matching fee of <strong>$9.99</strong>.</li>
+          <li>Clients who use the Find a Barber feature to be matched with a new barber are charged a one-time matching fee of <strong>$9.99</strong>.</li>
           <li>This fee is billed via Stripe at the time of match confirmation.</li>
-          <li>The matching fee is non-refundable once a driver has been matched and a driver code issued.</li>
-          <li>Clients who already have a driver code from an existing ThyBarberShop driver do not pay a matching fee.</li>
+          <li>The matching fee is non-refundable once a barber has been matched and a barber code issued.</li>
+          <li>Clients who already have a barber code from an existing ThyBarberShop barber do not pay a matching fee.</li>
         </ul>
 
         {/* ── 4. Vehicle Standards ─────────────────────── */}
@@ -138,14 +138,14 @@ export default function ConditionsPage() {
           <li><strong>Climate Control:</strong> Working air conditioning and heating systems in full operational condition.</li>
           <li><strong>Safety Equipment:</strong> All seatbelts must be present and functional for every seating position.</li>
           <li><strong>Cleanliness:</strong> Vehicles must be clean, well-maintained, and free of offensive odors at the time of each ride.</li>
-          <li><strong>Admin Approval:</strong> All vehicles must be reviewed and approved by a ThyBarberShop administrator before the driver can accept bookings. Drivers must submit four vehicle photographs (front exterior, rear exterior, front interior, rear interior) during registration.</li>
-          <li><strong>Ongoing Compliance:</strong> Vehicles are subject to periodic review. ThyBarberShop reserves the right to require updated photographs or suspend a driver whose vehicle no longer meets platform standards.</li>
+          <li><strong>Admin Approval:</strong> All vehicles must be reviewed and approved by a ThyBarberShop administrator before the barber can accept bookings. Barbers must submit four vehicle photographs (front exterior, rear exterior, front interior, rear interior) during registration.</li>
+          <li><strong>Ongoing Compliance:</strong> Vehicles are subject to periodic review. ThyBarberShop reserves the right to require updated photographs or suspend a barber whose vehicle no longer meets platform standards.</li>
         </ul>
 
         {/* ── 5. Insurance Requirements ────────────────── */}
         <h2 className="legal-heading">5. Insurance Requirements</h2>
         <p className="legal-body">
-          Insurance requirements vary by vehicle class. All drivers must maintain coverage that meets or exceeds the following minimums:
+          Insurance requirements vary by vehicle class. All barbers must maintain coverage that meets or exceeds the following minimums:
         </p>
         <ul className="legal-list">
           <li><strong>Comfort Class:</strong> Personal auto insurance with a rideshare endorsement at minimum.</li>
@@ -154,7 +154,7 @@ export default function ConditionsPage() {
           <li><strong>XLL Class:</strong> Commercial livery insurance required. Personal auto insurance with a rideshare endorsement is not sufficient.</li>
         </ul>
         <p className="legal-body">
-          Drivers must upload proof of active insurance during registration and update their insurance documents whenever their policy is renewed. Operating without valid insurance is a violation of ThyBarberShop&rsquo;s Terms of Service and applicable law, and will result in immediate account suspension.
+          Barbers must upload proof of active insurance during registration and update their insurance documents whenever their policy is renewed. Operating without valid insurance is a violation of ThyBarberShop&rsquo;s Terms of Service and applicable law, and will result in immediate account suspension.
         </p>
 
         {/* ── 6. Platform Rules ────────────────────────── */}
@@ -165,7 +165,7 @@ export default function ConditionsPage() {
 
         <h3 className="legal-subheading">Contact Information Protection</h3>
         <p className="legal-body">
-          Clients browsing the driver pool may not solicit or share a driver&rsquo;s personal contact information (phone number, email, social media) outside of the ThyBarberShop platform. Once a client and driver are connected via a driver code, contact information is shared through the platform for booking purposes only.
+          Clients browsing the barber pool may not solicit or share a barber&rsquo;s personal contact information (phone number, email, social media) outside of the ThyBarberShop platform. Once a client and barber are connected via a barber code, contact information is shared through the platform for booking purposes only.
         </p>
 
         <h3 className="legal-subheading">Credential Integrity</h3>
@@ -175,7 +175,7 @@ export default function ConditionsPage() {
 
         <h3 className="legal-subheading">Booking Reliability</h3>
         <p className="legal-body">
-          Drivers are expected to respond to booking requests in a timely manner. Three consecutive missed or ignored booking requests within a 30-day period will trigger an administrative review of the driver&rsquo;s account. Possible outcomes include a warning, temporary hold, or account suspension depending on the circumstances and the driver&rsquo;s history.
+          Barbers are expected to respond to booking requests in a timely manner. Three consecutive missed or ignored booking requests within a 30-day period will trigger an administrative review of the barber&rsquo;s account. Possible outcomes include a warning, temporary hold, or account suspension depending on the circumstances and the barber&rsquo;s history.
         </p>
 
         <h3 className="legal-subheading">Professional Conduct</h3>

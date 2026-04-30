@@ -58,8 +58,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to extend time' }, { status: 500 });
     }
 
-    // Notify driver
-    const { data: driverUser } = await supabase
+    // Notify barber
+    const { data: barberUser } = await supabase
       .from('users')
       .select('id, name, phone, email')
       .eq('id', connection.driver_id)
@@ -71,9 +71,9 @@ export async function POST(request: NextRequest) {
       .eq('id', session.userId)
       .single();
 
-    if (driverUser && clientUser) {
+    if (barberUser && clientUser) {
       await sendExtensionNotification(
-        { id: driverUser.id, name: driverUser.name, phone: driverUser.phone, email: driverUser.email },
+        { id: barberUser.id, name: barberUser.name, phone: barberUser.phone, email: barberUser.email },
         { id: clientUser.id, name: clientUser.name, clientId: clientUser.rider_id, preferredName: clientUser.preferred_name },
         extendHours
       );

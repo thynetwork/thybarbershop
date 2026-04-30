@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { getSupabaseServer } from '@/lib/supabase';
 
 /**
- * GET /api/driver/[code]
- * Returns a driver's public profile by their driver code.
+ * GET /api/barber/[code]
+ * Returns a barber's public profile by their barber code.
  * Code format: "MRC3341" (no dot in URL, dot added for display)
  */
 export async function GET(
@@ -17,7 +17,7 @@ export async function GET(
   const initialsMatch = code.match(/^([A-Za-z]{2,3})(\d{4})$/);
   if (!initialsMatch) {
     return NextResponse.json(
-      { error: 'Invalid driver code format. Expected 2-3 letters + 4 digits.' },
+      { error: 'Invalid barber code format. Expected 2-3 letters + 4 digits.' },
       { status: 400 }
     );
   }
@@ -26,23 +26,23 @@ export async function GET(
   const codeDigits = initialsMatch[2];
 
   // TODO: Query Supabase
-  // const { data: driver, error } = await supabase
+  // const { data: barber, error } = await supabase
   //   .from('drivers')
   //   .select('*, users(*), vehicles(*)')
   //   .eq('code_initials', codeInitials)
   //   .eq('code_digits', codeDigits)
   //   .single();
 
-  // Demo driver profile
-  const driver = {
+  // Demo barber profile
+  const barber = {
     id: 'd1',
     name: 'Marcus Rivera',
     initials: 'JR',
     codeInitials,
     codeDigits,
-    codeDisplay: `${codeInitials}\u00B7${codeDigits}`,
+    codeDisplay: `${codeInitials}·${codeDigits}`,
     city: 'Houston, TX',
-    bio: 'Professional driver serving Houston metro area.',
+    bio: 'Professional barber serving Houston metro area.',
     avatarUrl: null,
     photoUrl: null,
 
@@ -56,7 +56,7 @@ export async function GET(
 
     // Availability
     availabilityDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    availabilityHours: '7:00 am \u2013 10:00 pm',
+    availabilityHours: '7:00 am – 10:00 pm',
 
     // Vehicle
     vehicle: {
@@ -89,5 +89,5 @@ export async function GET(
     ],
   };
 
-  return NextResponse.json({ driver });
+  return NextResponse.json({ barber });
 }

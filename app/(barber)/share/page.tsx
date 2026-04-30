@@ -46,7 +46,7 @@ export default function ShareCodePage() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch('/api/driver/share');
+        const res = await fetch('/api/barber/share');
         if (!res.ok) return;
         const data = (await res.json()) as { inviteUrl?: string; qrCodeUrl?: string };
         if (cancelled) return;

@@ -35,23 +35,23 @@ async function parseRequest(req: NextRequest): Promise<{ body: Record<string, un
 export async function POST(req: NextRequest) {
   try {
     const { body, files } = await parseRequest(req);
-    const { email, password, name, phone, role, driverCode, airportCode, airportCodes, codeAirport, codeInitials: bodyCodeInitials, codeDigits: bodyCodeDigits, preferredName, noteToDriver, source, acceptedSetAmount, driverId, zipCode, city, state, serviceAreas, barberLicenseNumber, barberLicenseExpiry, dlNumber, yearsExperience } = body as {
+    const { email, password, name, phone, role, barberCode, airportCode, airportCodes, codeAirport, codeInitials: bodyCodeInitials, codeDigits: bodyCodeDigits, preferredName, noteToBarber, source, acceptedSetAmount, barberId, zipCode, city, state, serviceAreas, barberLicenseNumber, barberLicenseExpiry, dlNumber, yearsExperience } = body as {
       email?: string;
       password?: string;
       name?: string;
       phone?: string;
       role?: 'rider' | 'driver';
-      driverCode?: string;
+      barberCode?: string;
       airportCode?: string;
       airportCodes?: string[];
       codeAirport?: string;
       codeInitials?: string;
       codeDigits?: string;
       preferredName?: string;
-      noteToDriver?: string;
+      noteToBarber?: string;
       source?: 'invite' | 'find_a_driver' | 'manual';
       acceptedSetAmount?: number;
-      driverId?: string;
+      barberId?: string;
       zipCode?: string;
       city?: string;
       state?: string;
@@ -159,7 +159,7 @@ export async function POST(req: NextRequest) {
 
       // Use first airport from airportCodes array, fall back to airportCode field
       const firstAirport = (airportCodes && airportCodes.length > 0 ? airportCodes[0] : airportCode) || '';
-      const driverAirportCode = firstAirport.toUpperCase() || null;
+      const barberAirportCode = firstAirport.toUpperCase() || null;
 
       // Uniqueness key per spec: (city, state, initials, digits) — falls back
       // to airport_code if city/state aren't set on the row (legacy ThyDriver).
@@ -178,7 +178,7 @@ export async function POST(req: NextRequest) {
           .eq('code_digits', codeDigits);
         if (city) existQuery = existQuery.eq('city', city);
         if (state) existQuery = existQuery.eq('state', (state || '').toUpperCase());
-        if (!city && driverAirportCode) existQuery = existQuery.eq('airport_code', driverAirportCode);
+        if (!city && barberAirportCode) existQuery = existQuery.eq('airport_code', barberAirportCode);
 
         const { data: existing } = await existQuery.single();
         if (!existing) break;
@@ -192,13 +192,13 @@ export async function POST(req: NextRequest) {
         codeDigits = generateCodeDigits();
       }
 
-      const { error: driverError } = await supabase
+      const { error: barberError } = await supabase
         .from('drivers')
         .insert({
           id: newUser.id,
           code_initials: initials,
           code_digits: codeDigits,
-          airport_code: driverAirportCode,
+          airport_code: barberAirportCode,
           zip_code: zipCode || null,
           city: city || null,
           state: (state || '').toUpperCase() || null,
@@ -211,12 +211,12 @@ export async function POST(req: NextRequest) {
           is_active: false,
         });
 
-      if (driverError) {
-        console.error('Driver record error:', driverError);
+      if (barberError) {
+        console.error('Barber record error:', barberError);
         // Clean up user record
         await supabase.from('users').delete().eq('id', newUser.id);
         return NextResponse.json(
-          { error: 'Failed to create driver profile.' },
+          { error: 'Failed to create barber profile.' },
           { status: 500 }
         );
       }
@@ -249,14 +249,14 @@ export async function POST(req: NextRequest) {
             'barber-license':  'barber_license_url',
             'shop-license':    'shop_license_url',
           };
-          const barberCode = `${initials}${codeDigits}`;
+          const fullBarberCode = `${initials}${codeDigits}`;
           const updates: Record<string, string> = {};
           for (const [slot, file] of files) {
             const column = slotToColumn[slot];
             if (!column) continue;
             const url = await uploadBarberDocument({
               file,
-              barberCode,
+              barberCode: fullBarberCode,
               slot: slot as 'dl-front' | 'dl-back' | 'barber-license' | 'shop-license' | 'profile' | 'logo',
             });
             if (url) updates[column] = url;
@@ -269,26 +269,26 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      const fullCode = driverAirportCode
-        ? `${driverAirportCode}·${initials}·${codeDigits}`
+      const fullCode = barberAirportCode
+        ? `${barberAirportCode}·${initials}·${codeDigits}`
         : `${initials}${codeDigits}`;
 
-      // Notify admin of new driver registration for manual review
+      // Notify admin of new barber registration for manual review
       try {
         const adminEmail = process.env.ADMIN_EMAIL || 'maxparable@gmail.com';
         const { sendEmail } = await import('@/lib/notifications');
         await sendEmail(
           adminEmail,
-          `New Driver Registration — ${name} (${fullCode})`,
-          `A new driver has registered and requires manual review.\n\n` +
+          `New Barber Registration — ${name} (${fullCode})`,
+          `A new barber has registered and requires manual review.\n\n` +
           `Name: ${name}\n` +
           `Email: ${email}\n` +
           `Phone: ${phone || 'Not provided'}\n` +
           `City: ${city || 'Not provided'}\n` +
           `State: ${state || 'Not provided'}\n` +
           `Zip: ${zipCode || 'Not provided'}\n` +
-          `Airport: ${driverAirportCode || 'Not set'}\n` +
-          `Driver Code: ${fullCode}\n\n` +
+          `Airport: ${barberAirportCode || 'Not set'}\n` +
+          `Barber Code: ${fullCode}\n\n` +
           `Review and approve at: https://thyadmin.com/platforms/thyfreelancers/thybarbershop\n`
         );
       } catch (emailErr) {
@@ -297,9 +297,9 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({
         user: newUser,
-        driverCode: fullCode,
-        airportCode: driverAirportCode,
-        message: 'Driver account created. Pending admin review.',
+        barberCode: fullCode,
+        airportCode: barberAirportCode,
+        message: 'Barber account created. Pending admin review.',
       });
     }
 
@@ -316,9 +316,9 @@ export async function POST(req: NextRequest) {
         initials = bodyCodeInitials.toUpperCase();
         digits = bodyCodeDigits;
         clientAirportCode = (codeAirport || '').toUpperCase() || undefined;
-      } else if (driverCode) {
+      } else if (barberCode) {
         // Legacy 2-part code format
-        const codeMatch = driverCode.match(/^([A-Z]{2,3})(\d{4})$/i);
+        const codeMatch = barberCode.match(/^([A-Z]{2,3})(\d{4})$/i);
         if (!codeMatch) {
           return NextResponse.json(
             { error: 'Invalid Barber Code format. Expected city + initials + digits (e.g., South Houston·MRC·3341).' },
@@ -335,19 +335,19 @@ export async function POST(req: NextRequest) {
       }
 
       // Look up barber
-      let driverQuery = supabase
+      let barberQuery = supabase
         .from('drivers')
         .select('id')
         .eq('code_initials', initials)
         .eq('code_digits', digits);
 
       if (clientAirportCode) {
-        driverQuery = driverQuery.eq('airport_code', clientAirportCode);
+        barberQuery = barberQuery.eq('airport_code', clientAirportCode);
       }
 
-      const { data: driver } = await driverQuery.single();
+      const { data: barber } = await barberQuery.single();
 
-      if (!driver) {
+      if (!barber) {
         // Clean up user record
         await supabase.from('users').delete().eq('id', newUser.id);
         return NextResponse.json(
@@ -359,13 +359,13 @@ export async function POST(req: NextRequest) {
       // Create connection request (pending barber approval).
       // DB columns are unchanged: connections.rider_id stores the client.
       const connectionData: Record<string, unknown> = {
-        driver_id: driver.id,
+        driver_id: barber.id,
         rider_id: newUser.id,
         status: 'pending',
         source: source || 'manual',
         expires_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
       };
-      if (noteToDriver) connectionData.note_to_driver = noteToDriver.slice(0, 160);
+      if (noteToBarber) connectionData.note_to_driver = noteToBarber.slice(0, 160);
       if (acceptedSetAmount) {
         connectionData.set_amount = acceptedSetAmount;
         connectionData.accepted_set_amount = acceptedSetAmount;
@@ -383,18 +383,18 @@ export async function POST(req: NextRequest) {
       // Send 4-channel notification to barber
       try {
         const { sendConnectionRequestNotification } = await import('@/lib/notifications');
-        const { data: driverUser } = await supabase
+        const { data: barberUser } = await supabase
           .from('users')
           .select('name, email, phone')
-          .eq('id', driver.id)
+          .eq('id', barber.id)
           .single();
 
-        if (driverUser) {
+        if (barberUser) {
           await sendConnectionRequestNotification(
-            { id: driver.id, name: driverUser.name, phone: driverUser.phone, email: driverUser.email },
+            { id: barber.id, name: barberUser.name, phone: barberUser.phone, email: barberUser.email },
             { id: newUser.id, name: newUser.name, clientId: clientId || undefined, preferredName: preferredName || undefined },
             source || 'manual',
-            noteToDriver || undefined
+            noteToBarber || undefined
           );
         }
       } catch (notifErr) {

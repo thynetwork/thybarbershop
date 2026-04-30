@@ -1,3 +1,3 @@
-export default function FindADriverLayout({ children }: { children: React.ReactNode }) {
+export default function FindABarberLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

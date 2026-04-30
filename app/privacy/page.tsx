@@ -34,10 +34,10 @@ export default function PrivacyPage() {
         <p className="legal-body">We collect information that you voluntarily provide when creating an account, booking a ride, or interacting with the platform:</p>
         <ul className="legal-list">
           <li><strong>Account Information:</strong> Full name, email address, phone number, and account credentials.</li>
-          <li><strong>Payment Information:</strong> Payment method details you choose to display on your profile (for drivers) or use for platform fees (for all users). This may include Zelle, Venmo, Cash App handles, or Stripe billing details for subscription and matching fees.</li>
+          <li><strong>Payment Information:</strong> Payment method details you choose to display on your profile (for barbers) or use for platform fees (for all users). This may include Zelle, Venmo, Cash App handles, or Stripe billing details for subscription and matching fees.</li>
           <li><strong>Location Data:</strong> Airport codes, pickup and dropoff addresses associated with bookings, and home airport preferences.</li>
-          <li><strong>Driver Credentials:</strong> For driver accounts, we collect the last four digits of your driver&rsquo;s license number, insurance provider and policy information, vehicle details (make, model, year, color), and vehicle photographs.</li>
-          <li><strong>Safety Protocol Data:</strong> Emergency contact information, identification verification data, and safety acknowledgments submitted by both clients and drivers.</li>
+          <li><strong>Barber Credentials:</strong> For barber accounts, we collect the last four digits of your barber&rsquo;s license number, insurance provider and policy information, vehicle details (make, model, year, color), and vehicle photographs.</li>
+          <li><strong>Safety Protocol Data:</strong> Emergency contact information, identification verification data, and safety acknowledgments submitted by both clients and barbers.</li>
           <li><strong>Communications:</strong> Messages sent through the platform, booking requests, and support inquiries.</li>
           <li><strong>Device &amp; Usage Data:</strong> Browser type, IP address, pages visited, and session duration for platform functionality and security.</li>
         </ul>
@@ -46,10 +46,10 @@ export default function PrivacyPage() {
         <h2 className="legal-heading">2. How We Use Your Information</h2>
         <p className="legal-body">We use the information we collect for the following purposes:</p>
         <ul className="legal-list">
-          <li><strong>Booking Facilitation:</strong> To connect clients with their designated drivers, process booking requests, and display scheduling information.</li>
-          <li><strong>Notifications:</strong> To send booking confirmations, reminders, driver alerts, schedule changes, and account-related notifications via email and SMS.</li>
+          <li><strong>Booking Facilitation:</strong> To connect clients with their designated barbers, process booking requests, and display scheduling information.</li>
+          <li><strong>Notifications:</strong> To send booking confirmations, reminders, barber alerts, schedule changes, and account-related notifications via email and SMS.</li>
           <li><strong>Safety Protocol:</strong> To maintain and enforce our mutual Safety Protocol, including encrypted storage of emergency contact data accessible only to ThyBarberShop administrators in emergency situations.</li>
-          <li><strong>Account Management:</strong> To create and maintain your account, process subscription payments (drivers), and process matching fees (clients using Find a Driver).</li>
+          <li><strong>Account Management:</strong> To create and maintain your account, process subscription payments (barbers), and process matching fees (clients using Find a Barber).</li>
           <li><strong>Platform Improvement:</strong> To analyze usage patterns, improve the booking experience, and maintain platform security.</li>
           <li><strong>Legal Compliance:</strong> To comply with applicable laws, regulations, and legal processes.</li>
         </ul>
@@ -58,8 +58,8 @@ export default function PrivacyPage() {
         <h2 className="legal-heading">3. Information Sharing</h2>
         <p className="legal-body">ThyBarberShop does not sell, rent, or trade your personal information to third parties. We share information only in the following limited circumstances:</p>
         <ul className="legal-list">
-          <li><strong>Between Connected Clients and Drivers:</strong> When a client and driver are connected via a driver code, limited profile information (name, contact details, vehicle information, and booking details) is shared between the two parties to facilitate the ride.</li>
-          <li><strong>Driver Pool Browsing:</strong> Drivers who opt into the public driver pool make limited profile information visible to prospective clients, including name, vehicle class, airport coverage, availability, and rate ranges. Contact information is not displayed during pool browsing.</li>
+          <li><strong>Between Connected Clients and Barbers:</strong> When a client and barber are connected via a barber code, limited profile information (name, contact details, vehicle information, and booking details) is shared between the two parties to facilitate the ride.</li>
+          <li><strong>Barber Pool Browsing:</strong> Barbers who opt into the public barber pool make limited profile information visible to prospective clients, including name, vehicle class, airport coverage, availability, and rate ranges. Contact information is not displayed during pool browsing.</li>
           <li><strong>Service Providers:</strong> We use Twilio for SMS notifications and Stripe for payment processing. These providers receive only the data necessary to perform their services and are bound by their own privacy policies.</li>
           <li><strong>Legal Requirements:</strong> We may disclose information if required by law, subpoena, court order, or government request, or if we believe disclosure is necessary to protect the rights, safety, or property of ThyBarberShop, our users, or the public.</li>
         </ul>
@@ -67,23 +67,23 @@ export default function PrivacyPage() {
         {/* ── 4. Safety Protocol Data ───────────────────── */}
         <h2 className="legal-heading">4. Safety Protocol Data</h2>
         <p className="legal-body">
-          Our Safety Protocol requires both clients and drivers to submit emergency contact information and identification details before their first ride. This data is treated with the highest level of security:
+          Our Safety Protocol requires both clients and barbers to submit emergency contact information and identification details before their first ride. This data is treated with the highest level of security:
         </p>
         <ul className="legal-list">
           <li>All Safety Protocol data is encrypted at rest and in transit using industry-standard AES-256 encryption.</li>
           <li>Safety Protocol records are accessible only to authorized ThyBarberShop administrators.</li>
           <li>Emergency contact information is accessed only in genuine emergency situations or when required by law enforcement.</li>
-          <li>Neither clients nor drivers can view each other&rsquo;s Safety Protocol submissions directly. The platform displays only a confirmation that the other party has completed the protocol.</li>
+          <li>Neither clients nor barbers can view each other&rsquo;s Safety Protocol submissions directly. The platform displays only a confirmation that the other party has completed the protocol.</li>
         </ul>
 
-        {/* ── 5. Driver Credentials ─────────────────────── */}
-        <h2 className="legal-heading">5. Driver Credentials</h2>
+        {/* ── 5. Barber Credentials ─────────────────────── */}
+        <h2 className="legal-heading">5. Barber Credentials</h2>
         <p className="legal-body">
-          Driver credential information, including the last four digits of driver&rsquo;s license numbers and insurance policy details, is collected to verify that drivers meet ThyBarberShop&rsquo;s standards. This information is:
+          Barber credential information, including the last four digits of barber&rsquo;s license numbers and insurance policy details, is collected to verify that barbers meet ThyBarberShop&rsquo;s standards. This information is:
         </p>
         <ul className="legal-list">
           <li>Encrypted and stored securely with access restricted to ThyBarberShop administrators only.</li>
-          <li>Never displayed to clients. Clients see only a verification badge confirming the driver&rsquo;s credentials have been reviewed and approved.</li>
+          <li>Never displayed to clients. Clients see only a verification badge confirming the barber&rsquo;s credentials have been reviewed and approved.</li>
           <li>Used solely for verification and compliance purposes.</li>
           <li>Subject to periodic re-verification to ensure ongoing compliance.</li>
         </ul>
@@ -94,9 +94,9 @@ export default function PrivacyPage() {
           ThyBarberShop operates as a platform facilitator, not a payment processor for ride fares. It is important to understand our payment model:
         </p>
         <ul className="legal-list">
-          <li><strong>Ride Payments:</strong> All ride payments are made directly between the client and the driver. ThyBarberShop does not process, hold, collect, or transfer ride fare payments. The payment methods displayed on a driver&rsquo;s profile (Zelle, Venmo, Cash App, etc.) are the driver&rsquo;s own personal accounts.</li>
-          <li><strong>Subscription Fees:</strong> Driver subscription fees ($9.99/week) are billed directly via Stripe. ThyBarberShop stores only the Stripe customer ID and subscription status, not your full card number.</li>
-          <li><strong>Matching Fees:</strong> The one-time $9.99 Find a Driver matching fee is processed via Stripe with the same security standards.</li>
+          <li><strong>Ride Payments:</strong> All ride payments are made directly between the client and the barber. ThyBarberShop does not process, hold, collect, or transfer ride fare payments. The payment methods displayed on a barber&rsquo;s profile (Zelle, Venmo, Cash App, etc.) are the barber&rsquo;s own personal accounts.</li>
+          <li><strong>Subscription Fees:</strong> Barber subscription fees ($9.99/week) are billed directly via Stripe. ThyBarberShop stores only the Stripe customer ID and subscription status, not your full card number.</li>
+          <li><strong>Matching Fees:</strong> The one-time $9.99 Find a Barber matching fee is processed via Stripe with the same security standards.</li>
         </ul>
 
         {/* ── 7. SMS / Text Messages ───────────────────── */}
@@ -106,7 +106,7 @@ export default function PrivacyPage() {
         </p>
         <ul className="legal-list">
           <li>Messages are sent via Twilio from our registered number (+1 620-254-8664).</li>
-          <li>Message types include: booking confirmations, driver alerts, ride reminders, schedule changes, and account security notifications.</li>
+          <li>Message types include: booking confirmations, barber alerts, ride reminders, schedule changes, and account security notifications.</li>
           <li>Message frequency varies based on your booking activity.</li>
           <li>Standard message and data rates from your carrier may apply.</li>
           <li>You may opt out of SMS notifications at any time by replying <strong>STOP</strong> to any message. You will receive a single confirmation message and no further texts.</li>

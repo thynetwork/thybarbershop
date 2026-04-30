@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     // Fee waiver rules:
     // - Invite flow: no fee was ever charged — nothing to waive
-    // - Find a Driver: $9.99 one-time fee — waived only if driver never responded
+    // - Find a Barber: $9.99 one-time fee — waived only if barber never responded
     //   (cancellation after no response = fee waived)
     // - Manual: same as invite — no fee
     // Client ID kept permanently regardless of outcome

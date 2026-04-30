@@ -9,7 +9,7 @@ import config, { splitServiceName } from '@/lib/config';
 
 export type RegistrationMode = 'invite' | 'find_a_driver' | 'manual';
 
-export interface DriverInfo {
+export interface BarberInfo {
   id: string;
   name: string;
   initials: string;
@@ -29,13 +29,13 @@ export interface PreSetAmount {
 
 interface Props {
   mode: RegistrationMode;
-  driver?: DriverInfo;
+  barber?: BarberInfo;
   preSetAmount?: PreSetAmount;
 }
 
 /* ── Component ─────────────────────────────────────────────── */
 
-export default function ClientRegistrationForm({ mode, driver, preSetAmount }: Props) {
+export default function ClientRegistrationForm({ mode, barber, preSetAmount }: Props) {
   const router = useRouter();
   const { prefix, highlight } = splitServiceName();
 
@@ -45,7 +45,7 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [noteToDriver, setNoteToDriver] = useState('');
+  const [noteToBarber, setNoteToBarber] = useState('');
   const [acceptedAmount, setAcceptedAmount] = useState<boolean | null>(null);
 
   // Manual mode: 3-part code entry
@@ -56,7 +56,7 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const driverFirstName = driver?.name.split(' ')[0] || '';
+  const barberFirstName = barber?.name.split(' ')[0] || '';
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -89,30 +89,30 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
         phone: phone.trim() || undefined,
         role: 'rider',
         preferredName: preferredName.trim() || undefined,
-        noteToDriver: noteToDriver.trim() || undefined,
+        noteToBarber: noteToBarber.trim() || undefined,
         source: mode,
       };
 
-      // Attach driver code based on mode
-      if (mode === 'invite' && driver) {
-        body.codeAirport = driver.airportCode;
-        body.codeInitials = driver.codeInitials;
-        body.codeDigits = driver.codeDigits;
-        body.driverCode = `${driver.airportCode}${driver.codeInitials}${driver.codeDigits}`;
+      // Attach barber code based on mode
+      if (mode === 'invite' && barber) {
+        body.codeAirport = barber.airportCode;
+        body.codeInitials = barber.codeInitials;
+        body.codeDigits = barber.codeDigits;
+        body.barberCode = `${barber.airportCode}${barber.codeInitials}${barber.codeDigits}`;
         if (preSetAmount && acceptedAmount) {
           body.acceptedSetAmount = preSetAmount.amount;
         }
-      } else if (mode === 'find_a_driver' && driver) {
-        body.driverId = driver.id;
-        body.codeAirport = driver.airportCode;
-        body.codeInitials = driver.codeInitials;
-        body.codeDigits = driver.codeDigits;
-        body.driverCode = `${driver.airportCode}${driver.codeInitials}${driver.codeDigits}`;
+      } else if (mode === 'find_a_driver' && barber) {
+        body.barberId = barber.id;
+        body.codeAirport = barber.airportCode;
+        body.codeInitials = barber.codeInitials;
+        body.codeDigits = barber.codeDigits;
+        body.barberCode = `${barber.airportCode}${barber.codeInitials}${barber.codeDigits}`;
       } else if (mode === 'manual') {
         body.codeAirport = codeAirport.toUpperCase();
         body.codeInitials = codeInitials.toUpperCase();
         body.codeDigits = codeDigits;
-        body.driverCode = `${codeAirport.toUpperCase()}${codeInitials.toUpperCase()}${codeDigits}`;
+        body.barberCode = `${codeAirport.toUpperCase()}${codeInitials.toUpperCase()}${codeDigits}`;
       }
 
       const res = await fetch('/api/auth/register', {
@@ -136,9 +136,9 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
         sessionStorage.setItem('fa_client_id', data.user?.id || '');
         sessionStorage.setItem('fa_client_name', `${firstName} ${lastName}`);
         sessionStorage.setItem('fa_client_display_id', data.clientId || '');
-        const airport = driver?.airportCode || '';
-        const driverId = driver?.id || '';
-        router.push(`/find-a-driver/${airport}/${driverId}/request`);
+        const airport = barber?.airportCode || '';
+        const barberId = barber?.id || '';
+        router.push(`/find-a-barber/${airport}/${barberId}/request`);
       } else {
         // Invite + Manual → pending screen
         router.push('/pending');
@@ -151,24 +151,24 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
 
   return (
     <form onSubmit={handleSubmit} autoComplete="off">
-      {/* ── Driver invite card (Mode 1: invite) ──────────── */}
-      {mode === 'invite' && driver && (
+      {/* ── Barber invite card (Mode 1: invite) ──────────── */}
+      {mode === 'invite' && barber && (
         <div className="invite-card">
           <div className="ic-label">You&apos;ve been invited by</div>
-          <div className="ic-driver">
-            <div className="avatar av-amber av-md av-check">{driver.initials}</div>
+          <div className="ic-barber">
+            <div className="avatar av-amber av-md av-check">{barber.initials}</div>
             <div>
-              <div className="ic-name">{driver.name}</div>
+              <div className="ic-name">{barber.name}</div>
               <div className="ic-badges">
-                <div className="driver-code">
-                  <div className="dc-airport">{driver.airportCode}</div>
-                  <div className="dc-initials">{driver.codeInitials}</div>
-                  <div className="dc-digits">{driver.codeDigits}</div>
+                <div className="barber-code">
+                  <div className="dc-airport">{barber.airportCode}</div>
+                  <div className="dc-initials">{barber.codeInitials}</div>
+                  <div className="dc-digits">{barber.codeDigits}</div>
                 </div>
-                {driver.airportPermitted && (
-                  <span className="badge badge-blue" style={{ fontSize: 10 }}>&#9992; {driver.airportCode}</span>
+                {barber.airportPermitted && (
+                  <span className="badge badge-blue" style={{ fontSize: 10 }}>&#9992; {barber.airportCode}</span>
                 )}
-                {driver.insuranceVerified && (
+                {barber.insuranceVerified && (
                   <span className="badge badge-green" style={{ fontSize: 10 }}>&#10003; Insured</span>
                 )}
               </div>
@@ -177,14 +177,14 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
         </div>
       )}
 
-      {/* ── Driver card (Mode 2: find_a_driver) ──────────── */}
-      {mode === 'find_a_driver' && driver && (
+      {/* ── Barber card (Mode 2: find_a_driver) ──────────── */}
+      {mode === 'find_a_driver' && barber && (
         <div className="invite-card" style={{ marginBottom: 20 }}>
           <div className="ic-label">Almost there &mdash; create your account to request</div>
-          <div className="ic-driver">
-            <div className="avatar av-amber av-md">{driver.initials}</div>
+          <div className="ic-barber">
+            <div className="avatar av-amber av-md">{barber.initials}</div>
             <div>
-              <div className="ic-name">{driver.name.split(' ')[0]} {driver.name.split(' ')[1]?.[0] || ''}.</div>
+              <div className="ic-name">{barber.name.split(' ')[0]} {barber.name.split(' ')[1]?.[0] || ''}.</div>
               <div className="ic-badges">
                 <div style={{
                   display: 'inline-flex', alignItems: 'center',
@@ -193,21 +193,21 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
                   <div style={{
                     background: 'var(--amber)', padding: '3px 7px',
                     fontFamily: "'Syne', sans-serif", fontSize: 10, fontWeight: 800, color: 'var(--navy)',
-                  }}>{driver.airportCode}</div>
+                  }}>{barber.airportCode}</div>
                   <div style={{
                     background: 'var(--navy)', padding: '3px 6px',
                     fontFamily: "'Syne', sans-serif", fontSize: 10, fontWeight: 800, color: 'rgba(245,166,35,.4)',
-                  }}>{driver.codeInitials[0]}**</div>
+                  }}>{barber.codeInitials[0]}**</div>
                   <div style={{
                     background: 'var(--navy-mid)', padding: '3px 7px',
                     fontFamily: "'Syne', sans-serif", fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,.25)',
                   }}>****</div>
                 </div>
-                {driver.vehicleClass && (
+                {barber.vehicleClass && (
                   <span style={{ fontSize: 10, color: 'rgba(255,255,255,.5)' }}>
-                    {driver.vehicleClass.toUpperCase()}
-                    {driver.rating ? ` \u00B7 \u2605 ${driver.rating}` : ''}
-                    {driver.vehicleMakeModel ? ` \u00B7 ${driver.vehicleMakeModel}` : ''}
+                    {barber.vehicleClass.toUpperCase()}
+                    {barber.rating ? ` · ★ ${barber.rating}` : ''}
+                    {barber.vehicleMakeModel ? ` · ${barber.vehicleMakeModel}` : ''}
                   </span>
                 )}
               </div>
@@ -246,7 +246,7 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
           </label>
           <input
             className="form-input"
-            placeholder={mode === 'invite' && driverFirstName ? `What ${driverFirstName} calls you` : 'What your driver calls you'}
+            placeholder={mode === 'invite' && barberFirstName ? `What ${barberFirstName} calls you` : 'What your barber calls you'}
             value={preferredName}
             onChange={(e) => setPreferredName(e.target.value)}
           />
@@ -300,27 +300,27 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
         />
       </div>
 
-      {/* ── Driver code — locked (invite mode) ───────────── */}
-      {mode === 'invite' && driver && (
+      {/* ── Barber code — locked (invite mode) ───────────── */}
+      {mode === 'invite' && barber && (
         <div className="form-group">
           <label className="form-label">
             {config.providerLabel} code{' '}
             <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>
-              &middot; Invited by {driver.name}
+              &middot; Invited by {barber.name}
             </span>
           </label>
           <div className="code-locked">
-            <div className="cl-airport">{driver.airportCode}</div>
+            <div className="cl-airport">{barber.airportCode}</div>
             <div className="cl-sep" />
-            <div className="cl-initials">{driver.codeInitials}</div>
+            <div className="cl-initials">{barber.codeInitials}</div>
             <div className="cl-sep2" />
-            <div className="cl-digits">{driver.codeDigits}</div>
+            <div className="cl-digits">{barber.codeDigits}</div>
           </div>
           <div className="locked-label">&#128274; Pre-filled from your invite link &middot; not editable</div>
         </div>
       )}
 
-      {/* ── Driver code — manual entry (manual mode) ──────── */}
+      {/* ── Barber code — manual entry (manual mode) ──────── */}
       {mode === 'manual' && (
         <div className="form-group">
           <label className="form-label">{config.providerLabel} Code</label>
@@ -390,37 +390,37 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
       {mode === 'find_a_driver' && (
         <div className="card-info mb-16">
           <div style={{ fontSize: 12, color: 'var(--blue)', lineHeight: 1.6 }}>
-            &#8505; &nbsp;Your $9.99 is a one-time access fee that covers all future searches. If this driver does not respond or is unable to accept &mdash; you can keep searching at no additional cost. Your Client ID stays the same &mdash; you never register again.
+            &#8505; &nbsp;Your $9.99 is a one-time access fee that covers all future searches. If this barber does not respond or is unable to accept &mdash; you can keep searching at no additional cost. Your Client ID stays the same &mdash; you never register again.
           </div>
         </div>
       )}
 
-      {/* ── Note to driver (invite + manual only — NOT find_a_driver) ── */}
+      {/* ── Note to barber (invite + manual only — NOT find_a_driver) ── */}
       {mode !== 'find_a_driver' && (
         <div className="form-group">
           <label className="form-label">
-            Note to driver <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
+            Note to barber <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(optional)</span>
           </label>
           <textarea
             className="form-input"
             rows={3}
             maxLength={160}
             placeholder={
-              mode === 'invite' && driverFirstName
-                ? `Remind your driver who you are or reference your conversation\ne.g. Hey ${driverFirstName}, this is Sarah — airport trip $80. See you Thursday!`
+              mode === 'invite' && barberFirstName
+                ? `Remind your barber who you are or reference your conversation\ne.g. Hey ${barberFirstName}, this is Sarah — regular fade $50. See you Thursday!`
                 : 'Remind your barber who you are or reference your conversation\ne.g. Hey Marcus, this is Sarah — regular fade $50'
             }
-            value={noteToDriver}
-            onChange={(e) => setNoteToDriver(e.target.value.slice(0, 160))}
+            value={noteToBarber}
+            onChange={(e) => setNoteToBarber(e.target.value.slice(0, 160))}
             style={{ resize: 'none', fontFamily: "'DM Sans', sans-serif" }}
           />
           <div style={{ fontSize: 10, color: 'var(--text-3)', textAlign: 'right', marginTop: 3 }}>
-            {noteToDriver.length}/160 characters &middot; appears on driver notification
+            {noteToBarber.length}/160 characters &middot; appears on barber notification
           </div>
         </div>
       )}
 
-      {/* ── Pre-set amount (invite mode, only if driver set one) ── */}
+      {/* ── Pre-set amount (invite mode, only if barber set one) ── */}
       {mode === 'invite' && preSetAmount && (
         <div style={{
           background: 'rgba(245,166,35,.08)', border: '1.5px solid rgba(245,166,35,.3)',
@@ -430,10 +430,10 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
             fontSize: 11, fontWeight: 600, color: 'var(--amber-dim)',
             letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: 4,
           }}>
-            {driverFirstName} suggested
+            {barberFirstName} suggested
           </div>
           <div style={{ fontSize: 11, color: 'var(--text-2)', marginBottom: 10 }}>
-            This is the rate {driverFirstName} set before sharing this link with you.
+            This is the rate {barberFirstName} set before sharing this link with you.
           </div>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             <div style={{
@@ -454,7 +454,7 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
                 className={`btn btn-sm ${acceptedAmount === false ? 'btn-primary' : 'btn-ghost'}`}
                 onClick={() => setAcceptedAmount(false)}
               >
-                Discuss with driver
+                Discuss with barber
               </button>
             </div>
           </div>
@@ -470,8 +470,8 @@ export default function ClientRegistrationForm({ mode, driver, preSetAmount }: P
         {loading
           ? 'Creating account...'
           : mode === 'find_a_driver'
-          ? 'Continue \u2014 Review & Pay \u2192'
-          : 'Create my account \u2192'
+          ? 'Continue — Review & Pay →'
+          : 'Create my account →'
         }
       </button>
 

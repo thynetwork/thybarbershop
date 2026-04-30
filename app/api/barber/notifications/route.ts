@@ -3,8 +3,8 @@ import { getSupabaseServer } from '@/lib/supabase';
 import { verifySession } from '@/lib/auth';
 
 /**
- * GET /api/driver/notifications
- * Returns the driver's notification preferences.
+ * GET /api/barber/notifications
+ * Returns the barber's notification preferences.
  */
 export async function GET(request: NextRequest) {
   const session = request.cookies.get('session')?.value;
@@ -38,8 +38,8 @@ export async function GET(request: NextRequest) {
 }
 
 /**
- * PATCH /api/driver/notifications
- * Updates the driver's notification preferences.
+ * PATCH /api/barber/notifications
+ * Updates the barber's notification preferences.
  */
 export async function PATCH(request: NextRequest) {
   const session = request.cookies.get('session')?.value;

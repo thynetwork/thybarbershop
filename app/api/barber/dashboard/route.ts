@@ -69,7 +69,7 @@ const DEMO_DASHBOARD = {
   ],
   credentials: {
     safetyProtocol: 'complete',
-    driversLicense: 'verified',
+    barbersLicense: 'verified',
     airportPermit: 'active',
     insurance: 'Allstate',
   },
@@ -77,6 +77,6 @@ const DEMO_DASHBOARD = {
 };
 
 export async function GET() {
-  // In production: authenticate, query DB for this driver's data
+  // In production: authenticate, query DB for this barber's data
   return NextResponse.json(DEMO_DASHBOARD);
 }

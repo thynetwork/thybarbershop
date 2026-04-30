@@ -42,7 +42,7 @@ export default function SafetyProtocolPage() {
   const [emergencyName, setEmergencyName] = useState('');
   const [emergencyPhone, setEmergencyPhone] = useState('');
   const [homeAddress, setHomeAddress] = useState('');
-  const [driverNote, setDriverNote] = useState('');
+  const [barberNote, setBarberNote] = useState('');
 
   function handleSubmit() {
     router.push('/book/confirmed');
@@ -173,7 +173,7 @@ export default function SafetyProtocolPage() {
             />
           </div>
 
-          {/* Driver note */}
+          {/* Barber note */}
           <div className="form-group">
             <label className="form-label">
               Note for {config.providerLabel.toLowerCase()} (optional)
@@ -181,8 +181,8 @@ export default function SafetyProtocolPage() {
             <input
               className="form-input"
               placeholder={`Luggage, mobility needs, gate codes, anything your ${config.providerLabel.toLowerCase()} should know`}
-              value={driverNote}
-              onChange={(e) => setDriverNote(e.target.value)}
+              value={barberNote}
+              onChange={(e) => setBarberNote(e.target.value)}
             />
           </div>
 
@@ -210,7 +210,7 @@ export default function SafetyProtocolPage() {
           <hr className="divider" />
           <div className="card-green">
             <div style={{ fontSize: 12, color: 'var(--green)', lineHeight: 1.6 }}>
-              Your driver has been notified that you connected. Once you complete Safety Protocol your client home screen unlocks and you can book your first ride.
+              Your barber has been notified that you connected. Once you complete Safety Protocol your client home screen unlocks and you can book your first ride.
             </div>
           </div>
         </div>

@@ -38,21 +38,21 @@ export default function TermsPage() {
         {/* ── 2. Service Description ───────────────────── */}
         <h2 className="legal-heading">2. Service Description</h2>
         <p className="legal-body">
-          ThyBarberShop is a private booking platform that connects independent drivers with their clients. ThyBarberShop provides the technology platform for scheduling, communication, and coordination between drivers and clients. Key aspects of our service:
+          ThyBarberShop is a private booking platform that connects independent barbers with their clients. ThyBarberShop provides the technology platform for scheduling, communication, and coordination between barbers and clients. Key aspects of our service:
         </p>
         <ul className="legal-list">
-          <li>ThyBarberShop is a platform facilitator, not a transportation company. We do not employ, contract, or supervise drivers.</li>
-          <li>Drivers on ThyBarberShop are independent professionals who set their own rates, schedules, and service areas.</li>
-          <li>All ride services are provided directly by the driver to the client. ThyBarberShop does not provide, guarantee, or insure any transportation service.</li>
-          <li>The platform enables drivers to share personalized booking codes with their existing clients and, optionally, to be discovered by new clients through the driver pool.</li>
+          <li>ThyBarberShop is a platform facilitator, not a transportation company. We do not employ, contract, or supervise barbers.</li>
+          <li>Barbers on ThyBarberShop are independent professionals who set their own rates, schedules, and service areas.</li>
+          <li>All ride services are provided directly by the barber to the client. ThyBarberShop does not provide, guarantee, or insure any transportation service.</li>
+          <li>The platform enables barbers to share personalized booking codes with their existing clients and, optionally, to be discovered by new clients through the barber pool.</li>
         </ul>
 
         {/* ── 3. User Accounts ─────────────────────────── */}
         <h2 className="legal-heading">3. User Accounts</h2>
         <p className="legal-body">ThyBarberShop supports two account types:</p>
         <ul className="legal-list">
-          <li><strong>Client Accounts:</strong> Created by individuals who wish to book rides with drivers on the platform. Clients must have a valid driver code from an active ThyBarberShop driver to log in, or may use the Find a Driver feature to be matched with a driver.</li>
-          <li><strong>Driver Accounts:</strong> Created by independent drivers who wish to use ThyBarberShop to manage their client bookings, share their driver code, and optionally list in the driver pool.</li>
+          <li><strong>Client Accounts:</strong> Created by individuals who wish to book rides with barbers on the platform. Clients must have a valid barber code from an active ThyBarberShop barber to log in, or may use the Find a Barber feature to be matched with a barber.</li>
+          <li><strong>Barber Accounts:</strong> Created by independent barbers who wish to use ThyBarberShop to manage their client bookings, share their barber code, and optionally list in the barber pool.</li>
         </ul>
         <p className="legal-body">You are responsible for:</p>
         <ul className="legal-list">
@@ -61,15 +61,15 @@ export default function TermsPage() {
           <li>Notifying ThyBarberShop immediately if you suspect unauthorized access to your account.</li>
         </ul>
 
-        {/* ── 4. Driver Code System ────────────────────── */}
-        <h2 className="legal-heading">4. Driver Code System</h2>
+        {/* ── 4. Barber Code System ────────────────────── */}
+        <h2 className="legal-heading">4. Barber Code System</h2>
         <p className="legal-body">
           Each barber on ThyBarberShop is assigned a unique barber code (e.g., South Houston·TX·MRC·3341) that identifies their city, state, initials, and a unique numeric identifier. The barber code system is central to how ThyBarberShop operates:
         </p>
         <ul className="legal-list">
-          <li><strong>Invite-Only Access:</strong> Clients access a specific driver&rsquo;s booking page by entering that driver&rsquo;s code. This ensures that drivers control who can book with them.</li>
-          <li><strong>Anti-Poaching Protection:</strong> Driver codes are proprietary to ThyBarberShop. Clients who discover a driver through the ThyBarberShop platform (including the driver pool) must book through the platform. Soliciting a driver&rsquo;s personal contact information to circumvent the platform during the pool browsing process is prohibited.</li>
-          <li><strong>Code Ownership:</strong> Driver codes remain the property of ThyBarberShop. Upon account termination, the code is retired and will not be reassigned.</li>
+          <li><strong>Invite-Only Access:</strong> Clients access a specific barber&rsquo;s booking page by entering that barber&rsquo;s code. This ensures that barbers control who can book with them.</li>
+          <li><strong>Anti-Poaching Protection:</strong> Barber codes are proprietary to ThyBarberShop. Clients who discover a barber through the ThyBarberShop platform (including the barber pool) must book through the platform. Soliciting a barber&rsquo;s personal contact information to circumvent the platform during the pool browsing process is prohibited.</li>
+          <li><strong>Code Ownership:</strong> Barber codes remain the property of ThyBarberShop. Upon account termination, the code is retired and will not be reassigned.</li>
         </ul>
 
         {/* ── 5. Booking & Payments ────────────────────── */}
@@ -78,16 +78,16 @@ export default function TermsPage() {
           ThyBarberShop facilitates the booking process but does not process ride payments:
         </p>
         <ul className="legal-list">
-          <li><strong>Booking:</strong> Clients submit booking requests through the platform specifying date, time, pickup and dropoff locations, and ride type. Drivers accept or decline requests at their discretion.</li>
-          <li><strong>Rates:</strong> Drivers set their own rates. ThyBarberShop displays rate information as provided by the driver. ThyBarberShop does not set, negotiate, or guarantee pricing.</li>
-          <li><strong>Ride Payments:</strong> All ride payments are made directly between the client and driver using the driver&rsquo;s preferred payment methods (Zelle, Venmo, Cash App, or cash). ThyBarberShop does not process, hold, or transfer ride fare payments.</li>
-          <li><strong>Platform Fees:</strong> ThyBarberShop charges platform fees (subscription fees for drivers, matching fees for clients) separately from ride payments. These are processed via Stripe.</li>
+          <li><strong>Booking:</strong> Clients submit booking requests through the platform specifying date, time, pickup and dropoff locations, and ride type. Barbers accept or decline requests at their discretion.</li>
+          <li><strong>Rates:</strong> Barbers set their own rates. ThyBarberShop displays rate information as provided by the barber. ThyBarberShop does not set, negotiate, or guarantee pricing.</li>
+          <li><strong>Ride Payments:</strong> All ride payments are made directly between the client and barber using the barber&rsquo;s preferred payment methods (Zelle, Venmo, Cash App, or cash). ThyBarberShop does not process, hold, or transfer ride fare payments.</li>
+          <li><strong>Platform Fees:</strong> ThyBarberShop charges platform fees (subscription fees for barbers, matching fees for clients) separately from ride payments. These are processed via Stripe.</li>
         </ul>
 
         {/* ── 6. Subscription ──────────────────────────── */}
         <h2 className="legal-heading">6. Subscription</h2>
         <p className="legal-body">
-          Drivers pay a weekly subscription fee of $9.99 to maintain an active ThyBarberShop account. Subscription terms:
+          Barbers pay a weekly subscription fee of $9.99 to maintain an active ThyBarberShop account. Subscription terms:
         </p>
         <ul className="legal-list">
           <li>Subscriptions are billed weekly and auto-renew unless cancelled.</li>
@@ -100,19 +100,19 @@ export default function TermsPage() {
         {/* ── 7. Matching Fee ──────────────────────────── */}
         <h2 className="legal-heading">7. Matching Fee</h2>
         <p className="legal-body">
-          Clients who use the Find a Driver feature to be matched with a new driver are charged a one-time matching fee of $9.99. This fee:
+          Clients who use the Find a Barber feature to be matched with a new barber are charged a one-time matching fee of $9.99. This fee:
         </p>
         <ul className="legal-list">
           <li>Is charged at the time of match confirmation, processed via Stripe.</li>
-          <li>Is non-refundable once a match has been made and a driver code has been issued to the client.</li>
+          <li>Is non-refundable once a match has been made and a barber code has been issued to the client.</li>
           <li>Covers the matching service only. It does not include any ride fares or ongoing platform fees.</li>
-          <li>Is waived for clients who already have a driver code from a driver on the platform.</li>
+          <li>Is waived for clients who already have a barber code from a barber on the platform.</li>
         </ul>
 
         {/* ── 8. Safety Protocol ───────────────────────── */}
         <h2 className="legal-heading">8. Safety Protocol</h2>
         <p className="legal-body">
-          ThyBarberShop requires all clients and drivers to complete a mutual Safety Protocol before their first ride together. This is a mandatory requirement and cannot be bypassed:
+          ThyBarberShop requires all clients and barbers to complete a mutual Safety Protocol before their first ride together. This is a mandatory requirement and cannot be bypassed:
         </p>
         <ul className="legal-list">
           <li>Both parties must submit emergency contact information and identity verification data.</li>
@@ -125,13 +125,13 @@ export default function TermsPage() {
         {/* ── 9. Insurance Requirements ────────────────── */}
         <h2 className="legal-heading">9. Insurance Requirements</h2>
         <p className="legal-body">
-          All drivers on ThyBarberShop must maintain active and valid insurance coverage appropriate to their vehicle class:
+          All barbers on ThyBarberShop must maintain active and valid insurance coverage appropriate to their vehicle class:
         </p>
         <ul className="legal-list">
           <li><strong>Comfort and XL Classes:</strong> Minimum of a rideshare endorsement on your personal auto insurance policy.</li>
           <li><strong>Black and XLL Classes:</strong> Commercial livery insurance is required.</li>
-          <li>Drivers must upload proof of insurance during registration and update it when policies are renewed.</li>
-          <li>ThyBarberShop verifies insurance information but does not provide insurance coverage. Drivers are solely responsible for maintaining adequate coverage.</li>
+          <li>Barbers must upload proof of insurance during registration and update it when policies are renewed.</li>
+          <li>ThyBarberShop verifies insurance information but does not provide insurance coverage. Barbers are solely responsible for maintaining adequate coverage.</li>
           <li>Operating without valid insurance is a violation of these Terms and grounds for immediate suspension.</li>
         </ul>
 
@@ -141,10 +141,10 @@ export default function TermsPage() {
           The following cancellation policy applies to confirmed bookings:
         </p>
         <ul className="legal-list">
-          <li><strong>More than 24 hours before pickup:</strong> Free cancellation for both clients and drivers. No fee is charged.</li>
+          <li><strong>More than 24 hours before pickup:</strong> Free cancellation for both clients and barbers. No fee is charged.</li>
           <li><strong>Within 24 hours of pickup:</strong> A cancellation fee of 50% of the agreed ride fare may apply. The non-cancelling party is entitled to this fee as compensation for the late cancellation.</li>
-          <li><strong>No-Show:</strong> If a client fails to appear at the pickup location within a reasonable time (as determined by the driver, typically 15 minutes), the full agreed fare may be charged.</li>
-          <li>Cancellation fees are settled directly between the client and driver. ThyBarberShop facilitates communication but does not collect or enforce cancellation fees.</li>
+          <li><strong>No-Show:</strong> If a client fails to appear at the pickup location within a reasonable time (as determined by the barber, typically 15 minutes), the full agreed fare may be charged.</li>
+          <li>Cancellation fees are settled directly between the client and barber. ThyBarberShop facilitates communication but does not collect or enforce cancellation fees.</li>
           <li>Repeated cancellations may result in account review and potential restrictions.</li>
         </ul>
 
@@ -153,9 +153,9 @@ export default function TermsPage() {
         <p className="legal-body">The following conduct is prohibited on ThyBarberShop and may result in immediate account suspension or termination:</p>
         <ul className="legal-list">
           <li><strong>Fraud:</strong> Submitting false information, creating fake accounts, or engaging in any deceptive practices.</li>
-          <li><strong>False Credentials:</strong> Providing fraudulent driver&rsquo;s license information, fake insurance documents, or misrepresenting vehicle details.</li>
+          <li><strong>False Credentials:</strong> Providing fraudulent barber&rsquo;s license information, fake insurance documents, or misrepresenting vehicle details.</li>
           <li><strong>Harassment:</strong> Any form of harassment, discrimination, threats, or abusive behavior toward other users, ThyBarberShop staff, or third parties.</li>
-          <li><strong>Platform Circumvention:</strong> Soliciting a driver&rsquo;s personal contact information during pool browsing to book rides outside the platform, or encouraging clients to leave the platform.</li>
+          <li><strong>Platform Circumvention:</strong> Soliciting a barber&rsquo;s personal contact information during pool browsing to book rides outside the platform, or encouraging clients to leave the platform.</li>
           <li><strong>Unauthorized Use:</strong> Sharing your account credentials, using another person&rsquo;s account, or allowing unauthorized access to the platform.</li>
           <li><strong>Illegal Activity:</strong> Using ThyBarberShop for any unlawful purpose, including but not limited to transporting illegal goods or engaging in any criminal activity.</li>
           <li><strong>Data Scraping:</strong> Using automated tools to scrape, copy, or harvest data from the platform.</li>
@@ -164,14 +164,14 @@ export default function TermsPage() {
         {/* ── 12. Limitation of Liability ──────────────── */}
         <h2 className="legal-heading">12. Limitation of Liability</h2>
         <p className="legal-body">
-          ThyBarberShop is a technology platform that facilitates connections between independent drivers and clients. To the maximum extent permitted by law:
+          ThyBarberShop is a technology platform that facilitates connections between independent barbers and clients. To the maximum extent permitted by law:
         </p>
         <ul className="legal-list">
-          <li>ThyBarberShop does not employ, contract, control, or supervise any driver on the platform. Drivers are independent professionals responsible for their own conduct, vehicle maintenance, and compliance with local laws and regulations.</li>
+          <li>ThyBarberShop does not employ, contract, control, or supervise any barber on the platform. Barbers are independent professionals responsible for their own conduct, vehicle maintenance, and compliance with local laws and regulations.</li>
           <li>ThyBarberShop is not liable for any damages, injuries, losses, or disputes arising from rides arranged through the platform, including but not limited to personal injury, property damage, or financial loss.</li>
-          <li>ThyBarberShop makes no warranties, express or implied, regarding the quality, safety, legality, or reliability of any ride service provided by drivers on the platform.</li>
+          <li>ThyBarberShop makes no warranties, express or implied, regarding the quality, safety, legality, or reliability of any ride service provided by barbers on the platform.</li>
           <li>ThyBarberShop&rsquo;s total aggregate liability to you for any claims arising from your use of the platform shall not exceed the total fees you have paid to ThyBarberShop in the 12 months preceding the claim.</li>
-          <li>ThyBarberShop is not responsible for the actions, omissions, or behavior of any user, whether client or driver.</li>
+          <li>ThyBarberShop is not responsible for the actions, omissions, or behavior of any user, whether client or barber.</li>
         </ul>
 
         {/* ── 13. Termination ──────────────────────────── */}
@@ -180,7 +180,7 @@ export default function TermsPage() {
           Either party may terminate the relationship at any time:
         </p>
         <ul className="legal-list">
-          <li><strong>By You:</strong> You may delete your account at any time through your dashboard settings or by contacting support@thybarbershop.com. For drivers, any remaining subscription period will not be refunded.</li>
+          <li><strong>By You:</strong> You may delete your account at any time through your dashboard settings or by contacting support@thybarbershop.com. For barbers, any remaining subscription period will not be refunded.</li>
           <li><strong>By ThyBarberShop:</strong> We reserve the right to suspend or terminate any account at our sole discretion, with or without cause, including but not limited to violations of these Terms, fraudulent activity, safety concerns, or non-payment of fees.</li>
           <li>Upon termination, your right to use the platform ceases immediately. Any pending bookings will be cancelled and the other party notified.</li>
           <li>Provisions of these Terms that by their nature should survive termination (including limitation of liability, governing law, and dispute resolution) will survive.</li>

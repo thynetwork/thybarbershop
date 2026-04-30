@@ -3,7 +3,7 @@ import { getSupabaseServer } from '@/lib/supabase';
 
 /**
  * GET /api/client/home
- * Returns client data, connected driver, and recent booking.
+ * Returns client data, connected barber, and recent booking.
  * For now returns demo data; will integrate Supabase auth + queries.
  */
 export async function GET(request: Request) {
@@ -22,11 +22,11 @@ export async function GET(request: Request) {
     safetyProtocolComplete: true,
   };
 
-  const connectedDriver = {
+  const connectedBarber = {
     id: 'd1',
     name: 'Marcus Rivera',
     initials: 'MR',
-    code: 'MRC\u00B73341',
+    code: 'MRC·3341',
     codeInitials: 'MRC',
     codeDigits: '3341',
     rating: 4.97,
@@ -39,12 +39,12 @@ export async function GET(request: Request) {
     vehicleColor: 'Silver',
     vehicleSeats: 3,
     availabilityDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    availabilityHours: '7:00 am \u2013 10:00 pm',
+    availabilityHours: '7:00 am – 10:00 pm',
   };
 
   const connection = {
     id: 'c1',
-    driverId: 'd1',
+    barberId: 'd1',
     clientId: 'r1',
     status: 'approved',
     setAmount: 120,
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
 
   const recentBooking = {
     id: 'b1',
-    driverId: 'd1',
+    barberId: 'd1',
     clientId: 'r1',
     date: '2026-07-17',
     timeSlot: '9:00 am',
@@ -67,7 +67,7 @@ export async function GET(request: Request) {
 
   return NextResponse.json({
     client,
-    connectedDriver,
+    connectedBarber,
     connection,
     recentBooking,
   });

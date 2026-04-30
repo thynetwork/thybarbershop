@@ -20,7 +20,7 @@ export interface BookingInfo {
   routeType?: string;
 }
 
-export interface DriverInfo {
+export interface BarberInfo {
   id: string;
   name: string;
   phone?: string;
@@ -210,15 +210,15 @@ async function logBookingNotification(
   });
 }
 
-/* ── Get driver notification preferences ────────────────────── */
+/* ── Get barber notification preferences ────────────────────── */
 
-async function getDriverPreferences(driverId: string) {
+async function getBarberPreferences(barberId: string) {
   const supabase = getSupabaseServer();
 
   const { data } = await supabase
     .from('notification_preferences')
     .select('*')
-    .eq('driver_id', driverId)
+    .eq('driver_id', barberId)
     .single();
 
   // Return defaults if no preferences saved
@@ -252,34 +252,34 @@ function buildBookingMessage(booking: BookingInfo, client: ClientInfo): string {
 
 export function buildClientTransferMessage(
   clientName: string,
-  fromDriverName: string,
-  toDriverCode: string
+  fromBarberName: string,
+  toBarberCode: string
 ): string {
   return (
-    `${config.serviceName}: ${clientName}, your driver ${fromDriverName} has referred you to a new driver.\n` +
-    `Your new driver code is: ${toDriverCode}\n` +
-    `Use this code to book your next ride.`
+    `${config.serviceName}: ${clientName}, your barber ${fromBarberName} has referred you to a new barber.\n` +
+    `Your new barber code is: ${toBarberCode}\n` +
+    `Use this code to book your next appointment.`
   );
 }
 
-/* ── Driver code recovery notification ─────────────────────── */
+/* ── Barber code recovery notification ─────────────────────── */
 
-export function buildCodeRecoveryMessage(driverCode: string): string {
+export function buildCodeRecoveryMessage(barberCode: string): string {
   return (
-    `${config.serviceName}: Your driver code is ${driverCode}.\n` +
+    `${config.serviceName}: Your barber code is ${barberCode}.\n` +
     `Write it down and keep it safe. Do not share this message.\n` +
     `If you did not request this, contact support immediately.`
   );
 }
 
-/* ── Send driver code recovery (SMS + Email) ───────────────── */
+/* ── Send barber code recovery (SMS + Email) ───────────────── */
 
 export async function sendCodeRecovery(
   phone: string | undefined,
   email: string | undefined,
-  driverCode: string
+  barberCode: string
 ): Promise<boolean> {
-  const message = buildCodeRecoveryMessage(driverCode);
+  const message = buildCodeRecoveryMessage(barberCode);
   let sent = false;
 
   if (phone) {
@@ -290,7 +290,7 @@ export async function sendCodeRecovery(
   if (email) {
     const emailSent = await sendEmail(
       email,
-      `${config.serviceName}: Your Driver Code Recovery`,
+      `${config.serviceName}: Your Barber Code Recovery`,
       message
     );
     if (emailSent) sent = true;
@@ -305,10 +305,10 @@ export async function sendClientTransferNotification(
   clientPhone: string | undefined,
   clientEmail: string | undefined,
   clientName: string,
-  fromDriverName: string,
-  toDriverCode: string
+  fromBarberName: string,
+  toBarberCode: string
 ): Promise<boolean> {
-  const message = buildClientTransferMessage(clientName, fromDriverName, toDriverCode);
+  const message = buildClientTransferMessage(clientName, fromBarberName, toBarberCode);
   let sent = false;
 
   if (clientPhone) {
@@ -319,7 +319,7 @@ export async function sendClientTransferNotification(
   if (clientEmail) {
     const emailSent = await sendEmail(
       clientEmail,
-      `${config.serviceName}: Driver Transfer Notification`,
+      `${config.serviceName}: Barber Transfer Notification`,
       message
     );
     if (emailSent) sent = true;
@@ -328,54 +328,54 @@ export async function sendClientTransferNotification(
   return sent;
 }
 
-/* ── Connection Request — notify driver (all 4 channels) ───── */
+/* ── Connection Request — notify barber (all 4 channels) ───── */
 
 export async function sendConnectionRequestNotification(
-  driver: DriverInfo,
+  barber: BarberInfo,
   client: ClientInfo,
   source: 'invite' | 'find_a_driver' | 'manual',
-  noteToDriver?: string
+  noteToBarber?: string
 ): Promise<void> {
   const displayName = client.preferredName || client.name;
   const clientId = client.clientId || '';
 
   // SMS
   let smsBody = `${config.serviceName}: New connection request\n${clientId} ${displayName} wants to connect`;
-  if (noteToDriver && source !== 'find_a_driver') {
-    smsBody += `\nNote: ${noteToDriver}`;
+  if (noteToBarber && source !== 'find_a_driver') {
+    smsBody += `\nNote: ${noteToBarber}`;
   }
   smsBody += `\nApprove: ${config.domain}/dashboard\nReply CONFIRM or DENY`;
 
-  if (driver.phone) {
-    await sendSMS(driver.phone, smsBody);
+  if (barber.phone) {
+    await sendSMS(barber.phone, smsBody);
   }
 
   // Email
   let emailBody = `${clientId} ${displayName} has requested to connect with you on ${config.serviceName}.\n`;
-  if (noteToDriver && source !== 'find_a_driver') {
-    emailBody += `\nNote from ${client.preferredName || client.name.split(' ')[0]}:\n"${noteToDriver}"\n`;
+  if (noteToBarber && source !== 'find_a_driver') {
+    emailBody += `\nNote from ${client.preferredName || client.name.split(' ')[0]}:\n"${noteToBarber}"\n`;
   }
   emailBody += `\nApprove or deny from your dashboard:\n${config.domain}/dashboard`;
 
-  if (driver.email) {
+  if (barber.email) {
     await sendEmail(
-      driver.email,
+      barber.email,
       `New connection request — ${clientId} ${displayName}`,
       emailBody
     );
   }
 
   // Push
-  if (driver.pushToken) {
+  if (barber.pushToken) {
     await sendPushNotification(
-      driver.pushToken,
+      barber.pushToken,
       `${config.serviceName}: New connection request`,
       `${clientId} ${displayName} wants to connect. Tap to approve or deny.`
     );
   }
 
   // In-app
-  await saveInAppNotification(driver.id, {
+  await saveInAppNotification(barber.id, {
     type: 'connection_request',
     title: `New connection request — ${clientId}`,
     body: `${displayName} wants to connect`,
@@ -384,7 +384,7 @@ export async function sendConnectionRequestNotification(
       rider_display_id: clientId,
       rider_name: displayName,
       source,
-      note: noteToDriver || null,
+      note: noteToBarber || null,
     },
   });
 }
@@ -392,10 +392,10 @@ export async function sendConnectionRequestNotification(
 /* ── Connection Approved — notify client (all 4 channels) ───── */
 
 export async function sendConnectionApprovedNotification(
-  driver: DriverInfo,
+  barber: BarberInfo,
   client: ClientInfo,
-  driverCode: string,
-  driverDetails?: {
+  barberCode: string,
+  barberDetails?: {
     airport?: string;
     airportName?: string;
     phone?: string;
@@ -407,34 +407,34 @@ export async function sendConnectionApprovedNotification(
   const clientFirstName = (client.preferredName || client.name).split(' ')[0];
 
   // SMS
-  const smsBody = `${config.serviceName}: You're connected with ${driver.name}\n\nPlease write down:\nDRIVER CODE: ${driverCode}\nCLIENT ID: ${clientId}\n\nYour driver uses your Client ID to identify you on every booking request.\n\nBook your first ride: ${config.domain}/home`;
+  const smsBody = `${config.serviceName}: You're connected with ${barber.name}\n\nPlease write down:\nBARBER CODE: ${barberCode}\nCLIENT ID: ${clientId}\n\nYour barber uses your Client ID to identify you on every booking request.\n\nBook your first appointment: ${config.domain}/home`;
 
   if (client.phone) {
     await sendSMS(client.phone, smsBody);
   }
 
   // Email
-  let emailBody = `Welcome ${clientFirstName},\n\n${driver.name} has approved your connection.\n\n`;
+  let emailBody = `Welcome ${clientFirstName},\n\n${barber.name} has approved your connection.\n\n`;
   emailBody += `⚠ IMPORTANT — Please write these down:\n\n`;
-  emailBody += `DRIVER CODE:  ${driverCode}\nCLIENT ID:     ${clientId}\n\n`;
-  emailBody += `Your Driver Code is how you log in and book rides with ${driver.name}.\n`;
-  emailBody += `Your Client ID is how ${driver.name} identifies you on every booking notification.\nKeep both somewhere safe.\n\n`;
-  if (driverDetails) {
-    emailBody += `YOUR DRIVER:\n`;
-    emailBody += `Name:     ${driver.name}\n`;
-    emailBody += `Code:     ${driverCode}\n`;
-    if (driverDetails.airport) emailBody += `Airport:  ${driverDetails.airport}${driverDetails.airportName ? ` — ${driverDetails.airportName}` : ''}\n`;
-    if (driverDetails.phone) emailBody += `Phone:    ${driverDetails.phone}\n`;
-    if (driverDetails.vehicle) emailBody += `Vehicle:  ${driverDetails.vehicle}\n`;
-    if (driverDetails.insurance) emailBody += `Insured:  ${driverDetails.insurance}\n`;
+  emailBody += `BARBER CODE:  ${barberCode}\nCLIENT ID:     ${clientId}\n\n`;
+  emailBody += `Your Barber Code is how you log in and book appointments with ${barber.name}.\n`;
+  emailBody += `Your Client ID is how ${barber.name} identifies you on every booking notification.\nKeep both somewhere safe.\n\n`;
+  if (barberDetails) {
+    emailBody += `YOUR BARBER:\n`;
+    emailBody += `Name:     ${barber.name}\n`;
+    emailBody += `Code:     ${barberCode}\n`;
+    if (barberDetails.airport) emailBody += `Airport:  ${barberDetails.airport}${barberDetails.airportName ? ` — ${barberDetails.airportName}` : ''}\n`;
+    if (barberDetails.phone) emailBody += `Phone:    ${barberDetails.phone}\n`;
+    if (barberDetails.vehicle) emailBody += `Vehicle:  ${barberDetails.vehicle}\n`;
+    if (barberDetails.insurance) emailBody += `Insured:  ${barberDetails.insurance}\n`;
     emailBody += '\n';
   }
-  emailBody += `Book your first ride:\n${config.domain}/home\n\n© ${config.copyrightYear} ${config.serviceName} · ${config.companyName}`;
+  emailBody += `Book your first appointment:\n${config.domain}/home\n\n© ${config.copyrightYear} ${config.serviceName} · ${config.companyName}`;
 
   if (client.email) {
     await sendEmail(
       client.email,
-      `You're connected with ${driver.name} on ${config.serviceName}`,
+      `You're connected with ${barber.name} on ${config.serviceName}`,
       emailBody
     );
   }
@@ -444,20 +444,20 @@ export async function sendConnectionApprovedNotification(
     // Push token would come from client record — using placeholder
     await sendPushNotification(
       '', // client push token not stored yet
-      `${config.serviceName}: ${driver.name} approved your connection.`,
-      `You can now book rides. ${config.domain}/home`
+      `${config.serviceName}: ${barber.name} approved your connection.`,
+      `You can now book appointments. ${config.domain}/home`
     );
   }
 
   // In-app
   await saveInAppNotification(client.id, {
     type: 'connection_approved',
-    title: `${driver.name} approved your connection`,
-    body: `You can now book rides. Your Client ID: ${clientId}`,
+    title: `${barber.name} approved your connection`,
+    body: `You can now book appointments. Your Client ID: ${clientId}`,
     data: {
-      driver_id: driver.id,
-      driver_name: driver.name,
-      driver_code: driverCode,
+      driver_id: barber.id,
+      driver_name: barber.name,
+      driver_code: barberCode,
       rider_display_id: clientId,
     },
   });
@@ -466,12 +466,12 @@ export async function sendConnectionApprovedNotification(
 /* ── Connection Denied — notify client (push + SMS) ─────────── */
 
 export async function sendConnectionDeniedNotification(
-  driver: DriverInfo,
+  barber: BarberInfo,
   client: ClientInfo
 ): Promise<void> {
-  const driverFirstName = driver.name.split(' ')[0];
+  const barberFirstName = barber.name.split(' ')[0];
   // Language rule: "unable to accept at this time" — never "rejected" or "denied"
-  const message = `${config.serviceName}: ${driverFirstName} was unable to accept your connection request at this time.`;
+  const message = `${config.serviceName}: ${barberFirstName} was unable to accept your connection request at this time.`;
 
   if (client.phone) {
     await sendSMS(client.phone, message);
@@ -479,20 +479,20 @@ export async function sendConnectionDeniedNotification(
 
   await saveInAppNotification(client.id, {
     type: 'connection_denied',
-    title: `${driverFirstName} was unable to accept`,
+    title: `${barberFirstName} was unable to accept`,
     body: `Your connection request was not accepted at this time. Your Client ID is saved.`,
-    data: { driver_id: driver.id, driver_name: driver.name },
+    data: { driver_id: barber.id, driver_name: barber.name },
   });
 }
 
 /* ── Expiry — notify client that window expired ─────────────── */
 
 export async function sendExpiryNotification(
-  driver: DriverInfo,
+  barber: BarberInfo,
   client: ClientInfo
 ): Promise<void> {
-  const driverFirstName = driver.name.split(' ')[0];
-  const message = `${config.serviceName}: ${driverFirstName} hasn't responded to your connection request yet.\n\nWould you like to give them more time?\n\n${config.domain}/pending`;
+  const barberFirstName = barber.name.split(' ')[0];
+  const message = `${config.serviceName}: ${barberFirstName} hasn't responded to your connection request yet.\n\nWould you like to give them more time?\n\n${config.domain}/pending`;
 
   if (client.phone) {
     await sendSMS(client.phone, message);
@@ -501,16 +501,16 @@ export async function sendExpiryNotification(
   if (client.email) {
     await sendEmail(
       client.email,
-      `${config.serviceName}: ${driverFirstName} hasn't responded yet`,
+      `${config.serviceName}: ${barberFirstName} hasn't responded yet`,
       message
     );
   }
 }
 
-/* ── Extension — notify driver that client gave more time ───── */
+/* ── Extension — notify barber that client gave more time ───── */
 
 export async function sendExtensionNotification(
-  driver: DriverInfo,
+  barber: BarberInfo,
   client: ClientInfo,
   hours: number
 ): Promise<void> {
@@ -518,19 +518,19 @@ export async function sendExtensionNotification(
   const displayName = client.preferredName || client.name;
   const message = `${config.serviceName}: ${clientId} ${displayName} has given you ${hours} more hours to respond.\n${config.domain}/dashboard\nReply CONFIRM or DENY`;
 
-  if (driver.phone) {
-    await sendSMS(driver.phone, message);
+  if (barber.phone) {
+    await sendSMS(barber.phone, message);
   }
 
-  if (driver.email) {
+  if (barber.email) {
     await sendEmail(
-      driver.email,
+      barber.email,
       `${config.serviceName}: ${clientId} gave you ${hours} more hours`,
       message
     );
   }
 
-  await saveInAppNotification(driver.id, {
+  await saveInAppNotification(barber.id, {
     type: 'connection_extended',
     title: `${clientId} gave you more time`,
     body: `${displayName} has given you ${hours} more hours to respond.`,
@@ -542,10 +542,10 @@ export async function sendExtensionNotification(
 
 export async function sendBookingNotification(
   booking: BookingInfo,
-  driver: DriverInfo,
+  barber: BarberInfo,
   client: ClientInfo
 ): Promise<void> {
-  const prefs = await getDriverPreferences(driver.id);
+  const prefs = await getBarberPreferences(barber.id);
   const message = buildBookingMessage(booking, client);
   const displayName = client.preferredName || client.name;
   const isRegular = (client.previousBookingCount || 0) > 5;
@@ -555,7 +555,7 @@ export async function sendBookingNotification(
   const notificationBody = `${booking.date} at ${booking.timeSlot} - ${booking.pickupAddress} to ${booking.dropoffAddress}`;
 
   // Always save in-app notification
-  const inAppSaved = await saveInAppNotification(driver.id, {
+  const inAppSaved = await saveInAppNotification(barber.id, {
     type: 'booking_request',
     title: notificationTitle,
     body: notificationBody,
@@ -567,41 +567,41 @@ export async function sendBookingNotification(
     },
   });
   await logBookingNotification(
-    booking.id, 'in_app', driver.id,
+    booking.id, 'in_app', barber.id,
     inAppSaved ? 'sent' : 'failed', notificationTitle
   );
 
   // SMS
-  if (prefs.sms_enabled && driver.phone) {
-    const smsSent = await sendSMS(driver.phone, message);
+  if (prefs.sms_enabled && barber.phone) {
+    const smsSent = await sendSMS(barber.phone, message);
     await logBookingNotification(
-      booking.id, 'sms', driver.phone,
+      booking.id, 'sms', barber.phone,
       smsSent ? 'sent' : 'failed', message
     );
   }
 
   // Email
-  if (prefs.email_enabled && driver.email) {
+  if (prefs.email_enabled && barber.email) {
     const emailSent = await sendEmail(
-      driver.email,
+      barber.email,
       `${config.serviceName}: New booking from ${displayName}`,
       message
     );
     await logBookingNotification(
-      booking.id, 'email', driver.email,
+      booking.id, 'email', barber.email,
       emailSent ? 'sent' : 'failed', message
     );
   }
 
   // Push
-  if (prefs.push_enabled && driver.pushToken) {
+  if (prefs.push_enabled && barber.pushToken) {
     const pushSent = await sendPushNotification(
-      driver.pushToken,
+      barber.pushToken,
       notificationTitle,
       notificationBody
     );
     await logBookingNotification(
-      booking.id, 'push', driver.pushToken,
+      booking.id, 'push', barber.pushToken,
       pushSent ? 'sent' : 'failed', notificationTitle
     );
   }
@@ -610,10 +610,10 @@ export async function sendBookingNotification(
   await saveInAppNotification(client.id, {
     type: 'booking_confirmed',
     title: 'Booking submitted',
-    body: `Your booking for ${booking.date} at ${booking.timeSlot} has been sent to ${driver.name}. You'll be notified when they respond.`,
+    body: `Your booking for ${booking.date} at ${booking.timeSlot} has been sent to ${barber.name}. You'll be notified when they respond.`,
     data: {
       booking_id: booking.id,
-      driver_name: driver.name,
+      driver_name: barber.name,
     },
   });
 }

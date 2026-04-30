@@ -96,7 +96,7 @@ export async function getSession(): Promise<SessionPayload | null> {
   }
 }
 
-/* ── Driver code generation ─────────────────────────────────── */
+/* ── Barber code generation ─────────────────────────────────── */
 
 export function generateCodeDigits(): string {
   return Math.floor(1000 + Math.random() * 9000).toString();

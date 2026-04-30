@@ -64,17 +64,17 @@ export default function ExpiredWindowPage() {
             <div className="client-id-card mb-20">
               <div className="ric-label">Your Client ID is saved</div>
               <div className="ric-id">{clientId}</div>
-              <div className="ric-note">You never need to register again. This ID stays with you across all drivers and airports.</div>
+              <div className="ric-note">You never need to register again. This ID stays with you across all barbers and airports.</div>
             </div>
 
             <div className="card-green mb-24" style={{ textAlign: 'left' }}>
               <div style={{ fontSize: 13, color: 'var(--green)', lineHeight: 1.6 }}>
-                You can search for a driver at no cost. {config.serviceName} has verified drivers ready at your airport.
+                You can search for a barber at no cost. {config.serviceName} has verified barbers ready at your airport.
               </div>
             </div>
 
             <Link href="/find-a-barber">
-              <button type="button" className="btn btn-amber btn-full btn-lg mb-8">Find a Driver &rarr;</button>
+              <button type="button" className="btn btn-amber btn-full btn-lg mb-8">Find a Barber &rarr;</button>
             </Link>
             <Link href="/home">
               <button type="button" className="btn btn-ghost btn-full">Back to home</button>
@@ -89,7 +89,7 @@ export default function ExpiredWindowPage() {
     );
   }
 
-  // ── No response — Find a Driver flow (S6B) ──────────────
+  // ── No response — Find a Barber flow (S6B) ──────────────
   if (view === 'no_response_fa') {
     return (
       <div className="app-shell">
@@ -114,17 +114,17 @@ export default function ExpiredWindowPage() {
             <div className="client-id-card mb-20">
               <div className="ric-label">Your Client ID is saved</div>
               <div className="ric-id">{clientId}</div>
-              <div className="ric-note">You never need to register again. This ID stays with you across all drivers and airports.</div>
+              <div className="ric-note">You never need to register again. This ID stays with you across all barbers and airports.</div>
             </div>
 
             <div className="card-green mb-24" style={{ textAlign: 'left' }}>
               <div style={{ fontSize: 13, color: 'var(--green)', lineHeight: 1.6 }}>
-                Your $9.99 covers all future searches. Keep searching at no additional cost. {config.serviceName} has verified drivers ready at your airport.
+                Your $9.99 covers all future searches. Keep searching at no additional cost. {config.serviceName} has verified barbers ready at your airport.
               </div>
             </div>
 
             <Link href="/find-a-barber">
-              <button type="button" className="btn btn-amber btn-full btn-lg mb-8">Find a Driver &rarr;</button>
+              <button type="button" className="btn btn-amber btn-full btn-lg mb-8">Find a Barber &rarr;</button>
             </Link>
             <Link href="/home">
               <button type="button" className="btn btn-ghost btn-full">Back to home</button>
@@ -204,7 +204,7 @@ export default function ExpiredWindowPage() {
           {/* Client ID reminder */}
           <div className="card-amber" style={{ textAlign: 'left' }}>
             <div style={{ fontSize: 12, color: 'var(--amber-dim)', lineHeight: 1.6 }}>
-              If you cancel your request &mdash; your Client ID <strong>{clientId}</strong> is saved. You never need to register again. You can find another professional driver at your airport at no cost.
+              If you cancel your request &mdash; your Client ID <strong>{clientId}</strong> is saved. You never need to register again. You can find another professional barber at your airport at no cost.
             </div>
           </div>
         </div>

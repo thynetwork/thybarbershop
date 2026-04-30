@@ -8,7 +8,7 @@ import config from '@/lib/config';
  * POST /api/webhooks/twilio
  * Twilio incoming SMS webhook.
  * Parses "CONFIRM" or "DENY" from SMS body.
- * Looks up the most recent pending booking for the driver's phone number.
+ * Looks up the most recent pending booking for the barber's phone number.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -25,23 +25,23 @@ export async function POST(request: NextRequest) {
 
     const supabase = getSupabaseServer();
 
-    // Look up the driver by phone number
-    const { data: driverUser } = await supabase
+    // Look up the barber by phone number
+    const { data: barberUser } = await supabase
       .from('users')
       .select('id, name')
       .eq('phone', fromPhone)
       .eq('role', 'driver')
       .single();
 
-    if (!driverUser) {
-      return twimlResponse(`${config.serviceName}: We couldn't find a driver account for this phone number.`);
+    if (!barberUser) {
+      return twimlResponse(`${config.serviceName}: We couldn't find a barber account for this phone number.`);
     }
 
-    // Find the most recent pending booking for this driver
+    // Find the most recent pending booking for this barber
     const { data: pendingBooking } = await supabase
       .from('bookings')
       .select('id, rider_id, date, time_slot, pickup_address, dropoff_address')
-      .eq('driver_id', driverUser.id)
+      .eq('driver_id', barberUser.id)
       .eq('status', 'pending')
       .order('created_at', { ascending: false })
       .limit(1)
@@ -78,14 +78,14 @@ export async function POST(request: NextRequest) {
         await saveInAppNotification(clientUser.id, {
           type: 'booking_confirmed',
           title: 'Booking confirmed!',
-          body: `${driverUser.name} confirmed your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Pickup: ${pendingBooking.pickup_address}`,
+          body: `${barberUser.name} confirmed your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Pickup: ${pendingBooking.pickup_address}`,
           data: { booking_id: pendingBooking.id },
         });
 
         if (clientUser.phone) {
           await sendSMS(
             clientUser.phone,
-            `${config.serviceName}: Great news! ${driverUser.name} confirmed your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Pickup: ${pendingBooking.pickup_address}`
+            `${config.serviceName}: Great news! ${barberUser.name} confirmed your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Pickup: ${pendingBooking.pickup_address}`
           );
         }
       }
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
         .from('bookings')
         .update({
           status: 'cancelled',
-          cancellation_reason: 'Denied by driver via SMS',
+          cancellation_reason: 'Denied by barber via SMS',
         })
         .eq('id', pendingBooking.id);
 
@@ -113,14 +113,14 @@ export async function POST(request: NextRequest) {
         await saveInAppNotification(clientUser.id, {
           type: 'booking_denied',
           title: 'Booking not confirmed',
-          body: `${driverUser.name} was unable to accept your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Please try a different time or contact your driver.`,
+          body: `${barberUser.name} was unable to accept your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Please try a different time or contact your barber.`,
           data: { booking_id: pendingBooking.id },
         });
 
         if (clientUser.phone) {
           await sendSMS(
             clientUser.phone,
-            `${config.serviceName}: ${driverUser.name} was unable to accept your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Please try a different time or contact your driver directly.`
+            `${config.serviceName}: ${barberUser.name} was unable to accept your booking for ${pendingBooking.date} at ${pendingBooking.time_slot}. Please try a different time or contact your barber directly.`
           );
         }
       }

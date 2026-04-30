@@ -51,7 +51,7 @@ export default function LoginPage() {
         body.codeState = codeState.toUpperCase();
         body.codeInitials = codeInitials.toUpperCase();
         body.codeDigits = codeDigits;
-        body.driverCode = `${codeCity.toUpperCase()}${codeState.toUpperCase()}${codeInitials.toUpperCase()}${codeDigits}`;
+        body.barberCode = `${codeCity.toUpperCase()}${codeState.toUpperCase()}${codeInitials.toUpperCase()}${codeDigits}`;
       }
 
       const res = await fetch('/api/auth/login', {
@@ -338,7 +338,7 @@ export default function LoginPage() {
               )}
               <Link href="/register/client" className="lg-bottom-link">First time here? Create your client account &rarr;</Link>
               {role === 'client' && (
-                <Link href="/register/driver" className="lg-bottom-link">Are you a {config.providerLabel.toLowerCase()}? Create your account &rarr;</Link>
+                <Link href="/register/barber" className="lg-bottom-link">Are you a {config.providerLabel.toLowerCase()}? Create your account &rarr;</Link>
               )}
             </div>
 

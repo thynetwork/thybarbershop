@@ -4,20 +4,20 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import config, { splitServiceName } from '@/lib/config';
-import ClientRegistrationForm, { type DriverInfo, type PreSetAmount } from '@/components/ClientRegistrationForm';
+import ClientRegistrationForm, { type BarberInfo, type PreSetAmount } from '@/components/ClientRegistrationForm';
 
 export default function JoinPage() {
   const params = useParams();
   const { prefix, highlight } = splitServiceName();
   const rawCode = decodeURIComponent((params.code as string) || '');
 
-  const [driver, setDriver] = useState<DriverInfo | null>(null);
+  const [barber, setBarber] = useState<BarberInfo | null>(null);
   const [preSetAmount, setPreSetAmount] = useState<PreSetAmount | undefined>();
   const [loading, setLoading] = useState(true);
   const [invalid, setInvalid] = useState(false);
 
   useEffect(() => {
-    async function fetchDriver() {
+    async function fetchBarber() {
       try {
         // Parse code: SouthHouston·MRC·3341 or similar
         const cleaned = rawCode.replace(/[·.]/g, '');
@@ -32,7 +32,7 @@ export default function JoinPage() {
         const digits = cleaned.slice(-4);
 
         const res = await fetch(
-          `/api/drivers/lookup?airport=${airportCode}&initials=${initials}&digits=${digits}`
+          `/api/barbers/lookup?airport=${airportCode}&initials=${initials}&digits=${digits}`
         );
 
         if (!res.ok) {
@@ -42,7 +42,7 @@ export default function JoinPage() {
         }
 
         const data = await res.json();
-        setDriver({
+        setBarber({
           id: data.id,
           name: data.name,
           initials: data.initials,
@@ -62,7 +62,7 @@ export default function JoinPage() {
       setLoading(false);
     }
 
-    fetchDriver();
+    fetchBarber();
   }, [rawCode]);
 
   // Invalid / expired link
@@ -79,11 +79,11 @@ export default function JoinPage() {
             <div style={{ fontSize: 48, marginBottom: 16 }}>&#128683;</div>
             <div className="t-display mb-8">Invalid invite link</div>
             <div className="t-small mb-24" style={{ lineHeight: 1.6 }}>
-              This invite link is invalid or expired. Ask your driver for a new link, or find a driver at your airport.
+              This invite link is invalid or expired. Ask your barber for a new link, or find a barber at your airport.
             </div>
             <Link href="/find-a-barber">
               <button type="button" className="btn btn-amber btn-full btn-lg mb-8">
-                Find a Driver &rarr;
+                Find a Barber &rarr;
               </button>
             </Link>
             <Link href="/">
@@ -124,7 +124,7 @@ export default function JoinPage() {
         <div style={{ maxWidth: 520, width: '100%' }}>
           <ClientRegistrationForm
             mode="invite"
-            driver={driver!}
+            barber={barber!}
             preSetAmount={preSetAmount}
           />
         </div>

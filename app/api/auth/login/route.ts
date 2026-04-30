@@ -5,11 +5,11 @@ import { verifyPassword, createSession } from '@/lib/auth';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { email, password, role, driverCode, codeAirport, codeInitials: bodyCodeInitials, codeDigits: bodyCodeDigits } = body as {
+    const { email, password, role, barberCode, codeAirport, codeInitials: bodyCodeInitials, codeDigits: bodyCodeDigits } = body as {
       email?: string;
       password?: string;
       role?: 'rider' | 'driver';
-      driverCode?: string;
+      barberCode?: string;
       codeAirport?: string;
       codeInitials?: string;
       codeDigits?: string;
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Client: validate driver code + connection ─────────
+    // ── Client: validate barber code + connection ─────────
 
     if (role === 'rider') {
       // Support both 3-part (airport+initials+digits) and legacy 2-part (initials+digits) codes
@@ -80,12 +80,12 @@ export async function POST(req: NextRequest) {
             { status: 400 }
           );
         }
-      } else if (driverCode) {
+      } else if (barberCode) {
         // Legacy 2-part code format
-        const codeMatch = driverCode.match(/^([A-Z]{2,3})(\d{4})$/i);
+        const codeMatch = barberCode.match(/^([A-Z]{2,3})(\d{4})$/i);
         if (!codeMatch) {
           return NextResponse.json(
-            { error: 'Invalid Driver Code format.' },
+            { error: 'Invalid Barber Code format.' },
             { status: 400 }
           );
         }
@@ -93,13 +93,13 @@ export async function POST(req: NextRequest) {
         digits = codeMatch[2];
       } else {
         return NextResponse.json(
-          { error: 'Driver Code is required for client login.' },
+          { error: 'Barber Code is required for client login.' },
           { status: 400 }
         );
       }
 
-      // Find driver by initials + digits
-      let driverQuery = supabase
+      // Find barber by initials + digits
+      let barberQuery = supabase
         .from('drivers')
         .select('id')
         .eq('code_initials', initials)
@@ -107,14 +107,14 @@ export async function POST(req: NextRequest) {
 
       // If airport code provided, also filter by it
       if (airportCode) {
-        driverQuery = driverQuery.eq('airport_code', airportCode);
+        barberQuery = barberQuery.eq('airport_code', airportCode);
       }
 
-      const { data: driver } = await driverQuery.single();
+      const { data: barber } = await barberQuery.single();
 
-      if (!driver) {
+      if (!barber) {
         return NextResponse.json(
-          { error: 'Driver Code not found.' },
+          { error: 'Barber Code not found.' },
           { status: 404 }
         );
       }
@@ -123,34 +123,34 @@ export async function POST(req: NextRequest) {
       const { data: connection } = await supabase
         .from('connections')
         .select('id, status')
-        .eq('driver_id', driver.id)
+        .eq('driver_id', barber.id)
         .eq('rider_id', user.id)
         .single();
 
       if (!connection) {
         // Auto-create connection request
         await supabase.from('connections').insert({
-          driver_id: driver.id,
+          driver_id: barber.id,
           rider_id: user.id,
           status: 'pending',
         });
 
         return NextResponse.json(
-          { error: 'Connection request sent. Waiting for driver approval.' },
+          { error: 'Connection request sent. Waiting for barber approval.' },
           { status: 403 }
         );
       }
 
       if (connection.status === 'pending') {
         return NextResponse.json(
-          { error: 'Your connection request is pending driver approval.' },
+          { error: 'Your connection request is pending barber approval.' },
           { status: 403 }
         );
       }
 
       if (connection.status === 'denied' || connection.status === 'revoked') {
         return NextResponse.json(
-          { error: 'Your connection to this driver has been revoked.' },
+          { error: 'Your connection to this barber has been revoked.' },
           { status: 403 }
         );
       }

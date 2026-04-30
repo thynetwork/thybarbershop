@@ -120,6 +120,6 @@ export async function GET(
     zip: zipQuery,
     airport: routeParam.toUpperCase(),
     total: barbers.length,
-    drivers: barbers,
+    barbers: barbers,
   });
 }

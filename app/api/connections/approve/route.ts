@@ -28,14 +28,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Connection not found' }, { status: 404 });
     }
 
-    // Verify this driver owns this connection
-    const { data: driverRecord } = await supabase
+    // Verify this barber owns this connection
+    const { data: barberRecord } = await supabase
       .from('drivers')
       .select('id')
       .eq('id', session.userId)
       .single();
 
-    if (!driverRecord || connection.driver_id !== driverRecord.id) {
+    if (!barberRecord || connection.driver_id !== barberRecord.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -65,14 +65,14 @@ export async function POST(request: NextRequest) {
         .eq('id', connectionId);
     }
 
-    // Get driver and client info for notifications
-    const { data: driverUser } = await supabase
+    // Get barber and client info for notifications
+    const { data: barberUser } = await supabase
       .from('users')
       .select('name, email, phone')
       .eq('id', session.userId)
       .single();
 
-    const { data: driverInfo } = await supabase
+    const { data: barberInfo } = await supabase
       .from('drivers')
       .select('airport_code, code_initials, code_digits, insurance_provider')
       .eq('id', session.userId)
@@ -85,15 +85,15 @@ export async function POST(request: NextRequest) {
       .single();
 
     // Send approval notifications
-    if (driverUser && clientUser && driverInfo) {
-      const driverCode = `${driverInfo.airport_code}\u00B7${driverInfo.code_initials}\u00B7${driverInfo.code_digits}`;
+    if (barberUser && clientUser && barberInfo) {
+      const barberCode = `${barberInfo.airport_code}·${barberInfo.code_initials}·${barberInfo.code_digits}`;
 
       await sendConnectionApprovedNotification(
         {
           id: session.userId,
-          name: driverUser.name,
-          phone: driverUser.phone,
-          email: driverUser.email,
+          name: barberUser.name,
+          phone: barberUser.phone,
+          email: barberUser.email,
         },
         {
           id: clientUser.id,
@@ -103,11 +103,11 @@ export async function POST(request: NextRequest) {
           phone: clientUser.phone,
           email: clientUser.email,
         },
-        driverCode,
+        barberCode,
         {
-          airport: driverInfo.airport_code,
-          phone: driverUser.phone,
-          insurance: driverInfo.insurance_provider,
+          airport: barberInfo.airport_code,
+          phone: barberUser.phone,
+          insurance: barberInfo.insurance_provider,
         }
       );
     }

@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import config, { splitServiceName } from '@/lib/config';
 
 const demoUser = { name: 'Sarah Chen', initials: 'SC' };
-const demoDriverName = 'Marcus';
-const demoDriverCode = 'MRC\u00B73341';
+const demoBarberName = 'Marcus';
+const demoBarberCode = 'MRC\u00B73341';
 
 export default function PendingPage() {
   const router = useRouter();
@@ -44,9 +44,9 @@ export default function PendingPage() {
             <div className="timer-value">{timerDisplay}</div>
           </div>
 
-          <div className="t-title mb-4">Waiting for {demoDriverName}&hellip;</div>
+          <div className="t-title mb-4">Waiting for {demoBarberName}&hellip;</div>
           <div className="t-body t-muted mb-24">
-            Your booking request has been sent. {demoDriverName} has 2 hours to confirm.
+            Your booking request has been sent. {demoBarberName} has 2 hours to confirm.
           </div>
 
           {/* ── Booking summary card ─────────────────────────── */}
@@ -67,7 +67,7 @@ export default function PendingPage() {
             </div>
             <div className="row">
               <span className="row-label">{config.providerLabel}</span>
-              <span className="row-value">{demoDriverCode}</span>
+              <span className="row-value">{demoBarberCode}</span>
             </div>
           </div>
 

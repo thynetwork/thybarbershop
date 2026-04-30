@@ -39,7 +39,7 @@ export default function ForgotCodePage() {
       }
 
       setStatus('success');
-      setMessage('Your driver code has been sent to your phone and email on file.');
+      setMessage('Your barber code has been sent to your phone and email on file.');
     } catch {
       setStatus('error');
       setMessage('Information does not match our records. Contact support.');
@@ -58,7 +58,7 @@ export default function ForgotCodePage() {
 
           <div className="login-feature">
             <div className="lf-dot" />
-            <div className="lf-text">Your driver code is your identity on {config.serviceName}</div>
+            <div className="lf-text">Your barber code is your identity on {config.serviceName}</div>
           </div>
           <div className="login-feature">
             <div className="lf-dot" />
@@ -133,7 +133,7 @@ export default function ForgotCodePage() {
             {status === 'loading' ? 'Verifying...' : 'Recover My Code'}
           </button>
 
-          <div className="driver-link">
+          <div className="barber-link">
             <Link href="/">&larr; Back to sign in</Link>
           </div>
 
