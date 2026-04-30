@@ -73,6 +73,16 @@ const DEMO_DASHBOARD = {
     airportPermit: 'active',
     insurance: 'Allstate',
   },
+  // License renewal — DD1A banner reads these. licenseExpiry is ISO yyyy-mm-dd
+  // or null if no license is on file (e.g., barber registered without uploading).
+  licenseNumber: 'TX-BBR-0042871',
+  licenseExpiry: (() => {
+    // Demo: 14 days from now so the banner triggers in dev.
+    const d = new Date();
+    d.setDate(d.getDate() + 14);
+    return d.toISOString().slice(0, 10);
+  })(),
+  licenseVerified: true,
   todaySchedule: [],
 };
 

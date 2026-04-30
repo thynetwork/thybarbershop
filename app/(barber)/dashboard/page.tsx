@@ -1,8 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import config, { splitServiceName } from '@/lib/config';
+
+const LX_DISMISS_KEY = 'lx-banner-dismissed';
+
+/** Whole-day count between two ISO yyyy-mm-dd strings (or null). */
+function daysUntil(isoDate: string | null | undefined): number | null {
+  if (!isoDate) return null;
+  const target = new Date(isoDate + 'T00:00:00');
+  if (isNaN(target.getTime())) return null;
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const ms = target.getTime() - today.getTime();
+  return Math.round(ms / 86_400_000);
+}
+
+function formatLicenseDate(isoDate: string): string {
+  const d = new Date(isoDate + 'T00:00:00');
+  if (isNaN(d.getTime())) return isoDate;
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
 
 /* ── Types ────────────────────────────────────── */
 interface Appointment {
@@ -130,6 +149,34 @@ export default function BarberDashboard() {
   const [activeTab, setActiveTab] = useState<'schedule' | 'pending'>('schedule');
   const [startedAppointment, setStartedAppointment] = useState<Record<string, 'idle' | 'progress' | 'complete'>>({});
   const [toastMsg, setToastMsg] = useState('');
+
+  // License-expiry banner state (DD1A).
+  const [licenseExpiry, setLicenseExpiry] = useState<string | null>(null);
+  const [licenseNumber, setLicenseNumber] = useState<string | null>(null);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && sessionStorage.getItem(LX_DISMISS_KEY)) {
+      setBannerDismissed(true);
+    }
+    fetch('/api/barber/dashboard')
+      .then(r => (r.ok ? r.json() : null))
+      .then(data => {
+        if (!data) return;
+        setLicenseExpiry(data.licenseExpiry ?? null);
+        setLicenseNumber(data.licenseNumber ?? null);
+      })
+      .catch(() => { /* keep demo state */ });
+  }, []);
+
+  const lxDays = daysUntil(licenseExpiry);
+  const showLicenseBanner =
+    !bannerDismissed && lxDays !== null && lxDays > 0 && lxDays <= 30 && !!licenseExpiry;
+
+  const dismissLicenseBanner = () => {
+    if (typeof window !== 'undefined') sessionStorage.setItem(LX_DISMISS_KEY, '1');
+    setBannerDismissed(true);
+  };
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -418,6 +465,70 @@ export default function BarberDashboard() {
 
         {/* ── MAIN CONTENT ────────────────────────── */}
         <div style={{ padding: '24px 28px', background: 'var(--white)', overflowY: 'auto' }}>
+
+          {/* DD1A · License-expiry banner (≤30 days, dismissible per session) */}
+          {showLicenseBanner && lxDays !== null && licenseExpiry && (
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(245,166,35,0.08), rgba(245,166,35,0.14))',
+              border: '1.5px solid rgba(245,166,35,0.4)',
+              borderRadius: 14,
+              padding: '14px 18px',
+              marginBottom: 20,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 14,
+              flexWrap: 'wrap',
+            }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: '50%',
+                background: 'rgba(245,166,35,0.18)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4830A" strokeWidth="1.8">
+                  <circle cx="12" cy="8" r="6"/>
+                  <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+                </svg>
+              </div>
+              <div style={{ flex: '1 1 auto', minWidth: 0 }}>
+                <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 14, fontWeight: 800, color: '#111118', marginBottom: 3 }}>
+                  Your Verified badge expires in {lxDays} {lxDays === 1 ? 'day' : 'days'}
+                </div>
+                <div style={{ fontSize: 12, color: '#5A5A6A', lineHeight: 1.6 }}>
+                  {licenseNumber && (
+                    <span style={{ fontFamily: "'DM Mono',monospace" }}>{licenseNumber} · </span>
+                  )}
+                  expires {formatLicenseDate(licenseExpiry)} · upload your renewed license to keep your Verified badge on your public profile
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+                <button
+                  type="button"
+                  onClick={() => router.push('/license-renew')}
+                  style={{
+                    background: '#0a0a2e', border: 'none', borderRadius: 10,
+                    padding: '9px 16px', fontFamily: "'Syne', sans-serif",
+                    fontSize: 12, fontWeight: 800, color: '#F5A623', cursor: 'pointer',
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  Upload Now →
+                </button>
+                <button
+                  type="button"
+                  onClick={dismissLicenseBanner}
+                  aria-label="Dismiss"
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    fontSize: 18, color: '#9A9AAA', padding: '4px 8px',
+                    lineHeight: 1,
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Tab toggle */}
           <div style={{ display: 'flex', gap: 4, marginBottom: 20, background: 'var(--surface)', borderRadius: 12, padding: 3 }}>

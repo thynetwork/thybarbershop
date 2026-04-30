@@ -36,15 +36,33 @@ export default function LicenseRenewPage() {
       showToast('Please upload your renewed license first');
       return;
     }
+    if (!expiry) {
+      showToast('Please enter the new expiry date');
+      return;
+    }
     setSubmitting(true);
-    // TODO: POST FormData to /api/barber/license-renew once endpoint exists.
-    // ThyAdmin reads barber-documents/{barberCode}/barber-license.{ext} after
-    // upsert and re-verifies via the existing 5-step approval workflow.
-    setTimeout(() => {
+    try {
+      const fd = new FormData();
+      fd.set('file', file);
+      fd.set('barberLicenseExpiry', expiry);
+      if (licenseNumber.trim()) fd.set('barberLicenseNumber', licenseNumber.trim());
+
+      const res = await fetch('/api/barber/license-renew', { method: 'POST', body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        showToast(data?.error || 'Submission failed. Please try again.');
+        setSubmitting(false);
+        return;
+      }
       setSubmitted(true);
-      setSubmitting(false);
       showToast(`License submitted · ${config.serviceName} will review within 24 hours`);
-    }, 600);
+      // Brief delay so the user sees the green confirmation card before redirect.
+      setTimeout(() => router.push('/dashboard'), 1500);
+    } catch {
+      showToast('Network error. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
