@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
     if (userError || !newUser) {
       console.error('User creation error:', userError);
       return NextResponse.json(
-        { error: 'Failed to create account. Please try again.' },
+        { error: `Failed to create account: ${userError?.message || 'unknown'}` },
         { status: 500 }
       );
     }
@@ -216,7 +216,7 @@ export async function POST(req: NextRequest) {
         // Clean up user record
         await supabase.from('users').delete().eq('id', newUser.id);
         return NextResponse.json(
-          { error: 'Failed to create barber profile.' },
+          { error: `Failed to create barber profile: ${barberError.message}` },
           { status: 500 }
         );
       }
@@ -412,9 +412,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ user: newUser });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error('Registration error:', msg);
+    const stack = err instanceof Error ? err.stack : undefined;
+    console.error('Registration error:', msg, stack);
+    // Surface the actual error to the client during early integration so we
+    // can debug from the browser without digging into Vercel logs.
     return NextResponse.json(
-      { error: 'Internal server error.' },
+      { error: `Internal server error: ${msg}` },
       { status: 500 }
     );
   }
