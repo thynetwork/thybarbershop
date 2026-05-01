@@ -127,7 +127,7 @@ export default function BarberPoolPage() {
   const router = useRouter();
   const { prefix, highlight } = splitServiceName();
 
-  const rawZip = (params?.airport as string | undefined) || '77587';
+  const rawZip = (params?.zip as string | undefined) || '77587';
   const zip = /^\d{5}$/.test(rawZip) ? rawZip : '77587';
   const area = ZIP_LABEL[zip] ?? { city: 'Your area', state: '' };
 

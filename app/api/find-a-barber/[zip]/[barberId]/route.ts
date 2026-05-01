@@ -1,4 +1,4 @@
-/* GET /api/find-a-barber/[airport]/[barberId]
+/* GET /api/find-a-barber/[zip]/[barberId]
  *
  * Detailed public profile for a single barber. Used by the
  * Find-a-Barber detail screen.
@@ -9,15 +9,15 @@ import { getSupabaseServer } from '@/lib/supabase';
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: Promise<{ airport: string; barberId: string }> }
+  { params }: { params: Promise<{ zip: string; barberId: string }> }
 ) {
-  const { airport, barberId } = await params;
+  const { zip, barberId } = await params;
   const supabase = getSupabaseServer();
 
-  const [driverR, userR, vehicleR, ratingsR] = await Promise.all([
+  const [barberR, userR, ratingsR] = await Promise.all([
     supabase
       .from('drivers')
-      .select('id, code_initials, code_digits, airport_code, city, state, vehicle_class, rate_hourly, flat_fee_local, flat_fee_distance, empty_return_value, payment_timing, available_24hrs, license_verified, is_active, airport_permitted, insurance_type, insurance_provider')
+      .select('id, code_initials, code_digits, city, state, zip_code, service_areas, rate_hourly, flat_fee_local, payment_timing, available_24hrs, license_verified, is_active')
       .eq('id', barberId)
       .single(),
     supabase
@@ -26,12 +26,6 @@ export async function GET(
       .eq('id', barberId)
       .single(),
     supabase
-      .from('vehicles')
-      .select('make, model, year, color, seats, seatbelt_confirmed')
-      .eq('driver_id', barberId)
-      .limit(1)
-      .maybeSingle(),
-    supabase
       .from('ratings')
       .select('stars, comment, created_at')
       .eq('driver_id', barberId)
@@ -39,13 +33,12 @@ export async function GET(
       .limit(20),
   ]);
 
-  if (!driverR.data || !driverR.data.is_active) {
+  if (!barberR.data || !barberR.data.is_active) {
     return NextResponse.json({ success: false, error: 'Barber not found' }, { status: 404 });
   }
 
-  const d = driverR.data;
+  const d = barberR.data;
   const u = userR.data;
-  const v = vehicleR.data;
   const ratings = (ratingsR.data || []) as { stars: number; comment: string | null }[];
 
   const stars = ratings.map(r => r.stars);
@@ -66,31 +59,21 @@ export async function GET(
     firstName,
     lastInitial,
     initials,
-    vehicleClass: d.vehicle_class || 'comfort',
     rating: avgRating,
-    rides: stars.length,
-    airports: d.airport_code ? [d.airport_code] : [],
+    visits: stars.length,
+    city: d.city || '',
+    state: d.state || '',
+    zipCode: d.zip_code || '',
+    serviceAreas: d.service_areas || [],
     maskedCode: {
-      airport: d.city || d.airport_code || '',
+      city: d.city || '',
+      state: d.state || '',
       initials: (d.code_initials?.[0] || '') + '**',
       digits: '****',
     },
-    vehicle: v ? {
-      year: v.year || 0,
-      make: v.make || '',
-      model: v.model || '',
-      trim: '',
-      color: v.color || '',
-      passengers: v.seats || 0,
-      seatbelts: !!v.seatbelt_confirmed,
-      condition: '',
-      insuranceType: d.insurance_type || 'Licensed barber',
-    } : null,
     rates: {
       hourly: Number(d.rate_hourly ?? 0),
       flatLocal: Number(d.flat_fee_local ?? 0),
-      flatDistance: Number(d.flat_fee_distance ?? 0),
-      emptyReturn: Number(d.empty_return_value ?? 0),
       payTiming: d.payment_timing === 'on_pickup' ? 'On pickup'
         : d.payment_timing === 'at_booking' ? 'At booking'
         : d.payment_timing === 'end_of_ride' ? 'End of ride'
@@ -109,7 +92,7 @@ export async function GET(
 
   return NextResponse.json({
     success: true,
-    airport: airport.toUpperCase(),
+    zip,
     barber: profile,
   });
 }

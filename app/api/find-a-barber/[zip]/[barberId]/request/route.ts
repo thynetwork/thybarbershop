@@ -4,9 +4,9 @@ import { getSession } from '@/lib/auth';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ airport: string; barberId: string }> }
+  { params }: { params: Promise<{ zip: string; barberId: string }> }
 ) {
-  const { airport, barberId } = await params;
+  const { zip, barberId } = await params;
 
   // Get authenticated user
   const session = await getSession();
@@ -65,7 +65,7 @@ export async function POST(
     return NextResponse.json({
       success: true,
       requestId: existing.id,
-      airport: airport.toUpperCase(),
+      zip,
       barberId,
       feePaid: !requiresPayment,
       feeCharged: requiresPayment ? 9.99 : 0,
@@ -93,7 +93,7 @@ export async function POST(
   return NextResponse.json({
     success: true,
     requestId: connection?.id,
-    airport: airport.toUpperCase(),
+    zip,
     barberId,
     feePaid: !requiresPayment,
     feeCharged: requiresPayment ? 9.99 : 0,

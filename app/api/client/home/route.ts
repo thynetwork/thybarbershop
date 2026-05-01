@@ -6,7 +6,8 @@
  *   - connection       (the approved connection row, or null)
  *   - recentBooking    (most recent booking with that barber, or null)
  *
- * Auth: requires a rider/client session.
+ * Auth: requires a client session (DB role enum is 'rider' — kept to
+ * match the schema CHECK constraint; surface terminology is client).
  */
 
 import { NextResponse } from 'next/server';
