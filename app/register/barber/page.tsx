@@ -166,17 +166,24 @@ export default function BarberRegistrationPage() {
       if (useShopLoc && shopLicense) fd.set('shop-license', shopLicense);
 
       const res = await fetch('/api/auth/register', { method: 'POST', body: fd });
-      const data = await res.json().catch(() => ({}));
+      const rawText = await res.text();
+      let data: { error?: string } = {};
+      try { data = rawText ? JSON.parse(rawText) : {}; } catch { /* not JSON */ }
       if (!res.ok) {
-        setSubmitError(data?.error || 'Registration failed. Please try again.');
+        const detail = data?.error
+          || rawText
+          || `HTTP ${res.status} ${res.statusText || ''}`.trim();
+        setSubmitError(detail);
+        console.error('Register failed:', res.status, rawText);
         setSubmitting(false);
         return;
       }
       setSubmitted(true);
       if (typeof window !== 'undefined') window.scrollTo(0, 0);
     } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
       console.error('Submit error:', err);
-      setSubmitError('Something went wrong. Please check your connection and try again.');
+      setSubmitError(`Network error: ${msg}`);
     } finally {
       setSubmitting(false);
     }
