@@ -23,11 +23,10 @@ const STEP_META: { num: Step; name: string; desc: string }[] = [
 const SPECIALTIES = [
   'Fades', 'Tapers', 'Line-ups', 'Beards', 'Designs', 'Natural Hair',
   'Locs', 'Twists', 'Waves', 'Kids Cuts', 'Gray Blending', 'Color',
+  'Trending Haircuts',
 ];
 
 const STATES = ['TX', 'CA', 'NY', 'FL', 'GA', 'IL', 'NC', 'OH', 'PA', 'AZ'];
-
-const ZONES = ['North', 'Northeast', 'Northwest', 'South', 'Southeast', 'Southwest', 'East', 'West'];
 
 interface Service {
   id: string;
@@ -69,7 +68,8 @@ export default function BarberRegistrationPage() {
   const [mobileCity, setMobileCity] = useState('');
   const [mobileState, setMobileState] = useState('');
   const [mobileZip, setMobileZip] = useState('');
-  const [zones, setZones] = useState<Set<string>>(new Set(['North', 'South']));
+  const [serviceZips, setServiceZips] = useState<Set<string>>(new Set());
+  const [zipInput, setZipInput] = useState('');
   const [neighborhoods, setNeighborhoods] = useState('');
 
   // Step 3
@@ -101,10 +101,21 @@ export default function BarberRegistrationPage() {
     if (typeof window !== 'undefined') window.scrollTo(0, 0);
   }
 
-  function toggleZone(z: string) {
-    setZones(prev => {
+  function addServiceZip(raw: string) {
+    const cleaned = raw.replace(/\D/g, '').slice(0, 5);
+    if (cleaned.length !== 5) return;
+    setServiceZips(prev => {
       const n = new Set(prev);
-      if (n.has(z)) n.delete(z); else n.add(z);
+      n.add(cleaned);
+      return n;
+    });
+    setZipInput('');
+  }
+
+  function removeServiceZip(z: string) {
+    setServiceZips(prev => {
+      const n = new Set(prev);
+      n.delete(z);
       return n;
     });
   }
@@ -182,7 +193,7 @@ export default function BarberRegistrationPage() {
       fd.set('city', useShopLoc ? shopCity : mobileCity);
       fd.set('state', useShopLoc ? shopState : mobileState);
       fd.set('zipCode', useShopLoc ? shopZip : mobileZip);
-      if (zones.size > 0) fd.set('serviceAreas', Array.from(zones).join(','));
+      if (serviceZips.size > 0) fd.set('serviceAreas', Array.from(serviceZips).join(','));
 
       // Credentials.
       if (dlNumber) fd.set('dlNumber', dlNumber);
@@ -612,32 +623,71 @@ export default function BarberRegistrationPage() {
                       </div>
                     </div>
                     <div className="br-field">
-                      <div className="br-field-label">Areas You Will Serve</div>
-                      <div className="br-field-hint">Select all zones you are willing to travel to</div>
-                      <div className="br-geo-grid">
-                        {ZONES.map(z => (
-                          <button
-                            key={z}
-                            type="button"
-                            className={'br-geo-chip' + (zones.has(z) ? ' on' : '')}
-                            onClick={() => toggleZone(z)}
-                          >
-                            {zones.has(z) ? '✓' : '+'} {z}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="br-field">
                       <div className="br-field-label">Neighborhoods <span style={{ fontWeight: 400, textTransform: 'none', letterSpacing: 0, color: '#9A9AAA' }}>(optional)</span></div>
                       <div className="br-field-hint">List specific neighborhoods you serve, separated by commas</div>
                       <input className="br-field-input" placeholder="e.g. Midtown, Third Ward, Acres Homes, Sugar Land" value={neighborhoods} onChange={(e) => setNeighborhoods(e.target.value)}/>
                     </div>
                     <div className="br-info-note">
-                      <strong>Mobile barbers:</strong> Your exact address is never shown publicly. Only your city, zones, and neighborhoods appear on your profile. Full address shared only on confirmed appointment cards.
+                      <strong>Mobile barbers:</strong> Your exact address is never shown publicly. Only your city, ZIP codes, and neighborhoods appear on your profile. Full address shared only on confirmed appointment cards.
                     </div>
                   </div>
                 </div>
               )}
+
+              {/* Service ZIP coverage — always visible · powers the FA1 pool match. */}
+              <div className="br-loc-section-title" style={{ marginTop: '1.5rem' }}>Service ZIP Codes</div>
+              <div className="br-field">
+                <div className="br-field-hint">
+                  Add every ZIP code where you accept clients. Clients searching any of these ZIPs will see you in the {config.serviceName} pool. You can add as many as you want.
+                </div>
+                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', marginTop: '.5rem' }}>
+                  <input
+                    className="br-field-input"
+                    inputMode="numeric"
+                    maxLength={5}
+                    placeholder="77002"
+                    value={zipInput}
+                    onChange={(e) => setZipInput(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ',' || e.key === ' ') {
+                        e.preventDefault();
+                        addServiceZip(zipInput);
+                      }
+                    }}
+                    style={{ maxWidth: '8rem', fontFamily: "'DM Mono',monospace", letterSpacing: '.05em' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => addServiceZip(zipInput)}
+                    disabled={zipInput.length !== 5}
+                    style={{
+                      background: '#0a0a2e', color: '#F5A623', border: 'none',
+                      borderRadius: '.65rem', padding: '.7rem 1.1rem',
+                      fontFamily: "'Syne',sans-serif", fontSize: '.78rem', fontWeight: 800,
+                      cursor: zipInput.length === 5 ? 'pointer' : 'not-allowed',
+                      opacity: zipInput.length === 5 ? 1 : 0.45,
+                    }}
+                  >
+                    + Add
+                  </button>
+                </div>
+                {serviceZips.size > 0 && (
+                  <div className="br-geo-grid" style={{ marginTop: '.75rem', gridTemplateColumns: 'repeat(auto-fill, minmax(6rem, 1fr))' }}>
+                    {Array.from(serviceZips).map(z => (
+                      <button
+                        key={z}
+                        type="button"
+                        className="br-geo-chip on"
+                        onClick={() => removeServiceZip(z)}
+                        title="Remove"
+                        style={{ fontFamily: "'DM Mono',monospace" }}
+                      >
+                        {z} ×
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               <div className="br-nav-row">
                 <button type="button" className="br-btn-back" onClick={() => goTo(1)}>&larr; Back</button>
@@ -916,11 +966,9 @@ export default function BarberRegistrationPage() {
                   </>
                 )}
                 {(locType === 'mobile' || locType === 'both') && (
-                  <>
-                    <div className="br-review-row"><span className="br-review-key">Mobile area</span><span className="br-review-val">{[mobileCity, mobileState, mobileZip].filter(Boolean).join(', ') || '—'}</span></div>
-                    <div className="br-review-row"><span className="br-review-key">Zones</span><span className="br-review-val">{Array.from(zones).join(' · ') || '—'}</span></div>
-                  </>
+                  <div className="br-review-row"><span className="br-review-key">Mobile area</span><span className="br-review-val">{[mobileCity, mobileState, mobileZip].filter(Boolean).join(', ') || '—'}</span></div>
                 )}
+                <div className="br-review-row"><span className="br-review-key">Service ZIPs</span><span className="br-review-val" style={{ fontFamily: "'DM Mono',monospace" }}>{Array.from(serviceZips).join(' · ') || '—'}</span></div>
               </div>
 
               <div className="br-review-section">
