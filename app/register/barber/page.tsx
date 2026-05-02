@@ -131,6 +131,40 @@ export default function BarberRegistrationPage() {
     setServices(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
   }
 
+  // Vercel caps a serverless function's request body at 4.5 MB. Six raw
+  // phone-camera images (≈5 MB each) blow past that. Re-encode any
+  // image File client-side to a max 1600px JPEG at quality 0.82 — that
+  // pulls a typical 5 MB photo down to ~300 KB while still being plenty
+  // sharp for ThyAdmin's manual review. Non-image files (PDFs) pass
+  // through untouched since they're already small.
+  async function compressImage(file: File, maxEdge = 1600, quality = 0.82): Promise<File> {
+    if (!file.type.startsWith('image/')) return file;
+    const url = URL.createObjectURL(file);
+    try {
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const el = new Image();
+        el.onload = () => resolve(el);
+        el.onerror = () => reject(new Error('image load failed'));
+        el.src = url;
+      });
+      const scale = Math.min(1, maxEdge / Math.max(img.width, img.height));
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return file;
+      ctx.drawImage(img, 0, 0, w, h);
+      const blob: Blob | null = await new Promise(r => canvas.toBlob(r, 'image/jpeg', quality));
+      if (!blob) return file;
+      const newName = file.name.replace(/\.\w+$/, '') + '.jpg';
+      return new File([blob], newName, { type: 'image/jpeg', lastModified: Date.now() });
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+
   async function submitApplication() {
     if (submitting) return;
     setSubmitting(true);
@@ -157,13 +191,23 @@ export default function BarberRegistrationPage() {
       if (experience) fd.set('yearsExperience', experience);
 
       // Documents — keys must match DocumentSlot values in lib/uploads.ts so
-      // the API can map each File straight to its drivers column.
-      if (profilePhoto) fd.set('profile', profilePhoto);
-      if (logo) fd.set('logo', logo);
-      if (dlFront) fd.set('dl-front', dlFront);
-      if (dlBack) fd.set('dl-back', dlBack);
-      if (barberLicOn && barberLicFile) fd.set('barber-license', barberLicFile);
-      if (useShopLoc && shopLicense) fd.set('shop-license', shopLicense);
+      // the API can map each File straight to its drivers column. Compress
+      // images first so the multipart body stays under Vercel's 4.5 MB cap.
+      const compressed = await Promise.all([
+        profilePhoto ? compressImage(profilePhoto) : Promise.resolve(null),
+        logo ? compressImage(logo) : Promise.resolve(null),
+        dlFront ? compressImage(dlFront) : Promise.resolve(null),
+        dlBack ? compressImage(dlBack) : Promise.resolve(null),
+        (barberLicOn && barberLicFile) ? compressImage(barberLicFile) : Promise.resolve(null),
+        (useShopLoc && shopLicense) ? compressImage(shopLicense) : Promise.resolve(null),
+      ]);
+      const [cProfile, cLogo, cDlFront, cDlBack, cBarberLic, cShopLic] = compressed;
+      if (cProfile) fd.set('profile', cProfile);
+      if (cLogo) fd.set('logo', cLogo);
+      if (cDlFront) fd.set('dl-front', cDlFront);
+      if (cDlBack) fd.set('dl-back', cDlBack);
+      if (cBarberLic) fd.set('barber-license', cBarberLic);
+      if (cShopLic) fd.set('shop-license', cShopLic);
 
       const res = await fetch('/api/auth/register', { method: 'POST', body: fd });
       const rawText = await res.text();
