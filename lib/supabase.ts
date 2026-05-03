@@ -31,6 +31,30 @@ export function getSupabaseServer(): SupabaseClient {
   });
 }
 
+/* ── Service-role server client ─────────────────────────────────
+   Bypasses ALL Row Level Security and storage bucket policies.
+   ONLY usable in server-side code (never imported by client
+   components). Used for trusted operations like uploading to private
+   storage buckets and admin-style writes that the anon role can't
+   make. The key MUST be set as SUPABASE_SERVICE_ROLE_KEY (server-
+   only env var, no NEXT_PUBLIC_ prefix). If unset, throws so the
+   misconfiguration surfaces immediately instead of silently falling
+   back to anon (which is the failure mode we just spent days
+   diagnosing). */
+
+export function getSupabaseServiceRole(): SupabaseClient {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) {
+    throw new Error(
+      'SUPABASE_SERVICE_ROLE_KEY is not set. Add it to Vercel ' +
+      '(no NEXT_PUBLIC_ prefix) and redeploy.'
+    );
+  }
+  return createClient(SUPABASE_URL, key, {
+    auth: { persistSession: false },
+  });
+}
+
 /* ── Re-exports for convenience ─────────────────────────────── */
 
 export { SUPABASE_URL, SUPABASE_ANON_KEY };

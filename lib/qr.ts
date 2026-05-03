@@ -5,7 +5,7 @@
    ============================================================ */
 
 import QRCode from 'qrcode';
-import { getSupabaseServer } from './supabase';
+import { getSupabaseServiceRole } from './supabase';
 
 const BUCKET = 'barber-qr-codes';
 
@@ -31,7 +31,8 @@ export async function generateAndUploadBarberQr(args: {
   initials: string;
   digits: string | number;
 }): Promise<string | null> {
-  const supabase = getSupabaseServer();
+  // Service role bypasses storage RLS — same reasoning as lib/uploads.ts.
+  const supabase = getSupabaseServiceRole();
   const url = inviteUrlFor(args.initials, args.digits);
   const key = qrObjectKey(args.initials, args.digits);
 

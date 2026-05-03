@@ -6,7 +6,7 @@
    workflow reads back.
    ============================================================ */
 
-import { getSupabaseServer } from './supabase';
+import { getSupabaseServiceRole } from './supabase';
 
 const BUCKET = 'barber-documents';
 
@@ -43,7 +43,9 @@ export async function uploadBarberDocument(args: {
   barberCode: string;
   slot: DocumentSlot;
 }): Promise<string | null> {
-  const supabase = getSupabaseServer();
+  // Service role bypasses storage RLS — required for writing to a
+  // private bucket from a server route without per-user auth.
+  const supabase = getSupabaseServiceRole();
   const ext = extFor(args.file);
   const key = documentObjectKey(args.barberCode, args.slot, ext);
 
